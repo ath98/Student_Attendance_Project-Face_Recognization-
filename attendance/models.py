@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.deletion import CASCADE
 
 from fd.settings import IMG_ROOT
 
@@ -17,17 +19,12 @@ def user_dir_path(instance, filename):
 
 class Faculty(models.Model):
 
-    GENDER = (
-        ('MALE', 'MALE'),
-        ('FEMALE', 'FEMALE'),
-    )
-
-    id = models.CharField(max_length=200, primary_key=True)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete = models.CASCADE)
     firstname = models.CharField(max_length=200, null=True, blank=True)
     lastname = models.CharField(max_length=200, null=True, blank=True)
-    phoneNumber = models.CharField(max_length=200, null=True)
+    username = models.CharField(max_length=200, null=True, blank=True)
     email = models.CharField(max_length=200, null=True)
-    gender = models.CharField(max_length=200, null=True, choices=GENDER)
+    password = models.CharField(max_length=200, null= True)
     profile_pic = models.ImageField(
         upload_to=user_dir_path, null=True, blank=True)
 

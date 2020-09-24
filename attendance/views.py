@@ -1,14 +1,17 @@
-from .models import Student
+from django.contrib.messages.api import error
+from django.http import request
+from django.http import response
+from .models import Faculty, Student
 from django.contrib import messages
 from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User, auth
+from django.contrib.auth.decorators import login_required
 
 from .face_detection import saveData
 
 from fd.settings import BASE_DIR
-
-
 
 import os
 import cv2
@@ -17,33 +20,81 @@ import cv2
 
 # method to redirect to login page
 
-
+@login_required(login_url='login')
 def home(request):
     context = {}
-    return render(request, 'templates/login.html', context)
+    return render(request, 'templates/index.html', context)
 
-# method to verify user login and do further activities
-
-
-def loginPage(request):
+# method to register faculty
+def registerFaculty(request):
     if request.method == 'POST':
         username = request.POST.get('username')
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')
+        email = request.POST.get('email')
         password = request.POST.get('password')
+        confirmPassword = request.POST.get('confirm_password')
 
-        if (username == 'admin') and (password == 'admin'):
-            flag = True
+        if password == confirmPassword:
+            if User.objects.filter(username = username).exists():
+                messages.error(request, 'User already exists, try with another username')
+                return redirect('login')
+            elif User.objects.filter(email = email).exists():
+                messages.error(request, 'User already exists with email id :' + email + '\ntry with another username')
+                return redirect('login')
+            else:
+                user = User.objects.create_user(
+                    username = username,
+                    password = password,
+                    first_name = firstname,
+                    last_name = lastname,
+                    email = email
+                )
+                user.save()
 
-        context = {}
-        if flag:
-            return render(request, 'templates/index.html', context)
+                faculty = Faculty.objects.create(
+                    user = user,
+                    firstname = user.first_name,
+                    lastname = user.last_name,
+                    username = user.username,
+                    email = user.email,
+                    password = user.password
+                )
+                faculty.save()
+
+                user.save()
+                messages.success(request, 'User created succesfully')
+                return redirect('home')
         else:
-            messages.info(request, 'Username or Password is incorrect')
-
+            messages.error(request, 'Passwords do not match, Try again')
+        
     context = {}
-    return render(request, 'templates/login.html', context)
+    return render(request, 'templates/login.html')
 
-# method to redirect to student registration
+# method to verify user login and do further activities
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+    
+        if (username == 'admin') and (password == 'admin'):
+            return redirect('home')
+        else:
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, 'Username or password is incorrect')
+                return redirect('login')
+    else:
+        context = {}
+        return render(request, 'templates/login.html', context)
 
+@login_required(login_url=login)
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
 
 def redirectRegisterStudent(request):
     context = {}
