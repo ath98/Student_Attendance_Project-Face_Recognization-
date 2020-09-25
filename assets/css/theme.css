@@ -1189,7 +1189,7 @@ section {
     position: fixed;
     top: 0;
     right: 0;
-    left: 300px;
+    left: 250px;
     height: 75px;
     z-index: 3;
 }
@@ -1577,7 +1577,7 @@ section {
 }
 
 .menu-sidebar {
-    width: 300px;
+    width: 250px;
     position: fixed;
     left: 0;
     top: 0;
@@ -4098,7 +4098,7 @@ section {
     color: #333;
 }
 
-.recent-report__chart canvas {
+.take_attendance canvas {
     height: 250px;
     width: 100%;
 }
