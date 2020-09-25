@@ -1,0 +1,117 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendence System</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" media="all">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+    </script>
+</head>
+
+<body>
+
+    <body>
+        <div class="content-agileits">
+            <h1 class="title">Create Lecture</h1>
+            <div class="left">
+                <form action="{% url 'lecture' %}" method="post" enctype="multipart/form-data"
+                    id="lecture" data-toggle="validator">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="id" class="form-control" id="lectureid" name="lectureid" placeholder="Lecture ID"
+                            data-error="Enter Lecture ID" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter Subject"
+                            data-error="Enter the Subject" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="profid" name="profid" placeholder="profid" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="profname" name="profname" placeholder="Professor Name" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="shift" name="shift"
+                            placeholder="Shift" data-error="Enter shift" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" id="year" name="year" placeholder="Year"
+                            data-error="Enter year" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" class="form-control" id="dt" name="dt" placeholder="Date"
+                            data-error="Enter date" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+
+                               
+                    <div class="form-group">
+                        <button type="submit" id="submit" class="btn btn-lg">Submit</button>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" id="takeattendance" class="btn btn-lg" value="attendance" name="attendance" >Take Attendance </button>
+                    </div>
+                </form>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <!-- js -->
+        <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+        <!-- //js -->
+
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/validator.min.js' %}"></script>
+        <!-- <script src="{% static 'js/app.js' %}"></script> -->
+        <!-- /js files -->
+        
+    </body>
+
+</html>
+
+
+<!--
+                     <div class="form-group">
+                        <input type="text" class="form-control" id="shift" name="shift" placeholder="Shift (0 if none)"
+                            data-error="Enter Shift" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group w3ls-opt">
+                        <label for="Phone" class="control-label">Gender</label>
+                        <fieldset>
+                            <label class="w3layouts">
+                                <input type="radio" id="gender" name="gender" value="male">Male
+                            </label>
+                            
+                        </fieldset>
+                        <div class="help-block with-errors"></div>
+                    </div>'
+                    ''' -->

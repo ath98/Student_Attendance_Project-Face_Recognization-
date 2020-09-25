@@ -67,6 +67,33 @@ class Student(models.Model):
     def __str__(self):
         return str(self.rollNumebr)
 
+class lecture(models.Model):
+
+    #defining tuples for the choice fields
+    YEAR = (
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+    )
+
+    SHIFT = (
+        ('1', '1'),
+        ('2', '2'),
+    )
+
+    lectureid = models.CharField(max_length=200, primary_key=True)
+    subject = models.CharField(max_length=200, null=True, blank=True)
+    pid = models.CharField(max_length=200)
+    profname = models.CharField(max_length=200, null=True)
+    year = models.CharField(max_length=100, null=True, choices=YEAR)
+    shift = models.CharField(max_length=100, null=True, choices=SHIFT)
+    dt = models.DateField()
+
+    def __str__(self):
+        return str(self.lectureid)
+
+
+
 
 class Attendance(models.Model):
 

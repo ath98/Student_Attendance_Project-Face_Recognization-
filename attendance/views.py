@@ -51,6 +51,10 @@ def redirectRegisterStudent(request):
 
 # method to redirect to records page
 
+def redirectLecture(request):
+    context = {}
+    return render(request, 'templates/lecture.html', context)
+
 
 def redirectViewRecords(request):
     context = {}
@@ -71,7 +75,7 @@ def registerStudent(request):
         year = request.POST['year']
 
         # assigning those values to the student object
-        student = Student()
+        student = Student() #object creation of student object
         student.rollNumebr = rollnumber
         student.firstname = firstname
         student.lastname = lastname
@@ -93,7 +97,7 @@ def registerStudent(request):
                 'rollnumber' : rollnumber,
                 'shift' : shift,
                 'year' : year 
-            }
+            }   #dictionary banavli ithe details chi
 
             save_face_data = saveData(details)
             if(save_face_data):
@@ -110,6 +114,45 @@ def registerStudent(request):
     return render(request, 'templates/login.html', context)
 
 
+def lecture(request):    #get values from the fields lectureid ,subject,profid,profname,shift,year
+    if request.method == 'POST':
+        lectureid = request.POST['lectureid']    
+        subject = request.POST['subject']
+        pid = request.POST['pid']
+        profname = request.POST['profname']
+        shift = request.POST['shift']
+        year = request.POST['year']
+        dt = request.POST['dt']
+        print("records retrived")
+        lecture = Lecture() 
+        lecture.lectureid = lectureid
+        lecture.subject = subject
+        lecture.pid = pid
+        lecture.profname = profname
+        lecture.shift = shift
+        lecture.year = year
+        lecture.dt = dt
+        stat = False
+        try:
+            lecture = Lecture.objects.get(lectureid = lectureid)
+            stat = True
+        except:
+            stat = False
+        if (stat == False):
+            details = {
+                'lectureid' : lectureid,
+                'pid' : pid,
+                'subject' : subject 
+            }   #dictionary banavli ithe details chi
+
+        if(request.POST['submit'] == 'attendance'):
+            takeAttendance(request)
+    context = {}
+    return render(request, 'templates/lecture.html', context)
+
+    
+
+
 def takeAttendance(request):
     print(cv2.__version__)
     # Detect face
@@ -121,7 +164,7 @@ def takeAttendance(request):
 
     dataset = os.path.join(BASE_DIR, 'datasets', 'test')
     print(dataset)
-    path = 'G:/project/fd/attendance/0.jpg'
+    #path = 'G:/project/fd/attendance/0.jpg'
     # im = Image.open("G:/project/fd/attendance/0.jpg")
     # im.show()
     print(BASE_DIR)

@@ -26,6 +26,12 @@
                 <a href="redirectViewRecords"><img src="{% static 'img/webcam.png' %}" class="img-responsive" /></a>
                 <h4 class="text-center">View Records</h4>
             </div>
+
+            <div class="col-md-4 col-lg-4 col-sm-2">
+                <a href="lecture"><img src="{% static 'templates/img/bg1.jpg' %}" class="img-responsive" /></a>
+                <h4 class="text-center">Create lecture</h4>   
+            </div>
+
             <div class="col-md-4 col-lg-4 col-sm-2">
                 <form action="takeAttendance" method="POST">
                     {% csrf_token %}
