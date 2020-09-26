@@ -91,11 +91,12 @@ def loginPage(request):
         context = {}
         return render(request, 'templates/login.html', context)
 
-@login_required(login_url=login)
+@login_required(login_url='login')
 def logoutUser(request):
     logout(request)
     return redirect('login')
 
+@login_required(login_url='login')
 def redirect_faculty_profile(request):
     context = {}
     return render(request, 'templates/faculty.html', context)
@@ -106,9 +107,22 @@ def redirect_faculty_profile(request):
 def redirectViewRecords(request):
     context = {}
 
-# method to register student
+# method to update faculty profile
+@login_required(login_url='login')
+def update_faculty_profile(request):
+    if request.method == 'POST' and request.FILES['profile_pic']:
+        firstname = request.POST['firstname']
+        lastname = request.POST['lastname']
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        profile_pic = request.FILES['profile_pic']      
+
+    context = {}
+    return render(request, 'templates/faculty.html', context)
 
 
+@login_required(login_url='login')
 def registerStudent(request):
     # get values from form fields
     if request.method == 'POST':
@@ -160,7 +174,7 @@ def registerStudent(request):
     context = {}
     return render(request, 'templates/login.html', context)
 
-
+@login_required(login_url='login')
 def takeAttendance(request):
     print(cv2.__version__)
     # Detect face
