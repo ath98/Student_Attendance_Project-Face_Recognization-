@@ -16,9 +16,8 @@ def user_dir_path(instance, filename):
     dir_path = os.path.join(IMG_ROOT, 'faculty')
     return 'dir_path/{}'.format(filename)
 
-
+# Class for professor data
 class Faculty(models.Model):
-
     user = models.OneToOneField(User, null=True, blank=True, on_delete = models.CASCADE)
     firstname = models.CharField(max_length=200, null=True, blank=True)
     lastname = models.CharField(max_length=200, null=True, blank=True)
@@ -31,7 +30,14 @@ class Faculty(models.Model):
     def __str__(self):
         return str(self.firstname + " " + self.lastname)
 
+# Class to Define Subjects with their subject code
+class Subject(models.Model):
+    subject_code = models.CharField(max_length=200, primary_key=True )
+    subject_name = models.CharField(max_length=200, null=True)
 
+    def __str__(self) -> str:self.code + " " + self.subject_name
+
+# Class for student data
 class Student(models.Model):
 
     # defining tuples for the choice fields
@@ -64,7 +70,7 @@ class Student(models.Model):
     def __str__(self):
         return str(self.rollNumebr)
 
-
+# Class for attendance data
 class Attendance(models.Model):
 
     # defining tuples for the choices fields

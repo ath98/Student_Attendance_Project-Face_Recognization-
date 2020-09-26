@@ -8,7 +8,7 @@
     <div class="card">
         <div class="card-header">Your Profile</div>
         <div class="card-body card-block">
-            <form action="update_profile" method="post" novalidate>
+            <form action="update_profile" method="post" novalidate enctype="multipart/form-data">
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">
@@ -22,7 +22,7 @@
                         <div class="input-group-addon">
                             <i class="fa fa-user"></i>
                         </div>
-                        <input type="text" id="username" name="firstname" placeholder="Last Name" class="form-control">
+                        <input type="text" id="username" name="lastname" placeholder="Last Name" class="form-control">
                     </div>
                 </div>
                 <div class="form-group">
@@ -50,17 +50,61 @@
                             class="form-control">
                     </div>
                 </div>
-                <div class="row form-group">
-                    <div class="col col-md-6">
-                        <label for="profile_pic" class=" form-control-label">Profile Picture</label>
+                <div class="form-group row">
+                    <div class="col col-md-3">
+                        <label class=" form-control-label">SEMESTER 1</label>
                     </div>
-                    <div class="col-12 col-md-9">
-                        <input type="file" id="profile_pic" name="profile_pic" class="form-control-file">
-                    </div>
-                </div>
-                <div class="form-actions form-group">
-                    <button type="submit" class="btn btn-success btn-sm">Update Details</button>
-                </div>
+                    <div class="col col-md-3">
+                        <div class="form-check">
+                            <div class="checkbox">
+                                <label for="310901" class="form-check-label ">
+                                    <input type="checkbox" id="310901" name="310901" value="C and C++ Programming"
+                                        class="form-check-input">"C and C++ Programming
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label for="310902" class="form-check-label ">
+                                    <input type="checkbox" id="310902" name="310902" value="Computer Organization"
+                                        class="form-check-input"> Computer Organization
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label for="310903" class="form-check-label ">
+                                    <input type="checkbox" id="310903" name="310903"
+                                        value="Principles of Programming Practices" class="form-check-input"> Principles
+                                    of Programming Practices
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label for="310904" class="form-check-label ">
+                                    <input type="checkbox" id="310904" name="310904" value="Discrete Mathematics"
+                                        class="form-check-input">Discrete Mathematics
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label for="310905" class="form-check-label ">
+                                    <input type="checkbox" id="310905" name="310905" value="Probability & Statistics"
+                                        class="form-check-input">Probability & Statistics
+                                </label>
+                                <div class="checkbox">
+                                    <label for="310906" class="form-check-label ">
+                                        <input type="checkbox" id="310906" name="310906" value="Business Communications"
+                                            class="form-check-input">Business Communications
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-6">
+                                <label for="profile_pic" class=" form-control-label">Profile Picture</label>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <input type="file" id="profile_pic" name="profile_pic" class="form-control-file">
+                            </div>
+                        </div>
+                        <div class="form-actions form-group">
+                            <button type="submit" class="btn btn-success btn-sm">Update Details</button>
+                        </div>
             </form>
         </div>
     </div>
