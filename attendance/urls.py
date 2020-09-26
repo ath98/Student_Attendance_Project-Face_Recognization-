@@ -11,6 +11,7 @@ urlpatterns = [
     path('login', views.loginPage, name='login'),
     path('logout', views.logoutUser, name = 'logout'),
     path('register', views.registerFaculty, name = 'register'),
+    path('faculty', views.redirect_faculty_profile, name = 'faculty')
     #path('redirectRegisterStudent/', redirectRegisterStudent, name = 'redirectRegisterStudent'),
     #path('redirectTakeAttendance', redirectAttendance, name = 'redirectTakeAttendance'),
     #path('redirectViewRecords/', redirectViewRecords, name = 'redirectViewRecords'),

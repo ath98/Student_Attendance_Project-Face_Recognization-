@@ -96,9 +96,9 @@ def logoutUser(request):
     logout(request)
     return redirect('login')
 
-def redirectRegisterStudent(request):
+def redirect_faculty_profile(request):
     context = {}
-    return render(request, 'templates/studentRegistration.html', context)
+    return render(request, 'templates/faculty.html', context)
 
 # method to redirect to records page
 
