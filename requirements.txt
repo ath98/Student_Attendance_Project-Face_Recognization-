@@ -1,0 +1,14 @@
+asgiref
+click
+cmake
+django-filter
+Pillow
+pytz
+sqlparse
+psycopg2-binary
+matplotlib
+seaborn
+pandas
+opencv-python
+autopep8
+pylint

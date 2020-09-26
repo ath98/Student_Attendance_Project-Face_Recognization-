@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'fd.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fda',
+        'NAME': 'FDA',
         'USER': 'postgres',
-        'PASSWORD': 'SPEED@22',
+        'PASSWORD': 'Mrunmayee24$',
         'HOST': 'localhost',
     }
 }
