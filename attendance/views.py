@@ -1,4 +1,5 @@
 from .models import Student
+from .models import Lecture
 from django.contrib import messages
 from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
@@ -65,32 +66,34 @@ def redirectViewRecords(request):
 def registerStudent(request):
     # get values from form fields
     if request.method == 'POST':
-        rollnumber = request.POST['rollNumber']
-        firstname = request.POST['firstname']
-        lastname = request.POST['lastname']
-        email = request.POST['email']
-        phonenumber = request.POST['phone']
-        gender = request.POST['gender']
-        shift = request.POST['shift']
-        year = request.POST['year']
-
         # assigning those values to the student object
         student = Student() #object creation of student object
-        student.rollNumebr = rollnumber
+
+        rollnumber = request.POST.get('rollnumber')
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')
+        email = request.POST.get('email')
+        phonenumber = request.POST.get('phonenumber')
+        gender = request.POST.get('gender')
+        shift = request.POST.get('shift')
+        year = request.POST.get('year')
+       
+
+        student.rollnumber = rollnumber
         student.firstname = firstname
         student.lastname = lastname
         student.email = email
-        student.phoneNumber = phonenumber
+        student.phonenumber = phonenumber
         student.gender = gender
         student.shift = shift
         student.year = year
 
         stat = False
         try:
-            student = Student.objects.get(rollnumber = rollnumber)
+            student = Student.objects.get(rollnumber = rollnumber) #ahe already
             stat = true
         except:
-            stat = False
+            stat = False #naie
 
         if (stat == False):
             details = {
@@ -116,39 +119,60 @@ def registerStudent(request):
 
 def lecture(request):    #get values from the fields lectureid ,subject,profid,profname,shift,year
     if request.method == 'POST':
-        lectureid = request.POST['lectureid']    
-        subject = request.POST['subject']
-        pid = request.POST['pid']
-        profname = request.POST['profname']
-        shift = request.POST['shift']
-        year = request.POST['year']
-        dt = request.POST['dt']
-        print("records retrived")
+        
         lecture = Lecture() 
+        
+        lectureid = request.POST.get('lectureid')
+        subject = request.POST.get('subject')
+        shift = request.POST.get('shift')
+        year = request.POST.get('year')
+        dt = request.POST.get('dt')
+
         lecture.lectureid = lectureid
         lecture.subject = subject
-        lecture.pid = pid
-        lecture.profname = profname
+        #lecture.pid = pid
+        #lecture.profname = profname
         lecture.shift = shift
         lecture.year = year
         lecture.dt = dt
+
         stat = False
         try:
-            lecture = Lecture.objects.get(lectureid = lectureid)
+            lecture = Lecture.objects.get(lectureid = lectureid)#already ahe exist navin banvu nako
             stat = True
         except:
-            stat = False
+            stat = False  #not exist
         if (stat == False):
-            details = {
-                'lectureid' : lectureid,
-                'pid' : pid,
-                'subject' : subject 
-            }   #dictionary banavli ithe details chi
+            lecture.save()
 
-        if(request.POST['submit'] == 'attendance'):
-            takeAttendance(request)
+            '''details = {
+                'lectureid' : lectureid,
+                'subject' : subject,
+                'year' : year,
+                'shift' : shift,
+                'dt' : dt 
+            }   #dictionary banavli ithe details chi
+        #if(request.POST['submit'] == 'attendance'):
+        
+            '''
+            messages.success(request, 'Lecture created successfully')
+        if (stat == True):
+            
+        #else:
+            messages.error(request, 'Create new lecture ' + lectureid + 'already exists.')
+            return redirect('lecture')
+
     context = {}
     return render(request, 'templates/lecture.html', context)
+
+
+def att(request):
+    if request.method == 'POST':
+        att = Att()
+        takeAttendance()
+    context = {}
+    return render(request, 'templates/att.html', context)
+
 
     
 

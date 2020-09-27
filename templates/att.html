@@ -33,61 +33,21 @@
 
     <body>
         <div class="content-agileits">
-            <h1 class="title">Create Lecture</h1>
+            <h1 class="title">Take Attendance </h1>
             <div class="left">
-                <form action="{% url 'lecture' %}" method="post" enctype="multipart/form-data"
-                    id="lecture" data-toggle="validator">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="lectureid" name="lectureid" placeholder="Lecture ID"
-                            data-error="Enter Lecture ID" required>
-                        <div class="help-block with-errors"></div>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter Subject"
-                            data-error="Enter the Subject" required>
-                        <div class="help-block with-errors"></div>
-                    </div>
-                    
-                   
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="shift" name="shift"
-                            placeholder="Shift" data-error="Enter shift" required>
-                        <div class="help-block with-errors"></div>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="year" name="year" placeholder="Year"
-                            data-error="Enter year" required>
-                        <div class="help-block with-errors"></div>
-                    </div>
-                    <div class="form-group">
-                        <input type="date" class="form-control" id="dt" name="dt" placeholder="Date"
-                            data-error="Enter date" required>
-                        <div class="help-block with-errors"></div>
-                    </div>
-
-                               
-                    <div class="form-group">
-                        <button type="submit" id="submit" class="btn btn-lg">Submit</button>
-                    </div>
-
-                    
-
-                    
-                </form>
-            </div>
-
-            <div class="left">
-
                 <form action="{% url 'att' %}" method="post" enctype="multipart/form-data"
                     id="att" data-toggle="validator">
                     {% csrf_token %}
+                    
+
+                               
                     <div class="form-group">
-                        <button type="submit" id="lecnext" class="btn btn-lg" value="lecnext" name="lecnext" >Next </button>
+                        <button type="submit" id="submit" class="btn btn-lg">Take_Attendance</button>
                     </div>
+
+                    
                 </form>
             </div>
-
             <div class="clear"></div>
         </div>
         <!-- js -->
@@ -130,7 +90,9 @@
                         <div class="help-block with-errors"></div>
                     </div>
 
-                    
+                    <div class="form-group">
+                        <button type="submit" id="takeattendance" class="btn btn-lg" value="attendance" name="attendance" >Take Attendance </button>
+                    </div>
 
 
 
