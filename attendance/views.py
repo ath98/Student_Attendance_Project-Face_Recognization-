@@ -1,15 +1,17 @@
-from .models import Student
-from .models import Lecture
+from django.contrib.messages.api import error
+from django.http import request
+from django.http import response
+from .models import Faculty, Student, Lecture
 from django.contrib import messages
 from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User, auth
+from django.contrib.auth.decorators import login_required
 
 from .face_detection import saveData
 
 from fd.settings import BASE_DIR
-
-
 
 import os
 import cv2
@@ -18,89 +20,145 @@ import cv2
 
 # method to redirect to login page
 
-
+@login_required(login_url='login')
 def home(request):
     context = {}
-    return render(request, 'templates/login.html', context)
+    return render(request, 'templates/index.html', context)
 
-# method to verify user login and do further activities
-
-
-def loginPage(request):
+# method to register faculty
+def registerFaculty(request):
     if request.method == 'POST':
         username = request.POST.get('username')
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')
+        email = request.POST.get('email')
         password = request.POST.get('password')
+        confirmPassword = request.POST.get('confirm_password')
 
-        if (username == 'admin') and (password == 'admin'):
-            flag = True
+        if password == confirmPassword:
+            if User.objects.filter(username = username).exists():
+                messages.error(request, 'User already exists, try with another username')
+                return redirect('login')
+            elif User.objects.filter(email = email).exists():
+                messages.error(request, 'User already exists with email id :' + email + '\ntry with another username')
+                return redirect('login')
+            else:
+                user = User.objects.create_user(
+                    username = username,
+                    password = password,
+                    first_name = firstname,
+                    last_name = lastname,
+                    email = email
+                )
+                user.save()
 
-        context = {}
-        if flag:
-            return render(request, 'templates/index.html', context)
+                faculty = Faculty.objects.create(
+                    user = user,
+                    firstname = user.first_name,
+                    lastname = user.last_name,
+                    username = user.username,
+                    email = user.email,
+                    password = user.password
+                )
+                faculty.save()
+
+                user.save()
+                messages.success(request, 'User created succesfully')
+                return redirect('home')
         else:
-            messages.info(request, 'Username or Password is incorrect')
-
+            messages.error(request, 'Passwords do not match, Try again')
+        
     context = {}
-    return render(request, 'templates/login.html', context)
+    return render(request, 'templates/login.html')
 
-# method to redirect to student registration
+# method to verify user login and do further activities
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+    
+        if (username == 'admin') and (password == 'admin'):
+            return redirect('home')
+        else:
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, 'Username or password is incorrect')
+                return redirect('login')
+    else:
+        context = {}
+        return render(request, 'templates/login.html', context)
 
+@login_required(login_url='login')
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
 
-def redirectRegisterStudent(request):
+@login_required(login_url='login')
+def redirect_faculty_profile(request):
     context = {}
-    return render(request, 'templates/studentRegistration.html', context)
+    return render(request, 'templates/faculty.html', context)
 
 # method to redirect to records page
-
-def redirectLecture(request):
-    context = {}
-    return render(request, 'templates/lecture.html', context)
 
 
 def redirectViewRecords(request):
     context = {}
 
-# method to register student
+# method to update faculty profile
+@login_required(login_url='login')
+def update_faculty_profile(request):
+    if request.method == 'POST' and request.FILES['profile_pic']:
+        firstname = request.POST['firstname']
+        lastname = request.POST['lastname']
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        profile_pic = request.FILES['profile_pic']      
+
+    context = {}
+    return render(request, 'templates/faculty.html', context)
 
 
+@login_required(login_url='login')
 def registerStudent(request):
     # get values from form fields
     if request.method == 'POST':
+        rollnumber = request.POST['rollNumber']
+        firstname = request.POST['firstname']
+        lastname = request.POST['lastname']
+        email = request.POST['email']
+        phonenumber = request.POST['phone']
+        gender = request.POST['gender']
+        shift = request.POST['shift']
+        year = request.POST['year']
+
         # assigning those values to the student object
-        student = Student() #object creation of student object
-
-        rollnumber = request.POST.get('rollnumber')
-        firstname = request.POST.get('firstname')
-        lastname = request.POST.get('lastname')
-        email = request.POST.get('email')
-        phonenumber = request.POST.get('phonenumber')
-        gender = request.POST.get('gender')
-        shift = request.POST.get('shift')
-        year = request.POST.get('year')
-       
-
-        student.rollnumber = rollnumber
+        student = Student()
+        student.rollNumebr = rollnumber
         student.firstname = firstname
         student.lastname = lastname
         student.email = email
-        student.phonenumber = phonenumber
+        student.phoneNumber = phonenumber
         student.gender = gender
         student.shift = shift
         student.year = year
 
         stat = False
         try:
-            student = Student.objects.get(rollnumber = rollnumber) #ahe already
+            student = Student.objects.get(rollnumber = rollnumber)
             stat = true
         except:
-            stat = False #naie
+            stat = False
 
         if (stat == False):
             details = {
                 'rollnumber' : rollnumber,
                 'shift' : shift,
                 'year' : year 
-            }   #dictionary banavli ithe details chi
+            }
 
             save_face_data = saveData(details)
             if(save_face_data):
@@ -116,36 +174,43 @@ def registerStudent(request):
     context = {}
     return render(request, 'templates/login.html', context)
 
-
-def lecture(request):    #get values from the fields lectureid ,subject,profid,profname,shift,year
+def take_attendance(request):    #get values from the fields lectureid ,subject,profid,profname,shift,year  lecture=take_attendance
     if request.method == 'POST':
         
-        lecture = Lecture() 
+        take_attendance = Lecture() 
         
-        lectureid = request.POST.get('lectureid')
+        #lectureid = request.POST.get('lectureid')
         subject = request.POST.get('subject')
         shift = request.POST.get('shift')
         year = request.POST.get('year')
         dt = request.POST.get('dt')
+        tfrom = request.POST.get('tfrom')
+        tto = request.POST.get('tto') 
 
-        lecture.lectureid = lectureid
-        lecture.subject = subject
+        #take_attendance.lectureid = lectureid
+        take_attendance.subject = subject
         #lecture.pid = pid
         #lecture.profname = profname
-        lecture.shift = shift
-        lecture.year = year
-        lecture.dt = dt
+        take_attendance.shift = shift
+        take_attendance.year = year
+        take_attendance.dt = dt
+        take_attendance.tfrom = tfrom
+        take_attendance.tto = tto
 
-        stat = False
+        take_attendance.save()
+
+
+        '''stat = False
         try:
-            lecture = Lecture.objects.get(lectureid = lectureid)#already ahe exist navin banvu nako
+            take_attendance = Lecture.objects.get(lectureid = lectureid)#already ahe exist navin banvu nako
             stat = True
         except:
             stat = False  #not exist
         if (stat == False):
-            lecture.save()
+            
+            
 
-            '''details = {
+            details = {
                 'lectureid' : lectureid,
                 'subject' : subject,
                 'year' : year,
@@ -154,29 +219,20 @@ def lecture(request):    #get values from the fields lectureid ,subject,profid,p
             }   #dictionary banavli ithe details chi
         #if(request.POST['submit'] == 'attendance'):
         
-            '''
+            
             messages.success(request, 'Lecture created successfully')
         if (stat == True):
             
         #else:
             messages.error(request, 'Create new lecture ' + lectureid + 'already exists.')
             return redirect('lecture')
+            '''
 
     context = {}
-    return render(request, 'templates/lecture.html', context)
+    return render(request, 'templates/index.html', context)
 
 
-def att(request):
-    if request.method == 'POST':
-        att = Att()
-        takeAttendance()
-    context = {}
-    return render(request, 'templates/att.html', context)
-
-
-    
-
-
+@login_required(login_url='login')
 def takeAttendance(request):
     print(cv2.__version__)
     # Detect face
@@ -188,7 +244,7 @@ def takeAttendance(request):
 
     dataset = os.path.join(BASE_DIR, 'datasets', 'test')
     print(dataset)
-    #path = 'G:/project/fd/attendance/0.jpg'
+    path = 'G:/project/fd/attendance/0.jpg'
     # im = Image.open("G:/project/fd/attendance/0.jpg")
     # im.show()
     print(BASE_DIR)
