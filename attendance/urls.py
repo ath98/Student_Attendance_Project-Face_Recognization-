@@ -1,12 +1,11 @@
 from django.conf.urls import url
 from django.urls import path
 
-from django.views.generic import TemplateView # <--
-
-from attendance import views
+from . import views as views
 
 urlpatterns = [
     path('home', views.home, name='home'),
+    path('admin', views.admin_page, name = 'admin'),
     #path('registerStudent/', registerStudent, name='registerStudent'),
     path('login', views.loginPage, name='login'),
     path('logout', views.logoutUser, name = 'logout'),

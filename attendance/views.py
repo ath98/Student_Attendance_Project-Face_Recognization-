@@ -71,6 +71,13 @@ def registerFaculty(request):
     context = {}
     return render(request, 'templates/login.html')
 
+    
+@login_required(login_url='login')
+def admin_page(request):
+    faculty_count = Faculty.objects.all().count()
+    context = {'faculty_count' : faculty_count}
+    return render(request, 'templates/admin.html', context)
+
 # method to verify user login and do further activities
 def loginPage(request):
     if request.method == 'POST':
@@ -78,7 +85,10 @@ def loginPage(request):
         password = request.POST['password']
     
         if (username == 'admin') and (password == 'admin'):
-            return redirect('home')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('admin_page')
         else:
             user = authenticate(request, username=username, password=password)
             if user is not None:

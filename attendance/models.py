@@ -17,13 +17,16 @@ def user_dir_path(instance, filename):
     return 'dir_path/{}'.format(filename)
 
 # Class for professor data
+
+
 class Faculty(models.Model):
-    user = models.OneToOneField(User, null=True, blank=True, on_delete = models.CASCADE)
+    user = models.OneToOneField(
+        User, null=True, blank=True, on_delete=models.CASCADE)
     firstname = models.CharField(max_length=200, null=True, blank=True)
     lastname = models.CharField(max_length=200, null=True, blank=True)
     username = models.CharField(max_length=200, null=True, blank=True)
     email = models.CharField(max_length=200, null=True)
-    password = models.CharField(max_length=200, null= True)
+    password = models.CharField(max_length=200, null=True)
     profile_pic = models.ImageField(
         upload_to=user_dir_path, null=True, blank=True)
 
@@ -31,13 +34,17 @@ class Faculty(models.Model):
         return str(self.firstname + " " + self.lastname)
 
 # Class to Define Subjects with their subject code
+
+
 class Subject(models.Model):
-    subject_code = models.CharField(max_length=200, primary_key=True )
+    subject_code = models.CharField(max_length=200, primary_key=True)
     subject_name = models.CharField(max_length=200, null=True)
 
-    def __str__(self) -> str:self.code + " " + self.subject_name
+    def __str__(self) -> str: self.code + " " + self.subject_name
 
 # Class for student data
+
+
 class Student(models.Model):
 
     # defining tuples for the choice fields
@@ -71,6 +78,8 @@ class Student(models.Model):
         return str(self.rollNumebr)
 
 # Class for attendance data
+
+
 class Attendance(models.Model):
 
     # defining tuples for the choices fields
@@ -91,7 +100,6 @@ class Attendance(models.Model):
     )
 
     faculty_name = models.CharField(max_length=200, null=True, blank=True)
-    lecture = models.CharField(max_length=200, null=True)
     rollnumber = models.CharField(max_length=200, null=True, blank=True)
     date = models.DateField(auto_now_add=True, null=True)
     time = models.TimeField(auto_now_add=True, null=True)
@@ -103,3 +111,15 @@ class Attendance(models.Model):
 
     def __str__(self):
         return str(self.rollnumber + " _ " + str(self.date) + " _ " + str(self.time) + " _ " + str(self.lecture_number) + " _ " + str(self.lecture))
+
+
+class Lecture(models.Model):
+    lecture_number = models.AutoField(primary_key=True)
+    date = models.DateField(max_length=200, null=True)
+    time = models.TimeField(auto_now_add=True, null=True)
+    faculty_id = models.ForeignKey(Faculty, on_delete=CASCADE,  null=True)
+    year = models.CharField(max_length=200, null=True, blank=True)
+    shift = models.CharField(max_length=200, null=True, blank=True)
+    subject = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self) -> str:("Lecture Number :" + self.lecture_number + "\nSubject :" + self.subject)
