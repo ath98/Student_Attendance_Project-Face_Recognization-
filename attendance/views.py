@@ -231,6 +231,32 @@ def take_attendance(request):    #get values from the fields lectureid ,subject,
     context = {}
     return render(request, 'templates/index.html', context)
 
+def update_attendance(request):
+    if request.method =='POST':
+        update_attendance = Lecture()
+        lectureid = request.POST.get('lectureid')
+        subject = request.POST.get('subject')
+        shift = request.POST.get('shift')
+        year = request.POST.get('year')
+        dt = request.POST.get('dt')
+        tfrom = request.POST.get('tfrom')
+        tto = request.POST.get('tto')
+
+        update_attendance.lectureid = lectureid
+        update_attendance.subject = subject
+        update_attendance.shift = shift
+        update_attendance.year = year
+        update_attendance.dt = dt
+        update_attendance.tfrom = tfrom
+        update_attendance.tto = tto
+
+        update_attendance.save()
+    context = {}
+    return render(request, 'templates/index.html', context)
+
+
+
+
 
 @login_required(login_url='login')
 def takeAttendance(request):

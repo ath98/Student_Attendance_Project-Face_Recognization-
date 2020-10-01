@@ -13,6 +13,7 @@ urlpatterns = [
     path('register', views.registerFaculty, name = 'register'),
     #path('lecture', views.lecture, name= 'lecture'),
     path('take_attendance', views.take_attendance, name= 'take_attendance'),
+    path('update_attendance', views.update_attendance, name = 'update_attendance'),
     path('faculty', views.redirect_faculty_profile, name = 'faculty'),
     path('update_profile', views.update_faculty_profile, name = 'update_profile'),
     #path('redirectRegisterStudent/', redirectRegisterStudent, name = 'redirectRegisterStudent'),
