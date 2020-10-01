@@ -34,17 +34,21 @@ class Faculty(models.Model):
         return str(self.firstname + " " + self.lastname)
 
 # Class to Define Subjects with their subject code
-
-
 class Subject(models.Model):
     subject_code = models.CharField(max_length=200, primary_key=True)
     subject_name = models.CharField(max_length=200, null=True)
 
     def __str__(self) -> str: self.code + " " + self.subject_name
 
+
+class Subject_Faculty(models.Model):
+    subject = models.ForeignKey(Subject,on_delete=CASCADE,  null=True)
+    faculty = models.ForeignKey(Faculty, on_delete=CASCADE,  null=True)
+
+    def __str__(self) -> self.subject.subject_name + " " + self.faculty.username
+
+
 # Class for student data
-
-
 class Student(models.Model):
 
     # defining tuples for the choice fields
@@ -78,8 +82,6 @@ class Student(models.Model):
         return str(self.rollNumebr)
 
 # Class for attendance data
-
-
 class Attendance(models.Model):
 
     # defining tuples for the choices fields
