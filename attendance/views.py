@@ -1,13 +1,16 @@
 from django.contrib.messages.api import error
 from django.http import request
 from django.http import response
-from .models import Faculty, Student
 from django.contrib import messages
 from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
+from django.views.generic import FormView  
+
+from .models import Faculty, Student, Subject_Faculty
+from .forms import FacultyChoiceField
 
 from .face_detection import saveData
 
@@ -71,11 +74,15 @@ def registerFaculty(request):
     context = {}
     return render(request, 'templates/login.html')
 
-    
+
 @login_required(login_url='login')
 def admin_page(request):
     faculty_count = Faculty.objects.all().count()
-    context = {'faculty_count' : faculty_count}
+    faculty = FacultyChoiceField()
+    context = {
+        'faculty_count' : faculty_count, 
+        'faculty': faculty,
+    }
     return render(request, 'templates/admin.html', context)
 
 # method to verify user login and do further activities
@@ -88,7 +95,7 @@ def loginPage(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('admin_page')
+                return redirect('admin')
         else:
             user = authenticate(request, username=username, password=password)
             if user is not None:
