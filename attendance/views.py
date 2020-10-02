@@ -77,8 +77,9 @@ def registerFaculty(request):
 
 @login_required(login_url='login')
 def admin_page(request):
+    names = {}
     faculty_count = Faculty.objects.all().count()
-    faculty = FacultyChoiceField()
+    faculty = Faculty.objects.all()
     context = {
         'faculty_count' : faculty_count, 
         'faculty': faculty,
