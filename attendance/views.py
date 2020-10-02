@@ -264,3 +264,7 @@ def takeAttendance(request):
 
     context = {}
     return render(request, 'templates/login.html', context)
+
+def reports(request):
+    if request.method == 'POST':
+        
