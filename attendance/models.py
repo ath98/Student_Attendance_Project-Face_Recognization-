@@ -38,63 +38,20 @@ class Faculty(models.Model):
     def __str__(self):
         return str(self.firstname + " " + self.lastname)
 
+class Lecture(models.Model):
+    lecture_number = models.AutoField(primary_key=True)
+    date = models.DateField(max_length=200, null=True)
+    time = models.TimeField(auto_now_add=True, null=True)
+    faculty_id = models.ForeignKey(Faculty, on_delete=CASCADE,  null=True)
+    year = models.CharField(max_length=200, null=True, blank=True)
+    shift = models.CharField(max_length=200, null=True, blank=True)
+    subject = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self) -> str: ("Lecture Number :" +
+                               self.lecture_number + "\nSubject :" + self.subject)
+
 # Class to Define Subjects with their subject code
-
-
 class Subject(models.Model):
-
-    # INSERT INTO public.attendance_subject(
-	# subject_code, subject_name)
-	# VALUES 
-	# 	('310901', 'C and C++ Programming'),
-    #     ('310902', 'Computer Organization'),
-    #     ('310903', 'Principles of Programming Practices'),
-    #     ('310904', 'Discrete Mathematics'),
-    #     ('310905', 'Probability & Statistics'),
-    #     ('310906', 'Business Communications'),
-    #     ('310907', 'C & C++ Laboratory'),
-    #     ('310908', 'Open Source Tools Laboratory'),
-
-    #     ('310909', 'Java Programming'),
-    #     ('310910', 'Data Structures using C'),
-    #     ('310911', 'Web Technologies'),
-    #     ('310912', 'System Analysis & Design'),
-    #     ('310913', 'Management Theory & Practices'),
-    #     ('310914', 'Web Technologies Laboratory'),
-    #     ('310915', 'Java Programming Laboratory'),
-    #     ('310916', 'Data Structures Laboratory'),
-
-    #     ('410901', 'Advanced Java'),
-    #     ('410902', 'DBMS'),
-    #     ('410903', 'Operating Systems'),
-    #     ('410904', 'OOAD'),
-    #     ('410905', 'Operations Research'),
-    #     ('410906', 'HBASE Lab'),
-    #     ('410907', 'Advance Java Lab'),
-    #     ('410908', 'UML Lab – umbrello'),
-
-    #     ('410909', 'Advanced Web Technology'),
-    #     ('410910', 'Banking and FAM'),
-    #     ('410911', 'CN & Information Security'),
-    #     ('410912-1', 'IS Audit'),
-	# 	('410912-2', 'Cyber Laws'),
-	# 	('410912-3', 'IT Governance'),
-	# 	('410912-4', 'IT Service Management'),
-    #     ('410913', 'Adv DBMS'),
-    #     ('410914', 'WT Lab'),
-    #     ('410915', 'Advance DBMS Lab'),
-    #     ('410916', 'Network & Security Lab'),
-		
-    #     ('510901', 'Recent Technologies in IT'),
-    #     ('510902', 'Software Testing and Quality Assurance'),
-    #     ('510903', 'Software Engineering'),
-    #     ('510904', 'Data warehousing, data mining and BI'),
-    #     ('510905-1', 'Animation & Gaming'),
-	# 	('510905-2', 'Mobile Computing'),
-	# 	('510905-3', 'High Performance Networks'),
-	# 	('510905-4', 'Open Elective'),
-    #     ('510906', 'RTIT Lab'),
-    #     ('510907', 'STQA Lab');
 
     CODE = (
         # Sem 1
@@ -294,7 +251,7 @@ class Lecture(models.Model):
     lecture_number = models.AutoField(primary_key=True)
     date = models.DateField(max_length=200, null=True)
     time = models.TimeField(auto_now_add=True, null=True)
-    faculty_id = models.ForeignKey(Faculty, on_delete=CASCADE,  null=True)
+    faculty = models.ForeignKey(Faculty, on_delete=CASCADE,  null=True)
     year = models.CharField(max_length=200, null=True, blank=True)
     shift = models.CharField(max_length=200, null=True, blank=True)
     subject = models.CharField(max_length=200, null=True, blank=True)

@@ -200,8 +200,8 @@
                                     <div class="form-group">
                                         <label for="sel1">Select Faculty Name</label>
                                         <select name="faculty" class="form-control" id="sel1">
-                                            {% for name in faculty %}
-                                            <option value={{name}}>{{name}}</option>
+                                            {% for user in faculty %}
+                                            <option value={{user.username}}>{{user.username}}</option>
                                             {% endfor %}
                                         </select>
                                     </div>

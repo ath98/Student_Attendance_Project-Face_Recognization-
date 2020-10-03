@@ -11,7 +11,7 @@ from django.views.generic import FormView
 
 import json
 
-from .models import Faculty, Student,Subject
+from .models import Faculty, Student,Subject,Lecture
 from .forms import FacultyChoiceField
 
 from .face_detection import saveData
@@ -34,9 +34,10 @@ def home(request):
     faculty = Faculty.objects.get(username = user)
     assigned_subject = faculty.assigned_subjects
     assigned_subject_count = len(assigned_subject)
-    print(assigned_subject_count)
+    subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
     context = {
         'assigned_subject_count' : assigned_subject_count,
+        'subjects' : subjects,
     }
     return render(request, 'templates/index.html', context)
 
@@ -226,6 +227,38 @@ def registerStudent(request):
         
     context = {}
     return render(request, 'templates/login.html', context)
+
+
+@login_required(login_url='login')
+def take_attendance(request):    #get values from the fields lectureid ,subject,profid,profname,shift,year  lecture=take_attendance
+    if request.method == 'POST':
+        
+        faculty_name = request.user.username
+        faculty = Faculty.objects.get(username = faculty_name)
+        
+        take_attendance = Lecture()
+        
+        lectureid = request.POST.get('lectureid')
+        subject = request.POST.get('subject')
+        shift = request.POST.get('shift')
+        year = request.POST.get('year')
+        dt = request.POST.get('dt')
+        tfrom = request.POST.get('tfrom')
+        tto = request.POST.get('tto') 
+
+        take_attendance.lectureid = lectureid
+        take_attendance.subject = subject
+        #lecture.pid = pid
+        take_attendance.faculty = faculty
+        take_attendance.shift = shift
+        take_attendance.year = year
+        take_attendance.dt = dt
+        take_attendance.tfrom = tfrom
+        take_attendance.tto = tto
+
+        take_attendance.save()
+    context = {}
+    return render(request, 'templates/index.html', context)
 
 @login_required(login_url='login')
 def takeAttendance(request):

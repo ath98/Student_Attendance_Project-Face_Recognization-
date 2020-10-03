@@ -65,8 +65,8 @@
                                     <i class="zmdi zmdi-account-o"></i>
                                 </div>
                                 <div class="text">
-                                    <h2>10368</h2>
-                                    <span>members online</span>
+                                    <h2>{{assigned_subject_count}}</h2>
+                                    <span>Subjects Assigned</span>
                                 </div>
                             </div>
                             <div class="overview-chart">
@@ -152,6 +152,14 @@
                                         <select name='section' class="form-control" id="sel1">
                                             <option value="1">1</option>
                                             <option value="2">2</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sel1">Select Subject</label>
+                                        <select name="faculty" class="form-control" id="sel1">
+                                            {% for subject in subjects %}
+                                            <option value={{subject.subject_name}}>{{subject.subject_name}}</option>
+                                            {% endfor %}
                                         </select>
                                     </div>
                                     <div class="form-group">
