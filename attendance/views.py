@@ -177,9 +177,9 @@ def registerStudent(request):
 def take_attendance(request):    #get values from the fields lectureid ,subject,profid,profname,shift,year  lecture=take_attendance
     if request.method == 'POST':
         
-        take_attendance = Lecture() 
+        take_attendance = Lecture()
         
-        #lectureid = request.POST.get('lectureid')
+        lectureid = request.POST.get('lectureid')
         subject = request.POST.get('subject')
         shift = request.POST.get('shift')
         year = request.POST.get('year')
@@ -187,7 +187,7 @@ def take_attendance(request):    #get values from the fields lectureid ,subject,
         tfrom = request.POST.get('tfrom')
         tto = request.POST.get('tto') 
 
-        #take_attendance.lectureid = lectureid
+        take_attendance.lectureid = lectureid
         take_attendance.subject = subject
         #lecture.pid = pid
         #lecture.profname = profname
@@ -207,18 +207,6 @@ def take_attendance(request):    #get values from the fields lectureid ,subject,
         except:
             stat = False  #not exist
         if (stat == False):
-            
-            
-
-            details = {
-                'lectureid' : lectureid,
-                'subject' : subject,
-                'year' : year,
-                'shift' : shift,
-                'dt' : dt 
-            }   #dictionary banavli ithe details chi
-        #if(request.POST['submit'] == 'attendance'):
-        
             
             messages.success(request, 'Lecture created successfully')
         if (stat == True):

@@ -52,18 +52,21 @@ class Lecture(models.Model):
         ('2', '2'),
     )
 
-    #lectureid = models.CharField(max_length=200, primary_key=True)
-    lectureid = models.AutoField(primary_key=True)
+    #lectureid = models.CharField(max_length=200, null=True, blank=True)
+    lectureid = models.AutoField(primary_key=True, null=False)
+    #lectureid = models.IntegerField()
     #pid = models.CharField(max_length=200)
     #profname = models.CharField(max_length=200, null=True)
-    year = models.CharField(max_length=200, null=True, blank=True) 
+    year = models.CharField(max_length=200, null=True, blank=True)
     #shift = models.CharField(max_length=100, null=True, choices=SHIFT)
     shift = models.CharField(max_length=200, null=True, blank=True)
     subject = models.CharField(max_length=200, null=True, blank=True)
     dt = models.DateField(max_length=200, null=True)
-    tfrom = models.TimeField(auto_now_add=True, null=True)
-    tto = models.TimeField(auto_now_add=True, null=True)
+    #tfrom = models.TimeField(auto_now_add=True, null=True)
+    #tto = models.TimeField(null=True)
     #time = models.TimeField(auto_now_add=True, null=True)
+    tfrom = models.DecimalField(max_digits=4,decimal_places=2,null=True,blank=True)
+    tto = models.DecimalField(max_digits=4, decimal_places=2,null=True,blank=True)
 
     def __str__(self):
         return str(self.lectureid)
