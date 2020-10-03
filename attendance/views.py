@@ -77,6 +77,7 @@ def registerFaculty(request):
 
 @login_required(login_url='login')
 def admin_page(request):
+    names = {}
     faculty_count = Faculty.objects.all().count()
     faculty = Faculty.objects.all()
     sem1_subjects = Subject.objects.filter(semester = 1)
