@@ -1,7 +1,10 @@
+from django.contrib.postgres.fields import jsonb
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE
 
+from django.contrib.postgres.fields import JSONField
+from django.forms.fields import ChoiceField
 from fd.settings import IMG_ROOT
 
 import os
@@ -20,11 +23,20 @@ def user_dir_path(instance, filename):
 
 
 class Faculty(models.Model):
+
+    SHIFT = (
+        ('1', '1'),
+        ('2', '2'),
+        ('Both','Both'),
+    )
+
     user = models.OneToOneField(
         User, null=True, blank=True, on_delete=models.CASCADE)
     firstname = models.CharField(max_length=200, null=True, blank=True)
     lastname = models.CharField(max_length=200, null=True, blank=True)
     username = models.CharField(max_length=200, null=True, blank=True)
+    assigned_shift = models.CharField(max_length=200, null=True, blank=True, choices=SHIFT)
+    assigned_subjects = JSONField()
     email = models.CharField(max_length=200, null=True)
     password = models.CharField(max_length=200, null=True)
     profile_pic = models.ImageField(
@@ -36,7 +48,60 @@ class Faculty(models.Model):
 # Class to Define Subjects with their subject code
 
 
-class Subject_Faculty(models.Model):
+class Subject(models.Model):
+
+    # INSERT INTO public.attendance_subject(
+	# subject_code, subject_name)
+	# VALUES 
+	# 	('310901', 'C and C++ Programming'),
+    #     ('310902', 'Computer Organization'),
+    #     ('310903', 'Principles of Programming Practices'),
+    #     ('310904', 'Discrete Mathematics'),
+    #     ('310905', 'Probability & Statistics'),
+    #     ('310906', 'Business Communications'),
+    #     ('310907', 'C & C++ Laboratory'),
+    #     ('310908', 'Open Source Tools Laboratory'),
+
+    #     ('310909', 'Java Programming'),
+    #     ('310910', 'Data Structures using C'),
+    #     ('310911', 'Web Technologies'),
+    #     ('310912', 'System Analysis & Design'),
+    #     ('310913', 'Management Theory & Practices'),
+    #     ('310914', 'Web Technologies Laboratory'),
+    #     ('310915', 'Java Programming Laboratory'),
+    #     ('310916', 'Data Structures Laboratory'),
+
+    #     ('410901', 'Advanced Java'),
+    #     ('410902', 'DBMS'),
+    #     ('410903', 'Operating Systems'),
+    #     ('410904', 'OOAD'),
+    #     ('410905', 'Operations Research'),
+    #     ('410906', 'HBASE Lab'),
+    #     ('410907', 'Advance Java Lab'),
+    #     ('410908', 'UML Lab – umbrello'),
+
+    #     ('410909', 'Advanced Web Technology'),
+    #     ('410910', 'Banking and FAM'),
+    #     ('410911', 'CN & Information Security'),
+    #     ('410912-1', 'IS Audit'),
+	# 	('410912-2', 'Cyber Laws'),
+	# 	('410912-3', 'IT Governance'),
+	# 	('410912-4', 'IT Service Management'),
+    #     ('410913', 'Adv DBMS'),
+    #     ('410914', 'WT Lab'),
+    #     ('410915', 'Advance DBMS Lab'),
+    #     ('410916', 'Network & Security Lab'),
+		
+    #     ('510901', 'Recent Technologies in IT'),
+    #     ('510902', 'Software Testing and Quality Assurance'),
+    #     ('510903', 'Software Engineering'),
+    #     ('510904', 'Data warehousing, data mining and BI'),
+    #     ('510905-1', 'Animation & Gaming'),
+	# 	('510905-2', 'Mobile Computing'),
+	# 	('510905-3', 'High Performance Networks'),
+	# 	('510905-4', 'Open Elective'),
+    #     ('510906', 'RTIT Lab'),
+    #     ('510907', 'STQA Lab');
 
     CODE = (
         # Sem 1
@@ -142,15 +207,27 @@ class Subject_Faculty(models.Model):
         ('STQA Lab', 'STQA Lab'),
     )
 
+    SEMESTER = (
+        ('1','1'),
+        ('2','2'),
+        ('3','3'),
+        ('4','4'),
+        ('5','5'),
+    )
+
+    TYPE = (
+        ('Lecture','Lecture'),
+        ('Practical','Practical'),
+        ('Guest','Guest'),
+    )
+
     subject_code = models.CharField(
-        max_length=200, primary_key=True, choices=CODE, default='310901')
+        max_length=200, primary_key=True, choices=CODE, blank=True)
     subject_name = models.CharField(max_length=200, null=True, choices=NAME)
-    faculty_shift_1 = models.CharField(max_length=200, null=True)
-    faculty_shift_2 = models.CharField(max_length=200, null=True)
+    semester = models.CharField(max_length=200, choices=SEMESTER, null=True, blank=True)
+    type = models.CharField(max_length=200, choices=TYPE, blank=True, null=True)
 
-    def __str__(self) -> str: self.sem1_subject_code + " " + self.subject_name + " " + self.faculty_shift_1 + " " + self.faculty_shift_2
-
-
+    
 # Class for student data
 class Student(models.Model):
 

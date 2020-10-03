@@ -116,10 +116,6 @@ class FacultySubject(forms.ModelForm):
     shift_1_faculty = forms.ModelChoiceField(queryset=Faculty.objects.all().order_by('username'))
     shift_2_faculty = forms.ModelChoiceField(queryset=Faculty.objects.all().order_by('username'))
 
-    class Meta:
-        model = Subject_Faculty
-        fields= '__all__'
-        exclude = ['user']
 
 class FacultyChoiceField(forms.Form):
     faculty_name = forms.ModelChoiceField(queryset=Faculty.objects.values_list("username", flat=True).distinct(),

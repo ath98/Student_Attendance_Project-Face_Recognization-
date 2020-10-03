@@ -9,7 +9,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.views.generic import FormView  
 
-from .models import Faculty, Student, Subject_Faculty
+from .models import Faculty, Student,Subject
 from .forms import FacultyChoiceField
 
 from .face_detection import saveData
@@ -78,12 +78,27 @@ def registerFaculty(request):
 @login_required(login_url='login')
 def admin_page(request):
     faculty_count = Faculty.objects.all().count()
-    faculty = FacultyChoiceField()
+    faculty = Faculty.objects.all()
+    sem1_subjects = Subject.objects.filter(semester = 1)
+    sem2_subjects = Subject.objects.filter(semester = 2)
+    sem3_subjects = Subject.objects.filter(semester = 3)
+    sem4_subjects = Subject.objects.filter(semester = 4)
+    sem5_subjects = Subject.objects.filter(semester = 5)
     context = {
         'faculty_count' : faculty_count, 
         'faculty': faculty,
+        'sem1_subjects': sem1_subjects,
+        'sem2_subjects': sem2_subjects,
+        'sem3_subjects': sem3_subjects,
+        'sem4_subjects': sem4_subjects,
+        'sem5_subjects': sem5_subjects,
     }
     return render(request, 'templates/admin.html', context)
+
+def faculty_subject_assign(request):
+    if request.method == 'POST':
+        assigned_subjects = request.POST.getlist('subject[]')
+        print(assigned_subjects)
 
 # method to verify user login and do further activities
 def loginPage(request):
@@ -119,8 +134,6 @@ def redirect_faculty_profile(request):
     return render(request, 'templates/faculty.html', context)
 
 # method to redirect to records page
-
-
 def redirectViewRecords(request):
     context = {}
 
@@ -133,7 +146,8 @@ def update_faculty_profile(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        profile_pic = request.FILES['profile_pic']      
+        profile_pic = request.FILES['profile_pic']     
+         
 
     context = {}
     return render(request, 'templates/faculty.html', context)
