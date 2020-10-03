@@ -9,6 +9,8 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.views.generic import FormView  
 
+import json
+
 from .models import Faculty, Student,Subject
 from .forms import FacultyChoiceField
 
@@ -23,9 +25,19 @@ import cv2
 
 # method to redirect to login page
 
+
+
 @login_required(login_url='login')
 def home(request):
-    context = {}
+    jsonDec = json.decoder.JSONDecoder()
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    assigned_subject = faculty.assigned_subjects
+    assigned_subject_count = len(assigned_subject)
+    print(assigned_subject_count)
+    context = {
+        'assigned_subject_count' : assigned_subject_count,
+    }
     return render(request, 'templates/index.html', context)
 
 # method to register faculty
@@ -77,7 +89,6 @@ def registerFaculty(request):
 
 @login_required(login_url='login')
 def admin_page(request):
-    names = {}
     faculty_count = Faculty.objects.all().count()
     faculty = Faculty.objects.all()
     sem1_subjects = Subject.objects.filter(semester = 1)
@@ -98,8 +109,18 @@ def admin_page(request):
 
 def faculty_subject_assign(request):
     if request.method == 'POST':
+        faculty_name = request.POST['faculty']
         assigned_subjects = request.POST.getlist('subject[]')
-        print(assigned_subjects)
+        print(faculty_name)
+        faculty = Faculty.objects.get(username = faculty_name)
+        faculty.assigned_subjects = json.dumps(assigned_subjects)
+        faculty.save()
+
+        messages.success(request, 'Subjects assigned to ' + faculty_name + ' successfully.')
+        return redirect('admin')
+    else:
+        return redirect('admin')
+
 
 # method to verify user login and do further activities
 def loginPage(request):

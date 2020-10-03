@@ -24,19 +24,12 @@ def user_dir_path(instance, filename):
 
 class Faculty(models.Model):
 
-    SHIFT = (
-        ('1', '1'),
-        ('2', '2'),
-        ('Both','Both'),
-    )
-
     user = models.OneToOneField(
         User, null=True, blank=True, on_delete=models.CASCADE)
     firstname = models.CharField(max_length=200, null=True, blank=True)
     lastname = models.CharField(max_length=200, null=True, blank=True)
     username = models.CharField(max_length=200, null=True, blank=True)
-    assigned_shift = models.CharField(max_length=200, null=True, blank=True, choices=SHIFT)
-    assigned_subjects = JSONField()
+    assigned_subjects = models.TextField(blank=True, null=True)
     email = models.CharField(max_length=200, null=True)
     password = models.CharField(max_length=200, null=True)
     profile_pic = models.ImageField(

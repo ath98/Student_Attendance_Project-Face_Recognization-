@@ -8,11 +8,53 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="overview-wrap">
-                        <h2 class="title-1">overview</h2>
-                        <button class="au-btn au-btn-icon au-btn--blue">
-                            <i class="zmdi zmdi-plus"></i>add item</button>
+                    {% for message in messages %}
+                    {% if message.tags == 'success'%}
+                    <div class="alert au-alert-success alert-dismissible fade show au-alert au-alert--70per"
+                        role="alert">
+                        <i class="zmdi zmdi-check-circle"></i>
+                        <span class="content">{{message}}</span>
+                        <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">
+                                <i class="zmdi zmdi-close-circle"></i>
+                            </span>
+                        </button>
                     </div>
+                    {% elif message.tags == 'info'%}
+                    <div class="alert au-alert-success alert-dismissible fade show au-alert au-alert--70per"
+                        role="alert">
+                        <i class="zmdi zmdi-info"></i>
+                        <span class="content">{{message}}</span>
+                        <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">
+                                <i class="zmdi zmdi-close-circle"></i>
+                            </span>
+                        </button>
+                    </div>
+                    {% elif message.tags == 'warning'%}
+                    <div class="alert alert-default-warning alert-dismissible fade show au-alert au-alert--70per"
+                        role="alert">
+                        <i class="zmdi zmdi-alert-triangle"></i>
+                        <span class="content">{{message}}</span>
+                        <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">
+                                <i class="zmdi zmdi-close-circle"></i>
+                            </span>
+                        </button>
+                    </div>
+                    {% elif message.tags == 'error'%}
+                    <div class="alert alert-danger alert-dismissible fade show au-alert au-alert--70per"
+                        role="alert">
+                        <i class="zmdi zmdi-alert-triangle"></i>
+                        <span class="content">{{message}}</span>
+                        <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">
+                                <i class="zmdi zmdi-close-circle"></i>
+                            </span>
+                        </button>
+                    </div>
+                    {% endif %}                    
+                    {% endfor %}
                 </div>
             </div>
             <div class="row m-t-25 mb-5">
@@ -100,7 +142,6 @@
                                 <form action="take_attendance" method="post" enctype="multipart/form-data"
                                     data-toggle="validator">
                                     {% csrf_token %}
-<<<<<<< HEAD
                                     <div class="col-lg-12 row">
                                         <div class="col-lg-6">
                                             <div class="form-group">
@@ -120,24 +161,6 @@
                                                     <option value="3">3</option>
                                                 </select>
                                             </div>
-=======
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label for="sel1">Select Faculty (Shift 1)</label>
-                                            <select name="faculty" class="form-control" id="sel1">
-                                                {% for name in faculty %}
-                                                <option value= {{name}} >{{name}}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="sel1">Select Faculty (Shift 2)</label>
-                                            <select name="faculty" class="form-control" id="sel1">
-                                                {% for name in faculty %}
-                                                <option value= {{name}} >{{name}}</option>
-                                                {% endfor %}
-                                            </select>
->>>>>>> b3393988442ab9134b3bf4d0fd900bb766584516
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -171,13 +194,14 @@
                         <div class="au-card-inner">
                             <h3 class="title-2">Assign Faculty</h3>
                             <div class="take_attendance card card-body">
-                                <form action="faculty_subject_assign" method="post" enctype="multipart/form-data" data-toggle="validator">
+                                <form action="faculty_subject_assign" method="post" enctype="multipart/form-data"
+                                    data-toggle="validator">
                                     {% csrf_token %}
                                     <div class="form-group">
                                         <label for="sel1">Select Faculty Name</label>
                                         <select name="faculty" class="form-control" id="sel1">
-                                            {% for name in faculty %}
-                                            <option value={{name}}>{{name}}</option>
+                                            {% for user in faculty %}
+                                            <option value={{user.username}}>{{user.username}}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -199,8 +223,10 @@
                                                                     <div class="checkbox">
                                                                         <label for="subject" class="form-check-label">
                                                                             <input type="checkbox" id="subject"
-                                                                                name = "subject[]" value={{subject.subject_code}}
-                                                                                class="frm-check-input">  {{subject.subject_name}}
+                                                                                name="subject[]"
+                                                                                value={{subject.subject_code}}
+                                                                                class="frm-check-input">
+                                                                            {{subject.subject_name}}
                                                                         </label>
                                                                     </div>
                                                                     {% endfor %}
@@ -219,8 +245,10 @@
                                                                     <div class="checkbox">
                                                                         <label for="subject" class="form-check-label">
                                                                             <input type="checkbox" id="subject"
-                                                                                name = "subject[]" value={{subject.subject_code}}
-                                                                                class="frm-check-input">  {{subject.subject_name}}
+                                                                                name="subject[]"
+                                                                                value={{subject.subject_code}}
+                                                                                class="frm-check-input">
+                                                                            {{subject.subject_name}}
                                                                         </label>
                                                                     </div>
                                                                     {% endfor %}
@@ -241,8 +269,10 @@
                                                                     <div class="checkbox">
                                                                         <label for="subject" class="form-check-label">
                                                                             <input type="checkbox" id="subject"
-                                                                                name = "subject[]" value={{subject.subject_code}}
-                                                                                class="frm-check-input">  {{subject.subject_name}}
+                                                                                name="subject[]"
+                                                                                value={{subject.subject_code}}
+                                                                                class="frm-check-input">
+                                                                            {{subject.subject_name}}
                                                                         </label>
                                                                     </div>
                                                                     {% endfor %}
@@ -263,8 +293,10 @@
                                                                     <div class="checkbox">
                                                                         <label for="subject" class="form-check-label">
                                                                             <input type="checkbox" id="subject"
-                                                                                name = "subject[]" value={{subject.subject_code}}
-                                                                                class="frm-check-input">  {{subject.subject_name}}
+                                                                                name="subject[]"
+                                                                                value={{subject.subject_code}}
+                                                                                class="frm-check-input">
+                                                                            {{subject.subject_name}}
                                                                         </label>
                                                                     </div>
                                                                     {% endfor %}
@@ -283,8 +315,10 @@
                                                                     <div class="checkbox">
                                                                         <label for="subject" class="form-check-label">
                                                                             <input type="checkbox" id="subject"
-                                                                                name = "subject[]" value={{subject.subject_code}}
-                                                                                class="frm-check-input">  {{subject.subject_name}}
+                                                                                name="subject[]"
+                                                                                value={{subject.subject_code}}
+                                                                                class="frm-check-input">
+                                                                            {{subject.subject_name}}
                                                                         </label>
                                                                     </div>
                                                                     {% endfor %}
@@ -297,7 +331,8 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" id="submit" class="btn btn-primary btn-block btn-lg">Assign</button>
+                                        <button type="submit" id="submit"
+                                            class="btn btn-primary btn-block btn-lg">Assign</button>
                                     </div>
                                 </form>
                             </div>
