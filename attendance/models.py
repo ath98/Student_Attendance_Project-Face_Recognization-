@@ -38,7 +38,7 @@ class Subject(models.Model):
 
     def __str__(self) -> str:self.code + " " + self.subject_name
 
-# class create lecture
+# creation of class Lecture
 class Lecture(models.Model):
     #defining tuples for the choice fields
     YEAR = (

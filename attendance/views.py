@@ -198,24 +198,6 @@ def take_attendance(request):    #get values from the fields lectureid ,subject,
         take_attendance.tto = tto
 
         take_attendance.save()
-
-
-        '''stat = False
-        try:
-            take_attendance = Lecture.objects.get(lectureid = lectureid)#already ahe exist navin banvu nako
-            stat = True
-        except:
-            stat = False  #not exist
-        if (stat == False):
-            
-            messages.success(request, 'Lecture created successfully')
-        if (stat == True):
-            
-        #else:
-            messages.error(request, 'Create new lecture ' + lectureid + 'already exists.')
-            return redirect('lecture')
-            '''
-
     context = {}
     return render(request, 'templates/index.html', context)
 
