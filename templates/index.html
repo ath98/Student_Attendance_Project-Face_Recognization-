@@ -3,6 +3,7 @@
 
 {% block content %}
 <!-- MAIN CONTENT-->
+<!-- step=0.01 taken for precision-->
 <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
@@ -124,12 +125,12 @@
                                         <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="form-group">
-                                        <input type="number" class="form-control" id="tfrom" name="tfrom" placeholder="Duration : From "
+                                        <input type="number" step="0.01" class="form-control" id="tfrom" name="tfrom" placeholder="Duration : From "
                                             data-error="Enter Lecture Duration" required>
                                         <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="form-group">
-                                        <input type="number" class="form-control" id="tto" name="tto" placeholder=" To"
+                                        <input type="number" step="0.01" class="form-control" id="tto" name="tto" placeholder=" To"
                                             data-error="Enter Lecture Duration" required>
                                         <div class="help-block with-errors"></div>
                                     </div>
