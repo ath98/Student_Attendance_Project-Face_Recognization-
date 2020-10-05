@@ -35,9 +35,12 @@ def home(request):
     assigned_subject = faculty.assigned_subjects
     assigned_subject_count = len(assigned_subject)
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
+    lecture_number = Lecture.get_lecture_number()
+    print(lecture_number)
     context = {
         'assigned_subject_count' : assigned_subject_count,
         'subjects' : subjects,
+        'lecture_number': lecture_number,
     }
     return render(request, 'templates/index.html', context)
 

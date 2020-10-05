@@ -243,6 +243,12 @@ class Lecture(models.Model):
             return 1
         return last_lecture.lecture_number + 1
 
+    def get_lecture_number():
+        last_lecture = Lecture.objects.all().order_by('lecture_number').last()
+        if not last_lecture:
+            return 1
+        return last_lecture.lecture_number + 1
+
     lecture_number = models.IntegerField(primary_key=True, default= increment_lecture_number)
     date = models.DateField(max_length=200, null=True)
     time = models.TimeField(auto_now_add=True, null=True)
