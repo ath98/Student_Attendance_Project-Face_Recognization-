@@ -17,4 +17,5 @@ urlpatterns = [
     #path('redirectTakeAttendance', redirectAttendance, name = 'redirectTakeAttendance'),
     #path('redirectViewRecords/', redirectViewRecords, name = 'redirectViewRecords'),
     #path('takeAttendance/', takeAttendance, name = 'takeAttendance'),
+    path('reports',views.reports),
 ]

@@ -112,4 +112,4 @@ class Attendance(models.Model):
         max_length=200, null=True, default='Absent', choices=STATUS)
 
     def __str__(self):
-        return str(self.rollnumber + " _ " + str(self.date) + " _ " + str(self.time) + " _ " + str(self.lecture_number) + " _ " + str(self.lecture))
+        return str(self.rollnumber + " _ " + str(self.date) + " _ " + str(self.time) + " _ " + str(self.lecture_number) + " _ " + str(self.lecture) + " _ " + str(self.status))
