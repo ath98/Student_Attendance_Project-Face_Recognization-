@@ -38,18 +38,6 @@ class Faculty(models.Model):
     def __str__(self):
         return str(self.firstname + " " + self.lastname)
 
-class Lecture(models.Model):
-    lecture_number = models.AutoField(primary_key=True)
-    date = models.DateField(max_length=200, null=True)
-    time = models.TimeField(auto_now_add=True, null=True)
-    faculty_id = models.ForeignKey(Faculty, on_delete=CASCADE,  null=True)
-    year = models.CharField(max_length=200, null=True, blank=True)
-    shift = models.CharField(max_length=200, null=True, blank=True)
-    subject = models.CharField(max_length=200, null=True, blank=True)
-
-    def __str__(self) -> str: ("Lecture Number :" +
-                               self.lecture_number + "\nSubject :" + self.subject)
-
 # Class to Define Subjects with their subject code
 class Subject(models.Model):
 
@@ -248,7 +236,14 @@ class Attendance(models.Model):
 
 
 class Lecture(models.Model):
-    lecture_number = models.AutoField(primary_key=True)
+
+    def increment_lecture_number():
+        last_lecture = Lecture.objects.all().order_by('lecture_number').last()
+        if not last_lecture:
+            return 1
+        return last_lecture.lecture_number + 1
+
+    lecture_number = models.IntegerField(primary_key=True, default= increment_lecture_number)
     date = models.DateField(max_length=200, null=True)
     time = models.TimeField(auto_now_add=True, null=True)
     faculty = models.ForeignKey(Faculty, on_delete=CASCADE,  null=True)

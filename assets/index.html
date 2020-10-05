@@ -149,23 +149,32 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="sel1">Select Shift:</label>
-                                        <select name='section' class="form-control" id="sel1">
+                                        <select name='shift' class="form-control" id="sel1">
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="sel1">Select Subject</label>
-                                        <select name="faculty" class="form-control" id="sel1">
+                                        <select name="subject" class="form-control" id="sel1">
                                             {% for subject in subjects %}
                                             <option value={{subject.subject_name}}>{{subject.subject_name}}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="text" name="subjject_name"
-                                            placeholder="Enter Subject Name" data-error="Enter Valid Subject name"
-                                            required>
+                                        <input type="date" class="form-control" id="dt" name="dt" placeholder="Date"
+                                            data-error="Enter date" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="number" step="0.01" class="form-control" id="tfrom" name="tfrom" placeholder="Duration : From "
+                                            data-error="Enter Lecture Duration" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="number" step="0.01" class="form-control" id="tto" name="tto" placeholder=" To"
+                                            data-error="Enter Lecture Duration" required>
                                         <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="form-group">

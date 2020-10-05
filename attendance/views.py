@@ -237,8 +237,8 @@ def take_attendance(request):    #get values from the fields lectureid ,subject,
         faculty = Faculty.objects.get(username = faculty_name)
         
         take_attendance = Lecture()
+        print(take_attendance.lecture_number)
         
-        lectureid = request.POST.get('lectureid')
         subject = request.POST.get('subject')
         shift = request.POST.get('shift')
         year = request.POST.get('year')
@@ -246,9 +246,7 @@ def take_attendance(request):    #get values from the fields lectureid ,subject,
         tfrom = request.POST.get('tfrom')
         tto = request.POST.get('tto') 
 
-        take_attendance.lectureid = lectureid
         take_attendance.subject = subject
-        #lecture.pid = pid
         take_attendance.faculty = faculty
         take_attendance.shift = shift
         take_attendance.year = year
@@ -257,6 +255,8 @@ def take_attendance(request):    #get values from the fields lectureid ,subject,
         take_attendance.tto = tto
 
         take_attendance.save()
+        messages.success(request, 'Lecture created ')
+        return redirect('home')
     context = {}
     return render(request, 'templates/index.html', context)
 
