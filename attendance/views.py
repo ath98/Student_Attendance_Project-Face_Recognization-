@@ -1,14 +1,19 @@
 from django.contrib.messages.api import error
 from django.http import request
 from django.http import response
-from .models import Faculty, Student
 from django.contrib import messages
 from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
-#from .test import trial
+from django.views.generic import FormView  
+
+import json
+
+from .models import Faculty, Student,Subject,Lecture
+from .forms import FacultyChoiceField
+
 from .face_detection import saveData
 
 from fd.settings import BASE_DIR
@@ -20,11 +25,23 @@ import cv2
 
 # method to redirect to login page
 
+
+
 @login_required(login_url='login')
 def home(request):
-    #obj = trial()
-    #obj.insert(1)
-    context = {}
+    jsonDec = json.decoder.JSONDecoder()
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    assigned_subject = faculty.assigned_subjects
+    assigned_subject_count = len(assigned_subject)
+    subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
+    lecture_number = Lecture.get_lecture_number()
+    print(lecture_number)
+    context = {
+        'assigned_subject_count' : assigned_subject_count,
+        'subjects' : subjects,
+        'lecture_number': lecture_number,
+    }
     return render(request, 'templates/index.html', context)
 
 # method to register faculty
@@ -73,6 +90,42 @@ def registerFaculty(request):
     context = {}
     return render(request, 'templates/login.html')
 
+
+@login_required(login_url='login')
+def admin_page(request):
+    faculty_count = Faculty.objects.all().count()
+    faculty = Faculty.objects.all()
+    sem1_subjects = Subject.objects.filter(semester = 1)
+    sem2_subjects = Subject.objects.filter(semester = 2)
+    sem3_subjects = Subject.objects.filter(semester = 3)
+    sem4_subjects = Subject.objects.filter(semester = 4)
+    sem5_subjects = Subject.objects.filter(semester = 5)
+    context = {
+        'faculty_count' : faculty_count, 
+        'faculty': faculty,
+        'sem1_subjects': sem1_subjects,
+        'sem2_subjects': sem2_subjects,
+        'sem3_subjects': sem3_subjects,
+        'sem4_subjects': sem4_subjects,
+        'sem5_subjects': sem5_subjects,
+    }
+    return render(request, 'templates/admin.html', context)
+
+def faculty_subject_assign(request):
+    if request.method == 'POST':
+        faculty_name = request.POST['faculty']
+        assigned_subjects = request.POST.getlist('subject[]')
+        print(faculty_name)
+        faculty = Faculty.objects.get(username = faculty_name)
+        faculty.assigned_subjects = json.dumps(assigned_subjects)
+        faculty.save()
+
+        messages.success(request, 'Subjects assigned to ' + faculty_name + ' successfully.')
+        return redirect('admin')
+    else:
+        return redirect('admin')
+
+
 # method to verify user login and do further activities
 def loginPage(request):
     if request.method == 'POST':
@@ -80,7 +133,10 @@ def loginPage(request):
         password = request.POST['password']
     
         if (username == 'admin') and (password == 'admin'):
-            return redirect('home')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('admin')
         else:
             user = authenticate(request, username=username, password=password)
             if user is not None:
@@ -104,8 +160,6 @@ def redirect_faculty_profile(request):
     return render(request, 'templates/faculty.html', context)
 
 # method to redirect to records page
-
-
 def redirectViewRecords(request):
     context = {}
 
@@ -118,7 +172,8 @@ def update_faculty_profile(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        profile_pic = request.FILES['profile_pic']      
+        profile_pic = request.FILES['profile_pic']     
+         
 
     context = {}
     return render(request, 'templates/faculty.html', context)
@@ -175,6 +230,38 @@ def registerStudent(request):
         
     context = {}
     return render(request, 'templates/login.html', context)
+
+
+@login_required(login_url='login')
+def take_attendance(request):    #get values from the fields lectureid ,subject,profid,profname,shift,year  lecture=take_attendance
+    if request.method == 'POST':
+        
+        faculty_name = request.user.username
+        faculty = Faculty.objects.get(username = faculty_name)
+        
+        take_attendance = Lecture()
+        print(take_attendance.lecture_number)
+        
+        subject = request.POST.get('subject')
+        shift = request.POST.get('shift')
+        year = request.POST.get('year')
+        dt = request.POST.get('dt')
+        tfrom = request.POST.get('tfrom')
+        tto = request.POST.get('tto') 
+
+        take_attendance.subject = subject
+        take_attendance.faculty = faculty
+        take_attendance.shift = shift
+        take_attendance.year = year
+        take_attendance.dt = dt
+        take_attendance.tfrom = tfrom
+        take_attendance.tto = tto
+
+        take_attendance.save()
+        messages.success(request, 'Lecture created ')
+        return redirect('home')
+    context = {}
+    return render(request, 'templates/index.html', context)
 
 @login_required(login_url='login')
 def takeAttendance(request):
