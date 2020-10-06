@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
-from test import trial
+#from .test import trial
 from .face_detection import saveData
 
 from fd.settings import BASE_DIR
@@ -22,8 +22,8 @@ import cv2
 
 @login_required(login_url='login')
 def home(request):
-    obj = trial()
-    obj.insert(1)
+    #obj = trial()
+    #obj.insert(1)
     context = {}
     return render(request, 'templates/index.html', context)
 
