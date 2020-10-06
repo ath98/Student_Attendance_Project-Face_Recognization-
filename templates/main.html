@@ -117,8 +117,8 @@
 			<div class="header-mobile__bar">
 				<div class="container-fluid">
 					<div class="header-mobile-inner">
-						<a class="logo" href="index.html">
-							<img src="images/icon/logo.png" alt="MCOE MCA Department" />
+						<a class="logo" href="home">
+							<img src="{% static 'img/modern-college-logo.jpg' %}" alt="MCOE MCA Department" />
 						</a>
 						<button class="hamburger hamburger--slider" type="button">
 							<span class="hamburger-box">
@@ -179,6 +179,12 @@
 							<a href="reports.html">
 								<i class="fas fa-chart-bar"></i>View Reports</a>
 						</li>
+						
+						{% if request.user.username == "admin" %}							
+						<li>
+							<a href="registerStudent"><i class="fas fa-user"></i>Register New Student</a>
+						</li>
+						{% endif %}
 					</ul>
 				</nav>
 			</div>

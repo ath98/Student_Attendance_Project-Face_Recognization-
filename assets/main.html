@@ -10,6 +10,31 @@
 
 	<!-- Title Page-->
 	<title>Attendance System</title>
+	<script type="text/javascript">
+		function EnableDisableTextBox() {
+				var selectedValue = document.getElementById("selectReport").value;
+				var id = document.getElementById("ID");
+				var roll = document.getElementById("roll");
+				var subCode = document.getElementById("sub_code");
+				
+				if(selectedValue == '1'){
+					id.disabled= false;      
+					roll.disabled=true;      
+					subCode.disabled=true;     
+				}
+				if(selectedValue == '2'){
+					roll.disabled=false;
+					id.disabled= true;   
+					subCode.disabled=true; 
+				}
+				if(selectedValue == '3'){
+					roll.disabled=false;
+					subCode.disabled=false;
+					id.disabled=true;
+				}
+			}
+	</script>
+	
 
 	<!-- Fontfaces CSS-->
 	<link href="{% static 'css/font-face.css' %}" rel="stylesheet" media="all">
@@ -92,8 +117,8 @@
 			<div class="header-mobile__bar">
 				<div class="container-fluid">
 					<div class="header-mobile-inner">
-						<a class="logo" href="index.html">
-							<img src="images/icon/logo.png" alt="MCOE MCA Department" />
+						<a class="logo" href="home">
+							<img src="{% static 'img/modern-college-logo.jpg' %}" alt="MCOE MCA Department" />
 						</a>
 						<button class="hamburger hamburger--slider" type="button">
 							<span class="hamburger-box">
@@ -119,7 +144,7 @@
 								<i class="fas fa-chart-bar"></i>Create Lecture</a>
 						</li>
 						<li>
-							<a href="table.html">
+							<a href="reports" method=POST>
 								<i class="fas fa-table"></i>View Report</a>
 						</li>
 					</ul>
@@ -151,9 +176,15 @@
 								<i class="fas fa-calendar-alt"></i>Calendar</a>
 						</li>
 						<li>
-							<a href="#reports">
+							<a href="reports.html">
 								<i class="fas fa-chart-bar"></i>View Reports</a>
 						</li>
+						
+						{% if request.user.username == "admin" %}							
+						<li>
+							<a href="registerStudent"><i class="fas fa-user"></i>Register New Student</a>
+						</li>
+						{% endif %}
 					</ul>
 				</nav>
 			</div>

@@ -36,7 +36,7 @@ def home(request):
     user = request.user.username
     faculty = Faculty.objects.get(username = user)
     assigned_subject = jsonDec.decode(faculty.assigned_subjects)
-    assigned_subject_count = [0]
+    assigned_subject_count = 0
     if assigned_subject[0] != "None":
         assigned_subject_count = len(assigned_subject)    
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
@@ -232,14 +232,15 @@ def registerStudent(request):
                 student.save()
                 name = firstname + " " + lastname
                 messages.success(request, 'Student ' + name + ' was added successfully')
+                return redirect()
             else:
                 messages.error(request, 'Unable to capture student image')
         else:
             messages.error(request, 'Student with roll number ' + rollnumber + 'already exists.')
-            return redirect('home')
-        
+            return redirect('registerStudent')
+
     context = {}
-    return render(request, 'templates/login.html', context)
+    return render(request, 'templates/studentRegistration.html', context)
 
 
 @login_required(login_url='login')
