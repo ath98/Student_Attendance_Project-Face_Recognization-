@@ -28,7 +28,7 @@ class Faculty(models.Model):
     firstname = models.CharField(max_length=200, null=True, blank=True)
     lastname = models.CharField(max_length=200, null=True, blank=True)
     username = models.CharField(max_length=200, null=True, blank=True)
-    assigned_subjects = models.TextField(blank=True, null=True, default=0)
+    assigned_subjects = models.TextField(blank=True, null=True, default=["None"])
     email = models.CharField(max_length=200, null=True)
     password = models.CharField(max_length=200, null=True)
     profile_pic = models.ImageField(

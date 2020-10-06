@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
+from django.utils import tree
 from django.views.generic import FormView  
 from .face_detection import takeAttendance
 
@@ -24,17 +25,20 @@ import cv2
 
 # Create your views here.
 
+jsonDec = json.decoder.JSONDecoder()
+
 # method to redirect to login page
 
 
 
 @login_required(login_url='login')
 def home(request):
-    jsonDec = json.decoder.JSONDecoder()
     user = request.user.username
     faculty = Faculty.objects.get(username = user)
     assigned_subject = jsonDec.decode(faculty.assigned_subjects)
-    assigned_subject_count = len(assigned_subject)    
+    assigned_subject_count = [0]
+    if assigned_subject[0] != "None":
+        assigned_subject_count = len(assigned_subject)    
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
     lecture_number = Lecture.get_lecture_number()
     print(lecture_number)
@@ -70,19 +74,24 @@ def registerFaculty(request):
                     last_name = lastname,
                     email = email
                 )
-                user.save()
+                uf = True
+
+                assigned_subject = ['None']
 
                 faculty = Faculty.objects.create(
                     user = user,
                     firstname = user.first_name,
                     lastname = user.last_name,
+                    assigned_subjects = json.dumps(assigned_subject),
                     username = user.username,
                     email = user.email,
                     password = user.password
                 )
                 faculty.save()
-
-                user.save()
+                if uf == True:
+                    user.save()
+                    
+                
                 messages.success(request, 'User created succesfully')
                 return redirect('home')
         else:
