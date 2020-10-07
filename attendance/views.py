@@ -54,7 +54,17 @@ def home(request):
 def searchFacultyRecord(request):
     if request.method == 'POST':
         username = request.POST['faculty']
-        print(username)
+        faculty = Faculty.objects.get(username = username)
+        assigned_subject = jsonDec.decode(faculty.assigned_subjects)
+        subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
+
+        context = {
+            'subjects' : subjects,
+            'faculty' : faculty,
+        }
+        return render(request, 'templates/faculty.html', context)
+    
+    return render('admin')
 
 # method to register faculty
 def registerFaculty(request):
@@ -254,40 +264,44 @@ def registerStudent(request):
         if (stat == True):
             messages.error("Student exsistes")
 
-    if not os.path.isdir(path):
-        os.mkdir(path)
-        subdata = os.path.join(dataset, year, shift, rollnumber)
-        print("subdata path : " + subdata)
+        faceDetect = cv2.CascadeClassifier(
+        cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        path = ''
+        dataset = IMG_ROOT
+        if not os.path.isdir(path):
+            os.mkdir(path)
+            subdata = os.path.join(dataset, year, shift, rollnumber)
+            print("subdata path : " + subdata)
 
-        path = os.path.join(dataset, subdata)
-        print(path)
+            path = os.path.join(dataset, subdata)
+            print(path)
 
-        # img sample size
-        (width, height) = (130, 100)
-        cam = cv2.VideoCapture(0)
-        sampleNum = 0
-        while(True):
-            ret,img = cam.read()
-            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            faces = faceDetect.detectMultiScale(gray, 1.3, 5)
-            for(x,y,w,h) in faces:
-                sampleNum +=1
-                img_name = path+str(sampleNum)+ '.png'
-                cv2.imwrite(img_name, gray[y:y+h, x:x+w])
-                cv2.rectangle(img, (x,y), (x+w. y+h), (0,225,0), 2)
-                cv2.waitKey(250)
-            cv2.waitKey(1)
-            if (sampleNum>2):
-                break
-        cam.release()
-        cv2.destroyAllWindows()
-        student.save()
-        name = firstname + " " + lastname
-        messages.success(request, 'Student ' + name + ' was added successfully')
-        return redirect('login')        
-    else:
-        messages.error(request, 'Student with roll number ' + rollnumber + 'already exists.')
-        return redirect('registerStudent')
+            # img sample size
+            (width, height) = (130, 100)
+            cam = cv2.VideoCapture(0)
+            sampleNum = 0
+            while(True):
+                ret,img = cam.read()
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                faces = faceDetect.detectMultiScale(gray, 1.3, 5)
+                for(x,y,w,h) in faces:
+                    sampleNum +=1
+                    img_name = path+str(sampleNum)+ '.png'
+                    cv2.imwrite(img_name, gray[y:y+h, x:x+w])
+                    cv2.rectangle(img, (x,y), (x+w. y+h), (0,225,0), 2)
+                    cv2.waitKey(250)
+                cv2.waitKey(1)
+                if (sampleNum>2):
+                    break
+            cam.release()
+            cv2.destroyAllWindows()
+            student.save()
+            name = firstname + " " + lastname
+            messages.success(request, 'Student ' + name + ' was added successfully')
+            return redirect('registerStudent')        
+        else:
+            messages.error(request, 'Student with roll number ' + rollnumber + 'already exists.')
+            return redirect('registerStudent')
 
     context = {}
     return render(request, 'templates/studentRegistration.html', context)

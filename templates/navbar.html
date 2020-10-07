@@ -11,11 +11,6 @@
                             <div class="image">
                                 <img src="{% static 'images/icon/avatar-01.jpg' %}" alt="{{request.user.username}}" />
                             </div>
-                            {% else %}
-                            <div class="image">
-                                <img src="{{request.user.profile_pic}}" alt = "{{request.user.username}}" />
-                            </div>
-                            {% endif %}                                
                             <div class="content">
                                 <a class="js-acc-btn" href="#">Hello, {{ request.user.username }}</a>
                             </div>
@@ -23,7 +18,7 @@
                                 <div class="info clearfix">
                                     <div class="image">
                                         <a href="#">
-                                            <img src="images/icon/avatar-01.jpg" alt="John Doe" />
+                                            <img src="{% static 'images/icon/avatar-01.jpg' %}" alt="{{request.user.username}}" />
                                         </a>
                                     </div>
                                     <div class="content">
@@ -44,6 +39,37 @@
                                         <i class="zmdi zmdi-power"></i>Logout</a>
                                 </div>
                             </div>
+                            {% else %}
+                            <div class="image">
+                                <img src="{{request.user.profile_pic}}" alt = "{{request.user.username}}" />
+                            </div>
+                            <div class="account-dropdown js-dropdown">
+                                <div class="info clearfix">
+                                    <div class="image">
+                                        <a href="#">
+                                            <img src="{{request.user.profile_pic}}" alt = "{{request.user.username}}" />
+                                        </a>
+                                    </div>
+                                    <div class="content">
+                                        <h5 class="name">
+                                            <a href="#">{{ request.user.username }}</a>
+                                        </h5>
+                                        <span class="email">{{ request.user.email }}</span>
+                                    </div>
+                                </div>
+                                <div class="account-dropdown__body">
+                                    <div class="account-dropdown__item">
+                                        <a href="faculty">
+                                            <i class="zmdi zmdi-account"></i>Account</a>
+                                    </div>
+                                </div>
+                                <div class="account-dropdown__footer">
+                                    <a href="logout">
+                                        <i class="zmdi zmdi-power"></i>Logout</a>
+                                </div>
+                            </div>
+                            {% endif %}                                
+                            
                         </div>
                     </div>
                 </div>

@@ -145,7 +145,7 @@
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label for="sel1">Select Shift:</label>
-                                                <select name='year' class="form-control" id="sel1">
+                                                <select name='Shift' class="form-control" id="sel1">
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                 </select>
@@ -339,13 +339,15 @@
                     </div>
                 </div>
             </div>
+            <!-- Assign faculty to the subject -->
             <div class="row m-t-100" id="attendance">
                 <div class="col-lg-12">
                     <div class="au-card recent-report">
                         <div class="au-card-inner">
-                            <h3 class="title-2">Search Faculty Record</h3>
+                            <h3 class="title-2">Assign Faculty</h3>
                             <div class="take_attendance card card-body">
-                                <form method="POST" action="searchFacultyRecord" enctype="multipart/form-data">
+                                <form action="searchFacultyRecord" method="post" enctype="multipart/form-data"
+                                    data-toggle="validator">
                                     {% csrf_token %}
                                     <div class="form-group">
                                         <label for="sel1">Select Faculty Name</label>
