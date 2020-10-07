@@ -182,8 +182,7 @@ def update_faculty_profile(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        profile_pic = request.FILES['profile_pic']     
-         
+        profile_pic = request.FILES['profile_pic']  
 
     context = {}
     return render(request, 'templates/faculty.html', context)
@@ -191,6 +190,11 @@ def update_faculty_profile(request):
 
 @login_required(login_url='login')
 def registerStudent(request):
+    
+    faceDetect = cv2.CascadeClassifier(
+        cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    path = ''
+    dataset = IMG_ROOT
     # get values from form fields
     if request.method == 'POST':
         rollnumber = request.POST['rollNumber']
@@ -216,28 +220,50 @@ def registerStudent(request):
         stat = False
         try:
             student = Student.objects.get(rollnumber = rollnumber)
-            stat = true
+            stat = True            
+            path = os.path.join(dataset, year, shift, rollnumber)
+            print(path)
+
         except:
             stat = False
 
-        if (stat == False):
-            details = {
-                'rollnumber' : rollnumber,
-                'shift' : shift,
-                'year' : year 
-            }
+        if (stat == True):
+            messages.error("Student exsistes")
 
-            save_face_data = saveData(details)
-            if(save_face_data):
-                student.save()
-                name = firstname + " " + lastname
-                messages.success(request, 'Student ' + name + ' was added successfully')
-                return redirect()
-            else:
-                messages.error(request, 'Unable to capture student image')
-        else:
-            messages.error(request, 'Student with roll number ' + rollnumber + 'already exists.')
-            return redirect('registerStudent')
+    if not os.path.isdir(path):
+        os.mkdir(path)
+        subdata = os.path.join(dataset, year, shift, rollnumber)
+        print("subdata path : " + subdata)
+
+        path = os.path.join(dataset, subdata)
+        print(path)
+
+        # img sample size
+        (width, height) = (130, 100)
+        cam = cv2.VideoCapture(0)
+        sampleNum = 0
+        while(True):
+            ret,img = cam.read()
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            faces = faceDetect.detectMultiScale(gray, 1.3, 5)
+            for(x,y,w,h) in faces:
+                sampleNum +=1
+                img_name = path+str(sampleNum)+ '.png'
+                cv2.imwrite(img_name, gray[y:y+h, x:x+w])
+                cv2.rectangle(img, (x,y), (x+w. y+h), (0,225,0), 2)
+                cv2.waitKey(250)
+            cv2.waitKey(1)
+            if (sampleNum>2):
+                break
+        cam.release()
+        cv2.destroyAllWindows()
+        student.save()
+        name = firstname + " " + lastname
+        messages.success(request, 'Student ' + name + ' was added successfully')
+        return redirect('login')        
+    else:
+        messages.error(request, 'Student with roll number ' + rollnumber + 'already exists.')
+        return redirect('registerStudent')
 
     context = {}
     return render(request, 'templates/studentRegistration.html', context)
