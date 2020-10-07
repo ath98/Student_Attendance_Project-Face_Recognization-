@@ -1,106 +1,141 @@
+{% extends 'templates/main.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendence System</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" media="all">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
-    <script>
-        addEventListener("load", function () {
-            setTimeout(hideURLbar, 0);
-        }, false);
-
-        function hideURLbar() {
-            window.scrollTo(0, 1);
-        }
-    </script>
-</head>
-
-<body>
-
-    <body>
-        <div class="content-agileits">
-            <h1 class="title">Student registration Form</h1>
-            <div class="left">
-                <form action="{% url 'registerStudent' %}" method="post" enctype="multipart/form-data"
-                    id="registerStudent" data-toggle="validator">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name"
-                            data-error="Enter First Name" required>
-                        <div class="help-block with-errors"></div>
+{% block content %}
+<!-- MAIN CONTENT-->
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    {% for message in messages %}
+                    {% if message.tags == 'success'%}
+                    <div class="alert au-alert-success alert-dismissible fade show au-alert au-alert--70per"
+                        role="alert">
+                        <i class="zmdi zmdi-check-circle"></i>
+                        <span class="content">{{message}}</span>
+                        <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">
+                                <i class="zmdi zmdi-close-circle"></i>
+                            </span>
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name"
-                            data-error="Enter Last Name" required>
-                        <div class="help-block with-errors"></div>
+                    {% elif message.tags == 'info'%}
+                    <div class="alert au-alert-success alert-dismissible fade show au-alert au-alert--70per"
+                        role="alert">
+                        <i class="zmdi zmdi-info"></i>
+                        <span class="content">{{message}}</span>
+                        <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">
+                                <i class="zmdi zmdi-close-circle"></i>
+                            </span>
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Email"
-                            data-error="This email address is invalid" required>
-                        <div class="help-block with-errors"></div>
+                    {% elif message.tags == 'warning'%}
+                    <div class="alert alert-default-warning alert-dismissible fade show au-alert au-alert--70per"
+                        role="alert">
+                        <i class="zmdi zmdi-alert-triangle"></i>
+                        <span class="content">{{message}}</span>
+                        <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">
+                                <i class="zmdi zmdi-close-circle"></i>
+                            </span>
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone"
-                            data-error="Enter Phone Number" required>
-                        <div class="help-block with-errors"></div>
+                    {% elif message.tags == 'error'%}
+                    <div class="alert alert-danger alert-dismissible fade show au-alert au-alert--70per" role="alert">
+                        <i class="zmdi zmdi-alert-triangle"></i>
+                        <span class="content">{{message}}</span>
+                        <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">
+                                <i class="zmdi zmdi-close-circle"></i>
+                            </span>
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="rollNumber" name="rollNumber"
-                            placeholder="Roll Number" data-error="Enter Roll number" required>
-                        <div class="help-block with-errors"></div>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="year" name="year" placeholder="Year"
-                            data-error="Enter year" required>
-                        <div class="help-block with-errors"></div>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="shift" name="shift" placeholder="Shift (0 if none)"
-                            data-error="Enter Shift" required>
-                        <div class="help-block with-errors"></div>
-                    </div>
-                    <div class="form-group w3ls-opt">
-                        <label for="Phone" class="control-label">Gender</label>
-                        <fieldset>
-                            <label class="w3layouts">
-                                <input type="radio" id="gender" name="gender" value="male">Male
-                            </label>
-                            <label class="w3layouts label2">
-                                <input type="radio" id="gender" name="gender" value="female">Female
-                            </label>
-                        </fieldset>
-                        <div class="help-block with-errors"></div>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" id="submit" class="btn btn-lg">Next</button>
-                    </div>
-                </form>
+                    {% endif %}
+                    {% endfor %}
+                </div>
             </div>
-            <div class="clear"></div>
+            <!-- Take Attendance -->
+            <div class="row m-t-100" id="attendance">
+                <div class="col-lg-12">
+                    <div class="au-card recent-report">
+                        <div class="au-card-inner">
+                            <h3 class="title-2">Register Student</h3>
+                            <div class="take_attendance card card-body">
+                                <form action="take_attendance" method="post" enctype="multipart/form-data"
+                                    data-toggle="validator">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="firstname" name="firstname"
+                                            placeholder="First Name" data-error="Enter First Name" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="lastname" name="lastname"
+                                            placeholder="Last Name" data-error="Enter Last Name" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" id="email" name="email"
+                                            placeholder="Email" data-error="This email address is invalid" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="phone" name="phone"
+                                            placeholder="Phone" data-error="Enter Phone Number" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="rollNumber" name="rollNumber"
+                                            placeholder="Roll Number" data-error="Enter Roll number" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="col-lg-12 row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="sel1">Select Shift:</label>
+                                                <select name='shift' class="form-control" id="sel1">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label for="sel1">Select year:</label>
+                                                <select name='year' class="form-control" id="sel1">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group w3ls-opt">
+                                        <label for="Phone" class="control-label">Gender</label>
+                                        <fieldset>
+                                            <label class="w3layouts">
+                                                <input type="radio" id="gender" name="gender" value="male">Male
+                                            </label>
+                                            <label class="w3layouts label2">
+                                                <input type="radio" id="gender" name="gender" value="female">Female
+                                            </label>
+                                        </fieldset>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" id="submit" class="btn btn-primary btn-block btn-lg">Take
+                                            Save and Next</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- js -->
-        <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
-        <!-- //js -->
-
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'js/validator.min.js' %}"></script>
-        <!-- <script src="{% static 'js/app.js' %}"></script> -->
-        <!-- /js files -->
-        
-    </body>
-
-</html>
+    </div>
+</div>
+<!-- END MAIN CONTENT-->
+{% endblock %}

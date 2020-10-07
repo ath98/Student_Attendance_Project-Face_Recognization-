@@ -7,21 +7,25 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
+from django.utils import tree
 from django.views.generic import FormView  
 
 import json
+import numpy as np
 
 from .models import Faculty, Student,Subject,Lecture
 from .forms import FacultyChoiceField
 
 from .face_detection import saveData
 
-from fd.settings import BASE_DIR
+from fd.settings import BASE_DIR, IMG_ROOT
 
 import os
 import cv2
 
 # Create your views here.
+
+jsonDec = json.decoder.JSONDecoder()
 
 # method to redirect to login page
 
@@ -29,11 +33,12 @@ import cv2
 
 @login_required(login_url='login')
 def home(request):
-    jsonDec = json.decoder.JSONDecoder()
     user = request.user.username
     faculty = Faculty.objects.get(username = user)
-    assigned_subject = faculty.assigned_subjects
-    assigned_subject_count = len(assigned_subject)
+    assigned_subject = jsonDec.decode(faculty.assigned_subjects)
+    assigned_subject_count = 0
+    if assigned_subject[0] != "None":
+        assigned_subject_count = len(assigned_subject)    
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
     lecture_number = Lecture.get_lecture_number()
     print(lecture_number)
@@ -43,6 +48,23 @@ def home(request):
         'lecture_number': lecture_number,
     }
     return render(request, 'templates/index.html', context)
+
+# work in progress
+@login_required(login_url='login')
+def searchFacultyRecord(request):
+    if request.method == 'POST':
+        username = request.POST['faculty']
+        faculty = Faculty.objects.get(username = username)
+        assigned_subject = jsonDec.decode(faculty.assigned_subjects)
+        subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
+
+        context = {
+            'subjects' : subjects,
+            'faculty' : faculty,
+        }
+        return render(request, 'templates/faculty.html', context)
+    
+    return render('admin')
 
 # method to register faculty
 def registerFaculty(request):
@@ -69,19 +91,24 @@ def registerFaculty(request):
                     last_name = lastname,
                     email = email
                 )
-                user.save()
+                uf = True
+
+                assigned_subject = ['None']
 
                 faculty = Faculty.objects.create(
                     user = user,
                     firstname = user.first_name,
                     lastname = user.last_name,
+                    assigned_subjects = json.dumps(assigned_subject),
                     username = user.username,
                     email = user.email,
                     password = user.password
                 )
                 faculty.save()
-
-                user.save()
+                if uf == True:
+                    user.save()
+                    
+                
                 messages.success(request, 'User created succesfully')
                 return redirect('home')
         else:
@@ -126,6 +153,22 @@ def faculty_subject_assign(request):
         return redirect('admin')
 
 
+# method to display faculty profile
+# work in progress
+@login_required(login_url='login')
+def view_faculty_profile(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        
+        faculty = Faculty.objects.filter(username = username)
+        context = {
+            'faculty':faculty,
+        }
+        return None
+
+
+
+
 # method to verify user login and do further activities
 def loginPage(request):
     if request.method == 'POST':
@@ -164,6 +207,7 @@ def redirectViewRecords(request):
     context = {}
 
 # method to update faculty profile
+# work in progress
 @login_required(login_url='login')
 def update_faculty_profile(request):
     if request.method == 'POST' and request.FILES['profile_pic']:
@@ -172,8 +216,7 @@ def update_faculty_profile(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        profile_pic = request.FILES['profile_pic']     
-         
+        profile_pic = request.FILES['profile_pic']  
 
     context = {}
     return render(request, 'templates/faculty.html', context)
@@ -206,30 +249,57 @@ def registerStudent(request):
         stat = False
         try:
             student = Student.objects.get(rollnumber = rollnumber)
-            stat = true
+            stat = True            
+            path = os.path.join(dataset, year, shift, rollnumber)
+            print(path)
+
         except:
             stat = False
 
-        if (stat == False):
-            details = {
-                'rollnumber' : rollnumber,
-                'shift' : shift,
-                'year' : year 
-            }
+        if (stat == True):
+            messages.error("Student exsistes")
 
-            save_face_data = saveData(details)
-            if(save_face_data):
-                student.save()
-                name = firstname + " " + lastname
-                messages.success(request, 'Student ' + name + ' was added successfully')
-            else:
-                messages.error(request, 'Unable to capture student image')
+        faceDetect = cv2.CascadeClassifier(
+        cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        path = ''
+        dataset = IMG_ROOT
+        if not os.path.isdir(path):
+            os.mkdir(path)
+            subdata = os.path.join(dataset, year, shift, rollnumber)
+            print("subdata path : " + subdata)
+
+            path = os.path.join(dataset, subdata)
+            print(path)
+
+            # img sample size
+            (width, height) = (130, 100)
+            cam = cv2.VideoCapture(0)
+            sampleNum = 0
+            while(True):
+                ret,img = cam.read()
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                faces = faceDetect.detectMultiScale(gray, 1.3, 5)
+                for(x,y,w,h) in faces:
+                    sampleNum +=1
+                    img_name = path+str(sampleNum)+ '.png'
+                    cv2.imwrite(img_name, gray[y:y+h, x:x+w])
+                    cv2.rectangle(img, (x,y), (x+w. y+h), (0,225,0), 2)
+                    cv2.waitKey(250)
+                cv2.waitKey(1)
+                if (sampleNum>2):
+                    break
+            cam.release()
+            cv2.destroyAllWindows()
+            student.save()
+            name = firstname + " " + lastname
+            messages.success(request, 'Student ' + name + ' was added successfully')
+            return redirect('registerStudent')        
         else:
             messages.error(request, 'Student with roll number ' + rollnumber + 'already exists.')
-            return redirect('home')
-        
+            return redirect('registerStudent')
+
     context = {}
-    return render(request, 'templates/login.html', context)
+    return render(request, 'templates/studentRegistration.html', context)
 
 
 @login_required(login_url='login')
@@ -259,97 +329,84 @@ def take_attendance(request):    #get values from the fields lectureid ,subject,
 
         take_attendance.save()
         messages.success(request, 'Lecture created ')
-        return redirect('home')
+        return redirect('takeAttendance')
     context = {}
     return render(request, 'templates/index.html', context)
 
 @login_required(login_url='login')
 def takeAttendance(request):
-    print(cv2.__version__)
-    # Detect face
-    # Creating a cascade image classifier
-    #faceDetect = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    
     faceDetect = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    print(faceDetect)
-
-    dataset = os.path.join(BASE_DIR, 'datasets', 'test')
-    print(dataset)
-    path = 'G:/project/fd/attendance/0.jpg'
-    # im = Image.open("G:/project/fd/attendance/0.jpg")
-    # im.show()
-    print(BASE_DIR)
-
-    path = BASE_DIR.joinpath('dataset')
+    dataset = IMG_ROOT
+    (images, lables, names, id) = ([], [], {}, 0) 
+    for (subdirs, dirs, files) in os.walk(dataset): 
+        for subdir in dirs: 
+            names[id] = subdir 
+            subjectpath = os.path.join(dataset, subdir) 
+            #print(subjectpath)
+            for filename in os.listdir(subjectpath): 
+                path = subjectpath + '/' + filename 
+                lable = id
+                images.append(cv2.imread(path, 0)) 
+                lables.append(int(lable)) 
+            id += 1  
+            print(filename)
     print(path)
-
-    # image = cv2.imread(path)
-    # while(True):
-    #     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    #     faces = faceCascade.detectMultiScale(
-    #         gray,
-    #         scaleFactor=1.3,
-    #         minNeighbors=3,
-    #         minSize=(30, 30)
-    #     )
-
-    #     for (x, y, w, h) in faces:
-    #         cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-    #     cv2.imshow("Face", image)
-
-    # camture images from the webcam and process and detect the face
-    # takes video capture id, for webcam most of the time its 0.
+    (images, lables) = [np.array(lis) for lis in [images, lables]]
+    model = cv2.face.LBPHFaceRecognizer_create()
+    model.train(images, lables)    
+     
+    #path = BASE_DIR.joinpath('dataset')    
+    
     cam = cv2.VideoCapture(0)
-
-    # Our identifier
-    # We will put the id here and we will store the id with a face, so that later we can identify whose face it is
-    # Our dataset naming counter
-    sampleNum = 0
-    # Capturing the faces one by one and detect the faces and showing it on the window
+    sampleNum = 0    
     while(True):
-        # Capturing the image
-        # cam.read will return the status variable and the captured colored image
         ret, img = cam.read()
-        # the returned img is a colored image but for the classifier to work we need a greyscale image
-        # to convert
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        # To store the faces
-        # This will detect all the images in the current frame, and it will return the coordinates of the faces
-        # Takes in image and some other parameter for accurate result
-        faces = faceDetect.detectMultiScale(gray, 1.3, 5)
-        # In above 'faces' variable there can be multiple faces so we have to get each and every face and draw a rectangle around it.
-        for(x, y, w, h) in faces:
-            # Whenever the program captures the face, we will write that is a folder
-            # Before capturing the face, we need to tell the script whose face it is
-            # For that we will need an identifier, here we call it id
-            # So now we captured a face, we need to write it in a file
-            sampleNum = sampleNum+1
-            # Saving the image dataset, but only the face part, cropping the rest
-            cv2.imwrite(path + str(sampleNum)+'.jpg', gray[y:y+h, x:x+w])
-            # @params the initial point of the rectangle will be x,y and
-            # @params end point will be x+width and y+height
-            # @params along with color of the rectangle
-            # @params thickness of the rectangle
-            cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
-            # Before continuing to the next loop, I want to give it a little pause
-            # waitKey of 100 millisecond
-            cv2.waitKey(250)
+        faces = faceDetect.detectMultiScale(
+            gray,
+            scaleFactor=1.3,
+            minNeighbors=3,
+            minSize=(30, 30)
+        )
 
-        # Showing the image in another window
-        # Creates a window with window name "Face" and with the image img
+        for (x, y, w, h) in faces:
+            face = gray[y:y + h, x:x + w]
+            face_resize = cv2.resize(face, (80, 130))
+            prediction = model.predict(face_resize)
+            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
         cv2.imshow("Face", img)
-        # Before closing it we need to give a wait command, otherwise the open cv wont work
-        # @params with the millisecond of delay 1
-        cv2.waitKey(1)
-        # To get out of the loop
-        if(sampleNum > 50):
+        
+        key = cv2.waitKey(10)
+        if key == 27:
             break
-    # releasing the cam
-    cam.release()
-    # destroying all the windows
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
 
+    # cam = cv2.VideoCapture(0)
+
+    # sampleNum = 0
+    # while(True):
+    #     ret, img = cam.read()
+    #     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #     faces = faceDetect.detectMultiScale(gray, 1.3, 5)
+    #     for(x, y, w, h) in faces:
+    #         sampleNum = sampleNum+1
+    #         cv2.imwrite(path + str(sampleNum)+'.jpg', gray[y:y+h, x:x+w])
+    #         cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+    #         cv2.waitKey(250)
+
+    #     cv2.imshow("Face", img)
+    #     cv2.waitKey(1)
+    #     if(sampleNum > 50):
+    #         break
+    # cam.release()
+    # cv2.destroyAllWindows()
     context = {}
     return render(request, 'templates/login.html', context)
+
+def reports(request):  
+    context = {}
+    return render(request,'templates/reports.html',context)
+        
