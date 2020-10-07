@@ -132,7 +132,7 @@
 				<div class="container-fluid">
 					<ul class="navbar-mobile__list list-unstyled">
 						<li class="has-sub">
-							<a class="js-arrow" href="attendance">
+							<a class="js-arrow" href="home">
 								<i class="fas fa-tachometer-alt"></i>Home</a>
 						</li>
 						<li>
@@ -163,10 +163,15 @@
 			<div class="menu-sidebar__content js-scrollbar1">
 				<nav class="navbar-sidebar">
 					<ul class="list-unstyled navbar__list">
-						<li class="has-sub">
-							<a href="home">
-								<i class="fas fa-tachometer-alt"></i>Home</a>
+						{% if request.user.username == "admin" %}							
+						<li>
+							<a href="admin"><i class="fas fa-user"></i>Home</a>
 						</li>
+						{% else %}
+						<li>
+							<a href="home"><i class="fas fa-user"></i>Home</a>
+						</li>
+						{% endif %}
 						<li>
 							<a href="#attendance">
 								<i class="fas fa-chart-bar"></i>Create Lecture</a>

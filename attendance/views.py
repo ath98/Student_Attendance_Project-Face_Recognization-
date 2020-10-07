@@ -57,7 +57,6 @@ def searchFacultyRecord(request):
         faculty = Faculty.objects.get(username = username)
         assigned_subject = jsonDec.decode(faculty.assigned_subjects)
         subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
-
         context = {
             'subjects' : subjects,
             'faculty' : faculty,
@@ -199,7 +198,15 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def redirect_faculty_profile(request):
-    context = {}
+    username = request.user.username
+    print(username)
+    faculty = Faculty.objects.get(username = username)
+    assigned_subject = jsonDec.decode(faculty.assigned_subjects)
+    subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
+    context = {
+        'subjects' : subjects,
+        'faculty' : faculty,
+    }
     return render(request, 'templates/faculty.html', context)
 
 # method to redirect to records page
@@ -210,13 +217,14 @@ def redirectViewRecords(request):
 # work in progress
 @login_required(login_url='login')
 def update_faculty_profile(request):
-    if request.method == 'POST' and request.FILES['profile_pic']:
+    if request.method == 'POST':
         firstname = request.POST['firstname']
         lastname = request.POST['lastname']
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        profile_pic = request.FILES['profile_pic']  
+
+        # your code goes here:
 
     context = {}
     return render(request, 'templates/faculty.html', context)
@@ -247,6 +255,8 @@ def registerStudent(request):
         student.year = year
 
         stat = False
+        dataset = IMG_ROOT
+
         try:
             student = Student.objects.get(rollnumber = rollnumber)
             stat = True            
@@ -317,7 +327,7 @@ def take_attendance(request):    #get values from the fields lectureid ,subject,
         year = request.POST.get('year')
         dt = request.POST.get('dt')
         tfrom = request.POST.get('tfrom')
-        tto = request.POST.get('tto') 
+        tto = request.POST.get('tto')
 
         take_attendance.subject = subject
         take_attendance.faculty = faculty
