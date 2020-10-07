@@ -49,6 +49,13 @@ def home(request):
     }
     return render(request, 'templates/index.html', context)
 
+# work in progress
+@login_required(login_url='login')
+def searchFacultyRecord(request):
+    if request.method == 'POST':
+        username = request.POST['faculty']
+        print(username)
+
 # method to register faculty
 def registerFaculty(request):
     if request.method == 'POST':
@@ -136,6 +143,22 @@ def faculty_subject_assign(request):
         return redirect('admin')
 
 
+# method to display faculty profile
+# work in progress
+@login_required(login_url='login')
+def view_faculty_profile(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        
+        faculty = Faculty.objects.filter(username = username)
+        context = {
+            'faculty':faculty,
+        }
+        return None
+
+
+
+
 # method to verify user login and do further activities
 def loginPage(request):
     if request.method == 'POST':
@@ -174,6 +197,7 @@ def redirectViewRecords(request):
     context = {}
 
 # method to update faculty profile
+# work in progress
 @login_required(login_url='login')
 def update_faculty_profile(request):
     if request.method == 'POST' and request.FILES['profile_pic']:
