@@ -12,29 +12,29 @@
 	<title>Attendance System</title>
 	<script type="text/javascript">
 		function EnableDisableTextBox() {
-				var selectedValue = document.getElementById("selectReport").value;
-				var id = document.getElementById("ID");
-				var roll = document.getElementById("roll");
-				var subCode = document.getElementById("sub_code");
-				
-				if(selectedValue == '1'){
-					id.disabled= false;      
-					roll.disabled=true;      
-					subCode.disabled=true;     
-				}
-				if(selectedValue == '2'){
-					roll.disabled=false;
-					id.disabled= true;   
-					subCode.disabled=true; 
-				}
-				if(selectedValue == '3'){
-					roll.disabled=false;
-					subCode.disabled=false;
-					id.disabled=true;
-				}
+			var selectedValue = document.getElementById("selectReport").value;
+			var id = document.getElementById("ID");
+			var roll = document.getElementById("roll");
+			var subCode = document.getElementById("sub_code");
+
+			if (selectedValue == '1') {
+				id.disabled = false;
+				roll.disabled = true;
+				subCode.disabled = true;
 			}
+			if (selectedValue == '2') {
+				roll.disabled = false;
+				id.disabled = true;
+				subCode.disabled = true;
+			}
+			if (selectedValue == '3') {
+				roll.disabled = false;
+				subCode.disabled = false;
+				id.disabled = true;
+			}
+		}
 	</script>
-	
+
 
 	<!-- Fontfaces CSS-->
 	<link href="{% static 'css/font-face.css' %}" rel="stylesheet" media="all">
@@ -84,30 +84,30 @@
 	<!-- Smooth Scrolling -->
 	<script>
 		$(document).ready(function () {
-		  // Add smooth scrolling to all links
-		  $("a").on('click', function (event) {
-	
-			// Make sure this.hash has a value before overriding default behavior
-			if (this.hash !== "") {
-			  // Prevent default anchor click behavior
-			  event.preventDefault();
-	
-			  // Store hash
-			  var hash = this.hash;
-	
-			  // Using jQuery's animate() method to add smooth page scroll
-			  // The optional number (1500) specifies the number of milliseconds it takes to scroll to the specified area
-			  $('html, body').animate({
-				scrollTop: $(hash).offset().top - 200
-			  }, 2500, function () {
-	
-				// Add hash (#) to URL when done scrolling (default click behavior)
-				window.location.hash = hash;
-			  });
-			} // End if
-		  });
+			// Add smooth scrolling to all links
+			$("a").on('click', function (event) {
+
+				// Make sure this.hash has a value before overriding default behavior
+				if (this.hash !== "") {
+					// Prevent default anchor click behavior
+					event.preventDefault();
+
+					// Store hash
+					var hash = this.hash;
+
+					// Using jQuery's animate() method to add smooth page scroll
+					// The optional number (1500) specifies the number of milliseconds it takes to scroll to the specified area
+					$('html, body').animate({
+						scrollTop: $(hash).offset().top - 200
+					}, 2500, function () {
+
+						// Add hash (#) to URL when done scrolling (default click behavior)
+						window.location.hash = hash;
+					});
+				} // End if
+			});
 		});
-	  </script>
+	</script>
 </head>
 
 <body class="animsition">
@@ -156,8 +156,8 @@
 		<!-- MENU SIDEBAR-->
 		<aside class="menu-sidebar d-none d-lg-block">
 			<div class="logo">
-				<a href="#">
-					<img src="images/icon/logo.png" alt="MCOE MCA DEPARTMENT" />
+				<a href="home">
+					<b>Modern College of Engineering, MCA Department</b>
 				</a>
 			</div>
 			<div class="menu-sidebar__content js-scrollbar1">
@@ -179,8 +179,8 @@
 							<a href="reports.html">
 								<i class="fas fa-chart-bar"></i>View Reports</a>
 						</li>
-						
-						{% if request.user.username == "admin" %}							
+
+						{% if request.user.username == "admin" %}
 						<li>
 							<a href="registerStudent"><i class="fas fa-user"></i>Register New Student</a>
 						</li>
