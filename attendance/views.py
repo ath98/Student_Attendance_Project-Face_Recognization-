@@ -9,11 +9,11 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.utils import tree
 from django.views.generic import FormView  
-
+import keyboard
 import json
 import numpy as np
 
-from .models import Faculty, Student,Subject,Lecture
+from .models import Faculty, Student,Subject,Lecture, Attendance
 from .forms import FacultyChoiceField
 
 from .face_detection import saveData
@@ -303,7 +303,7 @@ def registerStudent(request):
 
 
 @login_required(login_url='login')
-def take_attendance(request):    #get values from the fields lectureid ,subject,profid,profname,shift,year  lecture=take_attendance
+def createLecture(request):    #get values from the fields lectureid ,subject,profid,profname,shift,year  lecture=take_attendance
     if request.method == 'POST':
         
         faculty_name = request.user.username
@@ -327,40 +327,41 @@ def take_attendance(request):    #get values from the fields lectureid ,subject,
         take_attendance.tto = tto
 
         take_attendance.save()
+        return redirect(takeAttendance)
         messages.success(request, 'Lecture created ')
-        return redirect('takeAttendance')
-    context = {}
+    context = {
+
+    }
     return render(request, 'templates/index.html', context)
 
 @login_required(login_url='login')
-def takeAttendance(request):
-    
+def takeAttendance(request):    
+    attendance = Attendance()
     faceDetect = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    dataset = IMG_ROOT
-    (images, lables, names, id) = ([], [], {}, 0) 
-    for (subdirs, dirs, files) in os.walk(dataset): 
-        for subdir in dirs: 
-            names[id] = subdir             
-            subjectpath = os.path.join(dataset, subdir) 
-            print(subjectpath)
-            for filename in os.listdir(subjectpath): 
-                path = subjectpath + '/' + filename 
-                lable = id
-                images.append(cv2.imread(path, 0)) 
-                lables.append(int(lable)) 
-            id += 1  
-            print(filename)
-    print(path)
+    datasets = IMG_ROOT    
+    (images, lables, names, id) = ([], [], {}, 0)
+    for (subdir, dir, files) in os.walk(datasets):
+        for subdir in dir:
+            sub= os.path.join(datasets,subdir)
+            for (subdir, dir, files) in os.walk(sub):
+                for subdir in dir:
+                    subIn = os.path.join(sub,subdir)                    
+                    for (subdir, dir, files) in os.walk(subIn):
+                        for subdir in files:
+                            names[id] = subdir
+                            path = os.path.join(subIn, subdir)
+                            lable = id
+                            images.append(cv2.imread(path, 0)) 
+                            lables.append(int(lable))
+                        id +=1
+
     (images, lables) = [np.array(lis) for lis in [images, lables]]
     model = cv2.face.LBPHFaceRecognizer_create()
-    model.train(images, lables)    
-     
-    #path = BASE_DIR.joinpath('dataset')    
-    
+    model.train(images, lables)  
     cam = cv2.VideoCapture(0)
     sampleNum = 0    
-    while(True):
+    while keyboard.is_pressed('q')!=True :
         ret, img = cam.read()
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         faces = faceDetect.detectMultiScale(
@@ -375,12 +376,33 @@ def takeAttendance(request):
             face_resize = cv2.resize(face, (80, 130))
             prediction = model.predict(face_resize)
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            if prediction[1]<500:  
+                stdId=names[prediction[0]]             
+                lec_id = request.POST.get('lecture_number')
+                shift = request.POST.get('shift')
+                year = request.POST.get('year')
+                dt = request.POST.get('dt')    
+                print(shift,year,lec_id)
+                count = Attendance.objects.filter(rollnumber=stdId, lecture_number=lec_id)
+                if not count:
+                    attendance.year = year
+                    attendance.shift = shift
+                    attendance.status = 'Present'
+                    attendance.faculty_name = request.user.username
+                    attendance.rollnumber = stdId 
+                    attendance.date = dt
+                    attendance.lecture_number = lec_id
+                    attendance.save()                
+            else: 
+                cv2.putText(img, 'not recognized',  
+                (x-10, y-10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0)) 
 
         cv2.imshow("Face", img)
         
         key = cv2.waitKey(10)
         if key == 27:
             break
+    cv2.destroyAllWindows()
     context = {}
     return render(request, 'templates/login.html', context)
 
