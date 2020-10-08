@@ -254,55 +254,42 @@ def registerStudent(request):
         stat = False
         try:
             student = Student.objects.get(rollnumber = rollnumber)
-            stat = True            
-            path = os.path.join(dataset, year, shift, rollnumber)
-            print(path)
-
+            stat = True
         except:
             stat = False
+            paths = os.path.join(dataset, year, shift)
+            print("------------------------")
+            print(paths)
+            print("------------------------")
 
         if (stat == True):
-            messages.error("Student exsistes")
-
-        faceDetect = cv2.CascadeClassifier(
-        cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-        path = ''
-        dataset = IMG_ROOT
-        if not os.path.isdir(path):
-            os.mkdir(path)
-            subdata = os.path.join(dataset, year, shift, rollnumber)
-            print("subdata path : " + subdata)
-
-            path = os.path.join(dataset, subdata)
-            print(path)
-
-            # img sample size
-            (width, height) = (130, 100)
-            cam = cv2.VideoCapture(0)
-            sampleNum = 0
-            while(True):
-                ret,img = cam.read()
-                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                faces = faceDetect.detectMultiScale(gray, 1.3, 5)
-                for(x,y,w,h) in faces:
-                    sampleNum +=1
-                    img_name = path+str(sampleNum)+ '.png'
-                    cv2.imwrite(img_name, gray[y:y+h, x:x+w])
-                    cv2.rectangle(img, (x,y), (x+w. y+h), (0,225,0), 2)
-                    cv2.waitKey(250)
-                cv2.waitKey(1)
-                if (sampleNum>2):
-                    break
-            cam.release()
-            cv2.destroyAllWindows()
-            student.save()
-            name = firstname + " " + lastname
-            messages.success(request, 'Student ' + name + ' was added successfully')
-            return redirect('registerStudent')        
-        else:
             messages.error(request, 'Student with roll number ' + rollnumber + 'already exists.')
             return redirect('registerStudent')
 
+        # img sample size
+        (width, height) = (130, 100)
+        cam = cv2.VideoCapture(0)
+        sampleNum = 0 
+        while(True):
+            ret,img = cam.read()
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            faces = faceDetect.detectMultiScale(gray, 1.3, 5)
+            for(x,y,w,h) in faces:
+                sampleNum +=1
+                img_name = str(rollnumber) + '.png'
+                cv2.imwrite(os.path.join(paths, img_name), gray[y:y+h, x:x+w])
+                cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2) 
+                cv2.waitKey(250)
+            cv2.waitKey(1)
+            if (sampleNum>2):
+                break
+        cam.release()
+        cv2.destroyAllWindows()
+        student.save()
+        name = firstname + " " + lastname
+        messages.success(request, 'Student ' + name + ' was added successfully')
+        return redirect('registerStudent')        
+    
     context = {}
     return render(request, 'templates/studentRegistration.html', context)
 
@@ -347,9 +334,9 @@ def takeAttendance(request):
     (images, lables, names, id) = ([], [], {}, 0) 
     for (subdirs, dirs, files) in os.walk(dataset): 
         for subdir in dirs: 
-            names[id] = subdir 
+            names[id] = subdir             
             subjectpath = os.path.join(dataset, subdir) 
-            #print(subjectpath)
+            print(subjectpath)
             for filename in os.listdir(subjectpath): 
                 path = subjectpath + '/' + filename 
                 lable = id
@@ -387,27 +374,6 @@ def takeAttendance(request):
         key = cv2.waitKey(10)
         if key == 27:
             break
-    # cv2.destroyAllWindows()
-
-    # cam = cv2.VideoCapture(0)
-
-    # sampleNum = 0
-    # while(True):
-    #     ret, img = cam.read()
-    #     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    #     faces = faceDetect.detectMultiScale(gray, 1.3, 5)
-    #     for(x, y, w, h) in faces:
-    #         sampleNum = sampleNum+1
-    #         cv2.imwrite(path + str(sampleNum)+'.jpg', gray[y:y+h, x:x+w])
-    #         cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
-    #         cv2.waitKey(250)
-
-    #     cv2.imshow("Face", img)
-    #     cv2.waitKey(1)
-    #     if(sampleNum > 50):
-    #         break
-    # cam.release()
-    # cv2.destroyAllWindows()
     context = {}
     return render(request, 'templates/login.html', context)
 
