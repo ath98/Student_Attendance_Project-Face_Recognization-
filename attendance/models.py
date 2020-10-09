@@ -1,3 +1,4 @@
+from re import T
 from django.contrib.postgres.fields import jsonb
 from django.db import models
 from django.contrib.auth.models import User
@@ -250,8 +251,9 @@ class Lecture(models.Model):
         return last_lecture.lecture_number + 1
 
     lecture_number = models.IntegerField(primary_key=True, default= increment_lecture_number)
-    date = models.DateField(max_length=200, null=True)
-    time = models.TimeField(auto_now_add=True, null=True)
+    tfrom =  models.TimeField(blank=True, null=True)
+    tto = models.TimeField(blank=True, null=True)
+    dt = models.DateField(blank=True, null=True)
     faculty = models.ForeignKey(Faculty, on_delete=CASCADE,  null=True)
     year = models.CharField(max_length=200, null=True, blank=True)
     shift = models.CharField(max_length=200, null=True, blank=True)
@@ -259,3 +261,4 @@ class Lecture(models.Model):
 
     def __str__(self) -> str: ("Lecture Number :" +
                                self.lecture_number + "\nSubject :" + self.subject)
+

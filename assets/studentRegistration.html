@@ -63,7 +63,7 @@
                         <div class="au-card-inner">
                             <h3 class="title-2">Register Student</h3>
                             <div class="take_attendance card card-body">
-                                <form action="take_attendance" method="post" enctype="multipart/form-data"
+                                <form action="registerStudent" method="post" enctype="multipart/form-data"
                                     data-toggle="validator">
                                     {% csrf_token %}
                                     <div class="form-group">
@@ -95,7 +95,7 @@
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label for="sel1">Select Shift:</label>
-                                                <select name='shift' class="form-control" id="sel1">
+                                                <select name="shift" class="form-control" id="sel1">
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                 </select>
@@ -104,7 +104,7 @@
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label for="sel1">Select year:</label>
-                                                <select name='year' class="form-control" id="sel1">
+                                                <select name="year" class="form-control" id="sel1">
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>
@@ -125,8 +125,7 @@
                                         <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" id="submit" class="btn btn-primary btn-block btn-lg">Take
-                                            Save and Next</button>
+                                        <button type="submit" id="submit" class="btn btn-primary btn-block btn-lg">Save and Next</button>
                                     </div>
                                 </form>
                             </div>
