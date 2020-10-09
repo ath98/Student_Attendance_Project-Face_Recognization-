@@ -2,18 +2,18 @@ from .models import Attendance, Subject, Student
 from django.http import request
 from django.shortcuts import render
 
-def byLecture(request):  # GET REPORTS OF WHOLE LECTURE
+def byLecture(request,context):  # GET REPORTS OF WHOLE LECTURE
     
-    if request.method == 'POST':
-        lecId = request.POST.get("ID")
-        obj = Attendance.objects.filter(lecture_number=lecId)
-        context = {
-            'obj': obj
-        }
-        return render(request, 'templates/reports.html', context)
+    lecId = request.POST.get("ID")
+    print("IN---------------------------")
+    obj = Attendance.objects.filter(id=lecId)#Remember to change after
+    context = {
+        'obj': obj
+    }
+    return render(request, 'templates/reports.html', context)
 
 
-def byDefaulter(request):  # GET REPORTS OF A SPECIFIC STUDENT AND SUBJECT
+def byDefaulter(request,context):  # GET REPORTS OF A SPECIFIC STUDENT AND SUBJECT
     if request.method == 'POST':
         roll = request.POST.get("roll")
         code = request.POST.get("sub_code")
@@ -29,7 +29,7 @@ def byDefaulter(request):  # GET REPORTS OF A SPECIFIC STUDENT AND SUBJECT
         return render(request, 'templates/reports.html', context)
 
 
-def reportsByRoll(request):  # GET REPORTS BY ROLL NUMBER FOR ALL SUBJECTS
+def reportsByRoll(request,context):  # GET REPORTS BY ROLL NUMBER FOR ALL SUBJECTS
     if request.method == 'POST':
         roll = request.POST.get("roll")
         obj = Attendance.objects.get(rollnumber=roll)

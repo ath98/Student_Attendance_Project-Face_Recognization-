@@ -15,6 +15,7 @@ import numpy as np
 import datetime
 from .models import Faculty, Student,Subject,Lecture, Attendance
 from .forms import FacultyChoiceField
+from .reports import *
 
 from .face_detection import saveData
 
@@ -340,6 +341,7 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         dt = request.POST['dt']
         tfrom = request.POST['tfrom']
         tto = request.POST['tto']
+        lectureNo = request.POST.get['lecture_number']
 
         date_year = dt.split('-')[0]
         date_month = dt.split('-')[1]
@@ -369,14 +371,20 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         lecture.tto = lecture_to_time
 
         lecture.save()
-        return redirect(takeAttendance)
-    context = {
+
+        context = {
+        'date':dt,
+        'shift':shift,
+        'year':year,
+        'no':lectureNo
 
     }
+        return redirect(takeAttendance(context))
+    
     return render(request, 'templates/index.html', context)
 
 @login_required(login_url='login')
-def takeAttendance(request):    
+def takeAttendance(request,context):    
     attendance = Attendance()
     faceDetect = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
@@ -418,22 +426,21 @@ def takeAttendance(request):
             prediction = model.predict(face_resize)
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
             if prediction[1]<500:  
-                stdId=names[prediction[0]]             
-                lec_id = request.POST.get('lecture_number')
-                shift = request.POST.get('shift')
-                year = request.POST.get('year')
-                dt = request.POST.get('dt')    
+                stdId=names[prediction[0]]  
+                rol = stdId.split('.png')           
+                   
                 print(shift,year,lec_id)
                 count = Attendance.objects.filter(rollnumber=stdId, lecture_number=lec_id)
                 if not count:
-                    attendance.year = year
-                    attendance.shift = shift
+                    attendance.year = context.year
+                    attendance.shift = context.shift
                     attendance.status = 'Present'
                     attendance.faculty_name = request.user.username
-                    attendance.rollnumber = stdId 
-                    attendance.date = dt
-                    attendance.lecture_number = lec_id
-                    attendance.save()                
+                    attendance.rollnumber = rol[0] 
+                    attendance.date = context.date
+                    attendance.lecture_number = context.no
+                    attendance.save()    
+                cv2.putText(img, '% s - %.0f' %(names[prediction[0]], prediction[1]), (x-10, y-10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0))            
             else: 
                 cv2.putText(img, 'not recognized',  
                 (x-10, y-10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0)) 
@@ -448,6 +455,28 @@ def takeAttendance(request):
     return render(request, 'templates/login.html', context)
 
 def reports(request):  
-    context = {}
+    
+    context={}    
     return render(request,'templates/reports.html',context)
+
+def tables(request):
+    reportType= request.POST.get('selectReport')
+    print(reportType)
+    context = {} 
+    # if reportType == 1:
+    obj = Attendance.objects.filter(id= 36)
+    print(obj)
+    context = {'obj':obj}
+        #return redirect(byLecture(context))
+    # if reportType == 2:
+    #     id = request.POST.get('ID')
+    #     context = {}   
+    #     return redirect(byDefaulter(context))   
+    # if  reportType == 3:  
+    #     id = request.POST.get('ID')
+    #     context = {}
+    #     return redirect(reportsByRoll(context))
+    
+    return render(request,'templates/table.html',context)
+
         
