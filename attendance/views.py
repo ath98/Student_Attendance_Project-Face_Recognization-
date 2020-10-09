@@ -233,7 +233,7 @@ def registerStudent(request):
     
     faceDetect = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    paths = ''
+    path = ''
     dataset = IMG_ROOT
     # get values from form fields
     if request.method == 'POST':
@@ -246,11 +246,34 @@ def registerStudent(request):
         shift = request.POST['shift']
         year = request.POST['year']
         
-        rollnumber = year + shift + roll
+        print("shift:"+shift)
+        print("year:"+year)
 
+        s = 0
+
+        if shift == '0':
+            s = 1
+        elif shift == '1':
+            s = 2
+
+        print("shift:"+str(s))
+
+        y = 0
+
+        if year == '51':
+            y = 1
+        elif year == '52':
+            y = 2
+        elif year == '53':
+            y = 3
+
+        print("year:"+str(y))
+
+        rollNumber = year + shift + roll
+        print(rollNumber)
         # assigning those values to the student object
         student = Student()
-        student.rollNumebr = rollnumber
+        student.rollNumebr = rollNumber
         student.firstname = firstname
         student.lastname = lastname
         student.email = email
@@ -263,18 +286,16 @@ def registerStudent(request):
         dataset = IMG_ROOT
 
         try:
-            student = Student.objects.get(rollnumber = rollnumber)
-            stat = True
+            student = Student.objects.get(rollnumber = rollNumber)
+            if student is not None:
+                messages.error(request, 'Student with roll number ' + rollNumber + 'already exists.')
+                return redirect('registerStudent')
         except:
             stat = False
-            paths = os.path.join(dataset, year, shift)
+            paths = os.path.join(dataset, str(y), str(s))
             print("------------------------")
             print(paths)
             print("------------------------")
-
-        if (stat == True):
-            messages.error(request, 'Student with roll number ' + rollnumber + 'already exists.')
-            return redirect('registerStudent')
 
         # img sample size
         (width, height) = (130, 100)
@@ -286,7 +307,7 @@ def registerStudent(request):
             faces = faceDetect.detectMultiScale(gray, 1.3, 5)
             for(x,y,w,h) in faces:
                 sampleNum +=1
-                img_name = str(rollnumber) + '.png'
+                img_name = str(rollNumber) + '.png'
                 cv2.imwrite(os.path.join(paths, img_name), gray[y:y+h, x:x+w])
                 cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2) 
                 cv2.waitKey(250)
@@ -313,28 +334,31 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         
         lecture = Lecture()
         
-        subject = request.POST.get('subject')
-        shift = request.POST.get('shift')
-        year = request.POST.get('year')
-        dt = request.POST.get('dt')
-        tfrom = request.POST.get('tfrom')
-        tto = request.POST.get('tto')
+        subject = request.POST['subject']
+        shift = request.POST['shift']
+        year = request.POST['year']
+        dt = request.POST['dt']
+        tfrom = request.POST['tfrom']
+        tto = request.POST['tto']
 
         date_year = dt.split('-')[0]
         date_month = dt.split('-')[1]
         date_day = dt.split('-')[2]
 
-        lecture_date = datetime.date(date_year, date_month, date_day)
-
+        lecture_date = datetime.date(int(date_year), int(date_month), int(date_day))
+        print(lecture_date)
+        
         to_hrs = tto.split(':')[0]
         to_min = tto.split(':')[1]
 
         lecture_to_time = datetime.time(int(to_hrs), int(to_min))
+        print(lecture_to_time)
 
         from_hrs = tfrom.split(':')[0]
         from_min = tfrom.split(':')[1]
 
         lecture_from_time = datetime.time(int(from_hrs), int(from_min))
+        print(lecture_from_time)
 
         lecture.subject = subject
         lecture.faculty = faculty
@@ -345,7 +369,6 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         lecture.tto = lecture_to_time
 
         lecture.save()
-        messages.success(request, 'Lecture created ')
         return redirect(takeAttendance)
     context = {
 

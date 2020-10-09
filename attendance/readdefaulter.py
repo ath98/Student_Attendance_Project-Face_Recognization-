@@ -1,13 +1,20 @@
 import datetime
-from datetime import date
+from decimal import Decimal
 
 t = "10:20"
 
 hrs = t.split(':')[0]
 min = t.split(':')[1]
 
+time1 = hrs + '.' + min
+print(time1)
+print(Decimal(time1))
+
 time = datetime.time(int(hrs),int(min))
-print("Time obj"+ str(time.hour) + " " + str(time.minute))
+print(str(time))
+
+
+print("Time obj +"+ str(time.hour) + " " + str(time.minute))
 
 print("Hrs : "+ hrs )
 print("min : "+ min)

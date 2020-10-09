@@ -1,4 +1,4 @@
-from re import T
+from datetime import datetime
 from django.contrib.postgres.fields import jsonb
 from django.db import models
 from django.contrib.auth.models import User
@@ -7,6 +7,9 @@ from django.db.models.deletion import CASCADE
 from django.contrib.postgres.fields import JSONField
 from django.forms.fields import ChoiceField
 from fd.settings import IMG_ROOT
+
+from django.utils.timezone import now
+
 
 import os
 
@@ -247,7 +250,7 @@ class Lecture(models.Model):
     def get_lecture_number():
         last_lecture = Lecture.objects.all().order_by('lecture_number').last()
         if not last_lecture:
-            return 1
+            return 0
         return last_lecture.lecture_number + 1
 
     lecture_number = models.IntegerField(primary_key=True, default= increment_lecture_number)
