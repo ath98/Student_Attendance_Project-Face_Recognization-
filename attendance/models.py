@@ -250,8 +250,8 @@ class Lecture(models.Model):
     def get_lecture_number():
         last_lecture = Lecture.objects.all().order_by('lecture_number').last()
         if not last_lecture:
-            return 0
-        return last_lecture.lecture_number + 1
+            return 1
+        return last_lecture.lecture_number
 
     lecture_number = models.IntegerField(primary_key=True, default= increment_lecture_number)
     tfrom =  models.TimeField(blank=True, null=True)
@@ -261,7 +261,3 @@ class Lecture(models.Model):
     year = models.CharField(max_length=200, null=True, blank=True)
     shift = models.CharField(max_length=200, null=True, blank=True)
     subject = models.CharField(max_length=200, null=True, blank=True)
-
-    def __str__(self) -> str: ("Lecture Number :" +
-                               self.lecture_number + "\nSubject :" + self.subject)
-
