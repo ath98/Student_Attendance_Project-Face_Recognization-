@@ -68,6 +68,8 @@ def MarkAttendance(details):
                     say = student_name + ' attendance marked'
 
                     speaker = pyttsx3.init()
+                    voice_rate = 250
+                    speaker.setProperty('rate', voice_rate)
                     speaker.say(say)
                     speaker.runAndWait()
 
