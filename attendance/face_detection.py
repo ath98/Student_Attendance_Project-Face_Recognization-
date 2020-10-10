@@ -1,3 +1,4 @@
+from pyttsx3 import init
 from fd.settings import IMG_ROOT
 import numpy as np
 import cv2
@@ -5,7 +6,7 @@ import os
 import keyboard
 import pyttsx3
 
-from .models import Lecture, Attendance, Student
+from .models import Attendance, Student
 
 def MarkAttendance(details):    
     attendance = Attendance()
@@ -50,7 +51,8 @@ def MarkAttendance(details):
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
             if prediction[1]<500:  
                 stdId=names[prediction[0]]  
-                rol = stdId.split('.png')           
+                rol = stdId.split('.png')  
+                print(rol[0])         
                 count = Attendance.objects.filter(rollnumber=stdId, lecture_number=details['lecture_no'])
                 if not count:
                     attendance.year = details['lecture_year']
@@ -60,15 +62,16 @@ def MarkAttendance(details):
                     attendance.rollnumber = rol[0] 
                     attendance.date = details['dt']
                     attendance.lecture_number = details['lecture_no']
-                    attendance.save()    
-
-                    student = Student.objects.get(rollNumebr = rol[0])
-                    student_name = student.firstname
+                    attendance.save()  
                     
-                    say = student_name + ' attendance marked'
+                    no = rol[0]
 
+                    student = Student.objects.get(rollNumebr = str(no))
+                    student_name = student.firstname
+
+                    say = student_name + ' attendance marked'
                     speaker = pyttsx3.init()
-                    voice_rate = 250
+                    voice_rate = 150
                     speaker.setProperty('rate', voice_rate)
                     speaker.say(say)
                     speaker.runAndWait()
