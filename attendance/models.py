@@ -195,7 +195,7 @@ class Student(models.Model):
 
     firstname = models.CharField(max_length=200, null=True, blank=True)
     lastname = models.CharField(max_length=200, null=True, blank=True)
-    rollNumebr = models.CharField(max_length=200, primary_key=True)
+    rollNumber = models.CharField(max_length=200, primary_key=True)
     email = models.EmailField(max_length=200, null=True)
     phoneNumber = models.CharField(max_length=200, null=True)
     email = models.CharField(max_length=200, null=True)
