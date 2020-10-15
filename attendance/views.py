@@ -1,4 +1,3 @@
-from re import sub
 from django.contrib.messages.api import error
 from django.http import request
 from django.http import response
@@ -9,21 +8,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.utils import tree
-from django.views.generic import FormView
-from numpy.core.arrayprint import printoptions  
+from django.views.generic import FormView  
 
-<<<<<<< HEAD
-import pyttsx3
-
-import keyboard
-=======
->>>>>>> master
 import json
 import numpy as np
 import datetime
-
-from numpy.core.fromnumeric import take
-
 from .models import Faculty, Student,Subject,Lecture, Attendance
 from .forms import CreateStudentForm
 from .reports import *
@@ -33,7 +22,7 @@ from .face_detection import MarkAttendance
 from fd.settings import BASE_DIR, IMG_ROOT
 
 import os
-import cv2 as cv2
+import cv2
 
 # Create your views here.
 
@@ -157,8 +146,6 @@ def faculty_subject_assign(request):
     if request.method == 'POST':
         faculty_name = request.POST['faculty']
         assigned_subjects = request.POST.getlist('subject[]')
-        print(assigned_subjects)
-        print(type(assigned_subjects))
         faculty = Faculty.objects.get(username = faculty_name)
         faculty.assigned_subjects = json.dumps(assigned_subjects)
         faculty.save()
@@ -410,84 +397,6 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
     context = {}
     return render(request, 'templates/index.html', context)
 
-<<<<<<< HEAD
-# @login_required(login_url='login')
-# def takeAttendance(request):    
-#     attendance = Attendance()
-#     lecture = Lecture()
-#     faceDetect = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-#     datasets = IMG_ROOT    
-#     (images, lables, names, id) = ([], [], {}, 0)
-#     for (subdir, dir, files) in os.walk(datasets):
-#         for subdir in dir:
-#             sub= os.path.join(datasets,subdir)
-#             for (subdir, dir, files) in os.walk(sub):
-#                 for subdir in dir:
-#                     subIn = os.path.join(sub,subdir)                    
-#                     for (subdir, dir, files) in os.walk(subIn):
-#                         for subdir in files:
-#                             names[id] = subdir
-#                             path = os.path.join(subIn, subdir)
-#                             lable = id
-#                             images.append(cv2.imread(path, 0)) 
-#                             lables.append(int(lable))
-#                         id +=1
-
-#     (images, lables) = [np.array(lis) for lis in [images, lables]]
-#     model = cv2.face.LBPHFaceRecognizer_create()    
-#     model.train(images, lables)  
-#     cam = cv2.VideoCapture(0)
-#     while keyboard.is_pressed('q')!=True :
-#         ret, img = cam.read()
-#         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-#         faces = faceDetect.detectMultiScale(
-#             gray,
-#             scaleFactor=1.3,
-#             minNeighbors=3,
-#             minSize=(30, 30)
-#         )
-
-#         for (x, y, w, h) in faces:
-#             face = gray[y:y + h, x:x + w]
-#             face_resize = cv2.resize(face, (80, 130))
-#             prediction = model.predict(face_resize)
-#             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
-#             if prediction[1]<500:  
-#                 stdId=names[prediction[0]]  
-#                 lecture_number = Lecture.get_lecture_number()           
-#                 print(lecture_number)
-#                 lec_id = lecture_number
-#                 shift = lecture.shift
-#                 year = lecture.year
-#                 dt = lecture.dt
-#                 print(shift,year,lec_id)
-#                 count = Attendance.objects.filter(rollnumber=stdId, lecture_number=lec_id)
-#                 if not count:
-#                     attendance.year = year
-#                     attendance.shift = shift
-#                     attendance.status = 'Present'
-#                     attendance.faculty_name = request.user.username
-#                     attendance.rollnumber = stdId 
-#                     attendance.date = dt
-#                     attendance.lecture_number = lec_id
-#                     attendance.save()                
-
-#                     speaker = pyttsx3.init()
-#                     speaker.say('Attendance marked')
-#                     speaker.runAndWait()
-#             else: 
-#                 cv2.putText(img, 'not recognized',  
-#                 (x-10, y-10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0)) 
-
-#         cv2.imshow("Face", img)
-        
-#         key = cv2.waitKey(10)
-#         if key == 27:
-#             break
-#     cv2.destroyAllWindows()
-#     context = {}
-#     return redirect(home)
-=======
 @login_required(login_url = 'login')
 def updateStudentRedirect(request):
     context = {}
@@ -526,15 +435,11 @@ def updateStudent(request):
             return redirect('admin')
     return render(request, 'attendence_sys/student_update.html', context)
 
->>>>>>> master
 
 def reports(request):  
     
     context={}    
     return render(request,'templates/reports.html',context)
-<<<<<<< HEAD
-      
-=======
 
 def tables(request):
     reportType= request.POST.get('selectReport')
@@ -555,4 +460,3 @@ def tables(request):
     #     return redirect(reportsByRoll(context))
     
     return render(request,'templates/table.html',context)
->>>>>>> master
