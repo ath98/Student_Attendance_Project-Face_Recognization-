@@ -460,5 +460,3 @@ def tables(request):
     #     return redirect(reportsByRoll(context))
     
     return render(request,'templates/table.html',context)
-
-        
