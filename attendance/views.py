@@ -9,7 +9,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.utils import tree
-from django.views.generic import FormView  
+from django.views.generic import FormView
+from numpy.core.arrayprint import printoptions  
 
 <<<<<<< HEAD
 import pyttsx3
@@ -156,6 +157,8 @@ def faculty_subject_assign(request):
     if request.method == 'POST':
         faculty_name = request.POST['faculty']
         assigned_subjects = request.POST.getlist('subject[]')
+        print(assigned_subjects)
+        print(type(assigned_subjects))
         faculty = Faculty.objects.get(username = faculty_name)
         faculty.assigned_subjects = json.dumps(assigned_subjects)
         faculty.save()
