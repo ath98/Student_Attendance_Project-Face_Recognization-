@@ -66,6 +66,7 @@ def MarkAttendance(details):
                     
                     no = rol[0]
 
+<<<<<<< HEAD
                     student = Student.objects.get(rollNumebr = str(no))
                     student_name = student.firstname
 
@@ -76,6 +77,29 @@ def MarkAttendance(details):
                     speaker.say(say)
                     speaker.runAndWait()
 
+=======
+                    try:
+                        student = Student.objects.get(rollNumebr = str(no))
+                    
+                        if not student:
+                            speaker = pyttsx3.init()
+                            voice_rate = 150
+                            speaker.setProperty('rate', voice_rate)
+                            speaker.say('Student not found')
+                            speaker.runAndWait()
+                        else:
+                            student_name = student.firstname
+                            print(student_name)
+                            say = student_name + ' attendance marked'
+                            speaker = pyttsx3.init()
+                            voice_rate = 150
+                            speaker.setProperty('rate', voice_rate)
+                            speaker.say(say)
+                            speaker.runAndWait()
+                    except:
+                        pass
+                    
+>>>>>>> master
                 cv2.putText(img, '% s - %.0f' %(names[prediction[0]], prediction[1]), (x-10, y-10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0))  
             else: 
                 cv2.putText(img, 'not recognized',  

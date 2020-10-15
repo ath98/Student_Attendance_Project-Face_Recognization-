@@ -27,13 +27,12 @@ def user_dir_path(instance, filename):
 
 
 class Faculty(models.Model):
-
     user = models.OneToOneField(
         User, null=True, blank=True, on_delete=models.CASCADE)
     firstname = models.CharField(max_length=200, null=True, blank=True)
     lastname = models.CharField(max_length=200, null=True, blank=True)
     username = models.CharField(max_length=200, null=True, blank=True)
-    assigned_subjects = models.TextField(blank=True, null=True)
+    assigned_subjects = models.TextField(blank=True, null=True, default=["None"])
     email = models.CharField(max_length=200, null=True)
     password = models.CharField(max_length=200, null=True)
     profile_pic = models.ImageField(
@@ -43,6 +42,8 @@ class Faculty(models.Model):
         return str(self.firstname + " " + self.lastname)
 
 # Class to Define Subjects with their subject code
+
+
 class Subject(models.Model):
 
     CODE = (
@@ -171,6 +172,8 @@ class Subject(models.Model):
 
     
 # Class for student data
+
+
 class Student(models.Model):
 
     # defining tuples for the choice fields
@@ -192,7 +195,7 @@ class Student(models.Model):
 
     firstname = models.CharField(max_length=200, null=True, blank=True)
     lastname = models.CharField(max_length=200, null=True, blank=True)
-    rollNumebr = models.CharField(max_length=200, primary_key=True)
+    rollNumber = models.CharField(max_length=200, primary_key=True)
     email = models.EmailField(max_length=200, null=True)
     phoneNumber = models.CharField(max_length=200, null=True)
     email = models.CharField(max_length=200, null=True)
@@ -236,7 +239,7 @@ class Attendance(models.Model):
         max_length=200, null=True, default='Absent', choices=STATUS)
 
     def __str__(self):
-        return str(self.rollnumber + " _ " + str(self.date) + " _ " + str(self.time) + " _ " + str(self.lecture_number) + " _ " + str(self.lecture))
+        return str(self.rollnumber + " _ " + str(self.date) + " _ " + str(self.time) + " _ " + str(self.lecture_number))
 
 
 class Lecture(models.Model):

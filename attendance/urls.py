@@ -17,9 +17,16 @@ urlpatterns = [
          name='faculty_subject_assign'),
     path('searchFacultyRecord', views.searchFacultyRecord,
          name='searchFacultyRecord'),
-    #path('redirectRegisterStudent/', redirectRegisterStudent, name = 'redirectRegisterStudent'),
+    path('updateStudentRedirect', views.updateStudentRedirect,
+         name='updateStudentRedirect'),
     #path('redirectTakeAttendance', redirectAttendance, name = 'redirectTakeAttendance'),
     #path('redirectViewRecords/', redirectViewRecords, name = 'redirectViewRecords'),
     #path('takeAttendance', views.takeAttendance, name = 'takeAttendance'),
+<<<<<<< HEAD
     path('reports',views.reports,name='reports'),
 ]
+=======
+    path('reports', views.reports, name='reports'),
+    path('tables', views.tables, name='tables'),
+]
+>>>>>>> master

@@ -57,6 +57,7 @@
                 </div>
             </div>
             <!-- Take Attendance -->
+            
             <div class="row m-t-100" id="attendance">
                 <div class="col-lg-12">
                     <div class="au-card recent-report">
@@ -66,6 +67,7 @@
                                 <form action="registerStudent" method="post" enctype="multipart/form-data"
                                     data-toggle="validator">
                                     {% csrf_token %}
+
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="firstname" name="firstname"
                                             placeholder="First Name" data-error="Enter First Name" required="required" maxlength="32" pattern="^[a-zA-Z]*" />
