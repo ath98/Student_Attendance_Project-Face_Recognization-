@@ -18,10 +18,9 @@ import os
 
 def user_dir_path(instance, filename):
     name, ext = filename.split(".")
-    name = instance.firstname + instance.lastname
+    name = instance.firstname + '_' + instance.lastname
     filename = name + '.' + ext
-    dir_path = os.path.join(IMG_ROOT, 'faculty')
-    return 'dir_path/{}'.format(filename)
+    return 'datasets/faculty/{}'.format(filename)
 
 # Class for professor data
 

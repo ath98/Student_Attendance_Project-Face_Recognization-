@@ -13,8 +13,10 @@ from django.views.generic import FormView
 import json
 import numpy as np
 import datetime
+
+from numpy.lib.function_base import insert
 from .models import Faculty, Student,Subject,Lecture, Attendance
-from .forms import CreateStudentForm
+from .forms import CreateStudentForm, CreateFacultyForm
 from .reports import *
 
 from .face_detection import MarkAttendance
@@ -44,11 +46,12 @@ def home(request):
         assigned_subject_count = len(assigned_subject)    
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
     lecture_number = Lecture.get_lecture_number()
-    print(lecture_number)
+
     context = {
         'assigned_subject_count' : assigned_subject_count,
         'subjects' : subjects,
         'lecture_number': lecture_number,
+        'faculty' : faculty,
     }
     return render(request, 'templates/index.html', context)
 
@@ -58,15 +61,49 @@ def searchFacultyRecord(request):
     if request.method == 'POST':
         username = request.POST['faculty']
         faculty = Faculty.objects.get(username = username)
+        faculty_form = CreateFacultyForm(instance = faculty)
         assigned_subject = jsonDec.decode(faculty.assigned_subjects)
         subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
         context = {
             'subjects' : subjects,
             'faculty' : faculty,
+            'form' : faculty_form,
         }
         return render(request, 'templates/faculty.html', context)
     
     return render('admin')
+
+@login_required(login_url='login')
+def faculty_profile(request):
+    username = request.user.username
+    faculty = Faculty.objects.get(username = username)
+    assigned_subject = jsonDec.decode(faculty.assigned_subjects)
+    subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
+    faculty_form = CreateFacultyForm(instance = faculty)
+    context = {
+        'subjects' : subjects,
+        'faculty' : faculty,
+        'form' : faculty_form,
+    }
+    return render(request, 'templates/faculty.html', context)
+
+@login_required(login_url = 'login')
+def updateFaculty(request):
+    if request.method == 'POST':
+        context = {}
+        try:
+            faculty = Faculty.objects.get(username = request.POST['username'])
+            updateFacultyForm = CreateFacultyForm(data = request.POST, files=request.FILES, instance = faculty)
+            if updateFacultyForm.is_valid():
+                updateFacultyForm.save()
+                messages.success(request, 'Profile updated Successfully')
+                return redirect('home')
+        except:
+            messages.error(request, 'Updation Unsucessfull')
+            return redirect('home')
+    context = {}
+    return render(request, 'templates/faculty.html', context)
+
 
 # method to register faculty
 def registerFaculty(request):
@@ -156,21 +193,6 @@ def faculty_subject_assign(request):
         return redirect('admin')
 
 
-# method to display faculty profile
-# work in progress
-@login_required(login_url='login')
-def view_faculty_profile(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        
-        faculty = Faculty.objects.filter(username = username)
-        context = {
-            'faculty':faculty,
-        }
-        return None
-
-
-
 
 # method to verify user login and do further activities
 def loginPage(request):
@@ -200,38 +222,9 @@ def logoutUser(request):
     logout(request)
     return redirect('login')
 
-@login_required(login_url='login')
-def redirect_faculty_profile(request):
-    username = request.user.username
-    faculty = Faculty.objects.get(username = username)
-    assigned_subject = jsonDec.decode(faculty.assigned_subjects)
-    subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
-    context = {
-        'subjects' : subjects,
-        'faculty' : faculty,
-    }
-    return render(request, 'templates/faculty.html', context)
-
 # method to redirect to records page
 def redirectViewRecords(request):
     context = {}
-
-# method to update faculty profile
-# work in progress
-@login_required(login_url='login')
-def update_faculty_profile(request):
-    if request.method == 'POST':
-        firstname = request.POST['firstname']
-        lastname = request.POST['lastname']
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-
-        # your code goes here:
-
-    context = {}
-    return render(request, 'templates/faculty.html', context)
-
 
 @login_required(login_url='login')
 def registerStudent(request):

@@ -122,13 +122,13 @@ class FacultyChoiceField(forms.Form):
         empty_label=None)
 
 
-class FacultyForm(ModelForm):
+class CreateFacultyForm(ModelForm):
     class Meta:
         model = Faculty
         fields = '__all__'
-        exclude = ['user']
+        exclude = ['user','assigned_subjects','password']
     def __init__(self, *args, **kwargs):
-        super(FacultyForm, self).__init__(*args, **kwargs)
+        super(CreateFacultyForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'    
 
