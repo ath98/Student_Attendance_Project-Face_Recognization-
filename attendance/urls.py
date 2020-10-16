@@ -19,14 +19,10 @@ urlpatterns = [
          name='searchFacultyRecord'),
     path('updateStudentRedirect', views.updateStudentRedirect,
          name='updateStudentRedirect'),
+    path('updateStudent', views.updateStudent, name = 'updateStudent'),
     #path('redirectTakeAttendance', redirectAttendance, name = 'redirectTakeAttendance'),
     #path('redirectViewRecords/', redirectViewRecords, name = 'redirectViewRecords'),
     #path('takeAttendance', views.takeAttendance, name = 'takeAttendance'),
-<<<<<<< HEAD
-    path('reports',views.reports,name='reports'),
-]
-=======
     path('reports', views.reports, name='reports'),
     path('tables', views.tables, name='tables'),
 ]
->>>>>>> master

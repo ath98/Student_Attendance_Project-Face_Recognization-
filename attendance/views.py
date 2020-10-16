@@ -417,14 +417,14 @@ def updateStudentRedirect(request):
         except:
             messages.error(request, 'Student Not Found')
             return redirect('admin')
-    return redirect('admin')
+    return render(request, 'templates/student_update.html', context)
         
 @login_required(login_url = 'login')
 def updateStudent(request):
     if request.method == 'POST':
         context = {}
         try:
-            student = Student.objects.get(registration_id = request.POST['rollNumber'])
+            student = Student.objects.get(rollNumber = request.POST['rollNumber'])
             updateStudentForm = CreateStudentForm(data = request.POST, instance = student)
             if updateStudentForm.is_valid():
                 updateStudentForm.save()
@@ -433,7 +433,8 @@ def updateStudent(request):
         except:
             messages.error(request, 'Updation Unsucessfull')
             return redirect('admin')
-    return render(request, 'attendence_sys/student_update.html', context)
+    context = {}
+    return render(request, 'templates/student_update.html', context)
 
 
 def reports(request):  

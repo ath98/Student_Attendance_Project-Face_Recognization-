@@ -171,9 +171,14 @@ class Subject(models.Model):
     type = models.CharField(max_length=200, choices=TYPE, blank=True, null=True)
 
     
+# def student_dir_path(instance, filename):
+#     name, ext = filename.split(".")
+#     name = instance.rollNumber
+#     filename = name + '.' + ext
+#     return 'datasets/{}/{}/{}'.format(instance.year, instance.shift, filename)
+
+
 # Class for student data
-
-
 class Student(models.Model):
 
     # defining tuples for the choice fields
@@ -202,6 +207,7 @@ class Student(models.Model):
     gender = models.CharField(max_length=100, null=True, choices=GENDER)
     year = models.CharField(max_length=100, null=True, choices=YEAR)
     shift = models.CharField(max_length=100, null=True, choices=SHIFT)
+    # picture = models.ImageField(upload_to = student_dir_path, null = True, blank = True)
 
     def __str__(self):
         return str(self.rollNumebr)
