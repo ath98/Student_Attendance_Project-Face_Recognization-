@@ -12,22 +12,32 @@ def MarkAttendance(details):
     attendance = Attendance()
     faceDetect = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    datasets = IMG_ROOT    
+    #datasets = IMG_ROOT + '/'+ +'/'+ 
+    datasets = os.path.join(IMG_ROOT,details['lecture_year'],details['lecture_shift'])
+    print(datasets)
     (images, lables, names, id) = ([], [], {}, 0)
+    # for (subdir, dir, files) in os.walk(datasets):
+    #     for subdir in dir:
+    #         sub= os.path.join(datasets,subdir)
+    #         for (subdir, dir, files) in os.walk(sub):
+    #             for subdir in dir:
+    #                 subIn = os.path.join(sub,subdir)                    
+    #                 for (subdir, dir, files) in os.walk(subIn):
+    #                     for subdir in files:
+    #                         names[id] = subdir
+    #                         path = os.path.join(subIn, subdir)
+    #                         lable = id
+    #                         images.append(cv2.imread(path, 0)) 
+    #                         lables.append(int(lable))
+    #                     id +=1
     for (subdir, dir, files) in os.walk(datasets):
-        for subdir in dir:
-            sub= os.path.join(datasets,subdir)
-            for (subdir, dir, files) in os.walk(sub):
-                for subdir in dir:
-                    subIn = os.path.join(sub,subdir)                    
-                    for (subdir, dir, files) in os.walk(subIn):
-                        for subdir in files:
-                            names[id] = subdir
-                            path = os.path.join(subIn, subdir)
-                            lable = id
-                            images.append(cv2.imread(path, 0)) 
-                            lables.append(int(lable))
-                        id +=1
+        for subdir in files:
+            names[id] = subdir
+            path = os.path.join(datasets, subdir)
+            lable = id
+            images.append(cv2.imread(path, 0)) 
+            lables.append(int(lable))
+        id +=1
 
     (images, lables) = [np.array(lis) for lis in [images, lables]]
     model = cv2.face.LBPHFaceRecognizer_create()

@@ -1,39 +1,51 @@
-from .models import Attendance, Subject, Student
-from django.http import request
-from django.shortcuts import render
+from .models import Attendance, Subject, Student, Lecture
 
-def byLecture(request,context):  # GET REPORTS OF WHOLE LECTURE
-    
-    lecId = request.POST.get("ID")
-    print("IN---------------------------")
-    obj = Attendance.objects.filter(id=lecId)#Remember to change after
-    context = {
-        'obj': obj
-    }
-    return render(request, 'templates/reports.html', context)
+class report():
 
+    def byLecture(self,lecId):  # GET REPORTS OF WHOLE LECTURE    
+        d = dict()
+        obj = Attendance.objects.filter(lecture_number=lecId)#Remember to change after  
+        lec = Lecture.objects.get(lecture_number=lecId)    
+        sub = Subject.objects.filter(subject_code= lec.subject)
+        d['obj'] = obj
+        d['sub'] = sub
+        return d
 
-def byDefaulter(request,context):  # GET REPORTS OF A SPECIFIC STUDENT AND SUBJECT
-    if request.method == 'POST':
-        roll = request.POST.get("roll")
-        code = request.POST.get("sub_code")
-        obj = Attendance.objects.filter(rollnumber=roll, status="Present")
-        sub = Subject.objects.get(subject_code=code)
-        for i in obj.status:
-            if(i == 'Present'):
-                count = count + 1
+ 
+    def byDefaulter(roll,code):  # GET REPORTS OF A SPECIFIC STUDENT AND SUBJECT
+
+        stu = Student.objects.get(rollNumebr=roll)        
+        sub = Subject.objects.get(year= stu.year)
+        #att = Attendance.objects.filter(rollnumber=roll, status='Present',)
+        lecs = Lecture.objects.filter(subject= code).count()   #Total count of lec
+        lec = Attendance.objects.filter(rollnumber=roll)
+        for l in lec.all:
+            c = Attendance.objects.select_related()
+            
+            
         context = {
-            'obj': obj,
-            'sub': sub
+            'stu': obj,
+            'sub': sub,
         }
-        return render(request, 'templates/reports.html', context)
+        return context
 
 
-def reportsByRoll(request,context):  # GET REPORTS BY ROLL NUMBER FOR ALL SUBJECTS
-    if request.method == 'POST':
-        roll = request.POST.get("roll")
-        obj = Attendance.objects.get(rollnumber=roll)
-        context = {
-            'obj': obj
-        }
-        return render(request, 'templates/reports.html', context)
+    # def reportsByRoll(roll):  # GET REPORTS BY ROLL NUMBER FOR ALL SUBJECTS        
+
+    #     fy = '31090'
+    #     stu = Student.objects.get(rollNumebr=roll)        
+    #     sub = Subject.objects.get(year= stu.year)
+    #     att = Attendance.objects.get(rollnumber=roll)
+    #     lec = Lecture.objects.get.all()
+    #     for l in lec.all:
+    #         i = 1
+    #         if stu.year == '1':
+    #             count = Lecture.objects.get(fy + i
+    #         if stu.year == '2':
+    #         if stu.year == '3':
+            
+    #     context = {
+    #         'stu': obj,
+    #         'sub': sub,
+    #     }
+    #     return context

@@ -280,8 +280,8 @@ def registerStudent(request):
         student.email = email
         student.phoneNumber = phonenumber
         student.gender = gender
-        student.shift = shift
-        student.year = year
+        student.shift = s
+        student.year = y
         
         stat = False
         dataset = IMG_ROOT
@@ -399,22 +399,23 @@ def reports(request):
     return render(request,'templates/reports.html',context)
 
 def tables(request):
-    reportType= request.POST.get('selectReport')
+    reportType= int(request.POST.get('selectReport'))
+    rep = report()
     print(reportType)
     context = {} 
-    # if reportType == 1:
-    obj = Attendance.objects.filter(id= 36)
-    print(obj)
-    context = {'obj':obj}
-        #return redirect(byLecture(context))
-    # if reportType == 2:
-    #     id = request.POST.get('ID')
-    #     context = {}   
-    #     return redirect(byDefaulter(context))   
-    # if  reportType == 3:  
-    #     id = request.POST.get('ID')
-    #     context = {}
-    #     return redirect(reportsByRoll(context))
+    if reportType == 1:
+        lecId = request.POST.get("ID")
+        print("IN")
+        context = rep.byLecture(lecId)        
+        print(context)
+    if reportType == 2:
+        id = request.POST.get('ID')
+        context = {}   
+        return redirect(byDefaulter(context))   
+    if  reportType == 3:  
+        roll = request.POST.get("roll")        
+        context = rep.reportsByRoll(roll)
+        return render(request,'templates/rep.html',context)
     
     return render(request,'templates/table.html',context)
 
