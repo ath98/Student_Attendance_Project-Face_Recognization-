@@ -136,3 +136,4 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 IMG_ROOT = os.path.join(BASE_DIR, 'datasets')
+IMG_URL= '/img/'

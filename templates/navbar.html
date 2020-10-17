@@ -7,7 +7,7 @@
                 <div class="header-button ml-auto">
                     <div class="account-wrap">
                         <div class="account-item clearfix js-item-menu">
-                            {% if request.user.profile_pic is None %}
+                            {% if faculty.profile_pic.url is None %}
                             <div class="image">
                                 <img src="{% static 'images/icon/avatar-01.jpg' %}" alt="{{request.user.username}}" />
                             </div>
@@ -30,7 +30,7 @@
                                 </div>
                                 <div class="account-dropdown__body">
                                     <div class="account-dropdown__item">
-                                        <a href="faculty">
+                                        <a href="faculty_profile">
                                             <i class="zmdi zmdi-account"></i>Account</a>
                                     </div>
                                 </div>
@@ -41,13 +41,16 @@
                             </div>
                             {% else %}
                             <div class="image">
-                                <img src="{{request.user.profile_pic}}" alt = "{{request.user.username}}" />
+                                <img src="{{ faculty.profile_pic }}" alt = "{{request.user.username}}" />
+                            </div>
+                            <div class="content">
+                                <a class="js-acc-btn" href="#">Hello, {{ request.user.username }}</a>
                             </div>
                             <div class="account-dropdown js-dropdown">
                                 <div class="info clearfix">
                                     <div class="image">
                                         <a href="#">
-                                            <img src="{{request.user.profile_pic}}" alt = "{{request.user.username}}" />
+                                            <img src="{{ faculty.profile_pic }}" alt = "{{request.user.username}}" />
                                         </a>
                                     </div>
                                     <div class="content">
@@ -59,7 +62,7 @@
                                 </div>
                                 <div class="account-dropdown__body">
                                     <div class="account-dropdown__item">
-                                        <a href="faculty">
+                                        <a href="faculty_profile">
                                             <i class="zmdi zmdi-account"></i>Account</a>
                                     </div>
                                 </div>

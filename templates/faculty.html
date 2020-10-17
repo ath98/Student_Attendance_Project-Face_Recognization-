@@ -8,44 +8,9 @@
     <div class="card">
         <div class="card-header">Your Profile</div>
         <div class="card-body card-block">
-            <form action="update_profile" method="post" novalidate enctype="multipart/form-data">
+            <form action="updateFacultyProfile" method="post" novalidate enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <i class="fa fa-user"></i>
-                        </div>
-                        <input type="text" id="username" name="firstname" placeholder="{{faculty.firstname}}"
-                            class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <i class="fa fa-user"></i>
-                        </div>
-                        <input type="text" id="username" name="lastname" placeholder="{{faculty.lastname}}"
-                            class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <i class="fa fa-user"></i>
-                        </div>
-                        <input type="text" id="username" name="username" placeholder="{{faculty.username}}"
-                            class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <i class="fa fa-envelope"></i>
-                        </div>
-                        <input type="email" id="email" name="email" placeholder="{{faculty.email}}"
-                            class="form-control">
-                    </div>
-                </div>
+                {{ form.as_p }}
                 <div class="form-group">
                     <div class="input-group">
                         <p class="text-muted m-b-15">Assigned Subjects :</p>

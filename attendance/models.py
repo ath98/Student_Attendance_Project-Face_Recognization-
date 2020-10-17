@@ -18,10 +18,9 @@ import os
 
 def user_dir_path(instance, filename):
     name, ext = filename.split(".")
-    name = instance.firstname + instance.lastname
+    name = instance.firstname + '_' + instance.lastname
     filename = name + '.' + ext
-    dir_path = os.path.join(IMG_ROOT, 'faculty')
-    return 'dir_path/{}'.format(filename)
+    return 'datasets/faculty/{}'.format(filename)
 
 # Class for professor data
 
@@ -181,9 +180,14 @@ class Subject(models.Model):
         return str(self.subject_code +' _ '+ self.subject_name)
 
     
+# def student_dir_path(instance, filename):
+#     name, ext = filename.split(".")
+#     name = instance.rollNumber
+#     filename = name + '.' + ext
+#     return 'datasets/{}/{}/{}'.format(instance.year, instance.shift, filename)
+
+
 # Class for student data
-
-
 class Student(models.Model):
 
     # defining tuples for the choice fields
@@ -212,6 +216,7 @@ class Student(models.Model):
     gender = models.CharField(max_length=100, null=True, choices=GENDER)
     year = models.CharField(max_length=100, null=True, choices=YEAR)
     shift = models.CharField(max_length=100, null=True, choices=SHIFT)
+    # picture = models.ImageField(upload_to = student_dir_path, null = True, blank = True)
 
     def __str__(self):
         return str(self.rollNumebr)
@@ -263,8 +268,8 @@ class Lecture(models.Model):
     def get_lecture_number():
         last_lecture = Lecture.objects.all().order_by('lecture_number').last()
         if not last_lecture:
-            return 0
-        return last_lecture.lecture_number + 1
+            return 1
+        return last_lecture.lecture_number
 
     lecture_number = models.IntegerField(primary_key=True, default= increment_lecture_number)
     tfrom =  models.TimeField(blank=True, null=True)
@@ -274,7 +279,3 @@ class Lecture(models.Model):
     year = models.CharField(max_length=200, null=True, blank=True)
     shift = models.CharField(max_length=200, null=True, blank=True)
     subject = models.CharField(max_length=200, null=True, blank=True)
-
-    def __str__(self) -> str: ("Lecture Number :" +
-                               self.lecture_number + "\nSubject :" + self.subject)
-
