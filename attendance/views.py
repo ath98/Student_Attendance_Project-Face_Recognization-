@@ -9,7 +9,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.utils import tree
 from django.views.generic import FormView  
-
+import keyboard
 import json
 import numpy as np
 import datetime
@@ -37,8 +37,6 @@ jsonDec = json.decoder.JSONDecoder()
 @login_required(login_url='login')
 def home(request):
     user = request.user.username
-    if user == 'admin':
-        return redirect('admin')
     faculty = Faculty.objects.get(username = user)
     assigned_subject = jsonDec.decode(faculty.assigned_subjects)
     assigned_subject_count = 0
@@ -160,7 +158,6 @@ def registerFaculty(request):
 @login_required(login_url='login')
 def admin_page(request):
     faculty_count = Faculty.objects.all().count()
-    student_count = Student.objects.all().count()
     faculty = Faculty.objects.all()
     sem1_subjects = Subject.objects.filter(semester = 1)
     sem2_subjects = Subject.objects.filter(semester = 2)
@@ -168,8 +165,7 @@ def admin_page(request):
     sem4_subjects = Subject.objects.filter(semester = 4)
     sem5_subjects = Subject.objects.filter(semester = 5)
     context = {
-        'faculty_count' : faculty_count,
-        'student_count' : student_count, 
+        'faculty_count' : faculty_count, 
         'faculty': faculty,
         'sem1_subjects': sem1_subjects,
         'sem2_subjects': sem2_subjects,
@@ -294,6 +290,8 @@ def registerStudent(request):
             print("------------------------")
             print(paths)
             print("------------------------")
+            path = os.path.join(paths,rollNumber)
+            os.mkdir(path)
 
         # img sample size
         (width, height) = (130, 100)
@@ -305,12 +303,13 @@ def registerStudent(request):
             faces = faceDetect.detectMultiScale(gray, 1.3, 5)
             for(x,y,w,h) in faces:
                 sampleNum +=1
-                img_name = str(rollNumber) + '.png'
-                cv2.imwrite(os.path.join(paths, img_name), gray[y:y+h, x:x+w])
+                img_name = str(sampleNum) + '.png'
+                print(path)
+                cv2.imwrite(os.path.join(path, img_name), gray[y:y+h, x:x+w])
                 cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2) 
                 cv2.waitKey(250)
-            cv2.waitKey(1)
-            if (sampleNum>2):
+            cv2.waitKey(10)
+            if (sampleNum>30):
                 break
         cam.release()
         cv2.destroyAllWindows()
@@ -431,26 +430,28 @@ def updateStudent(request):
 
 
 def reports(request):  
-    
     context={}    
     return render(request,'templates/reports.html',context)
 
 def tables(request):
-    reportType= request.POST.get('selectReport')
+    reportType= int(request.POST.get('selectReport'))
+    rep = report()
     print(reportType)
     context = {} 
-    # if reportType == 1:
-    obj = Attendance.objects.filter(id= 36)
-    print(obj)
-    context = {'obj':obj}
-        #return redirect(byLecture(context))
-    # if reportType == 2:
-    #     id = request.POST.get('ID')
-    #     context = {}   
-    #     return redirect(byDefaulter(context))   
-    # if  reportType == 3:  
-    #     id = request.POST.get('ID')
-    #     context = {}
-    #     return redirect(reportsByRoll(context))
+    if reportType == 1:
+        lecId = request.POST.get("ID")
+        print("IN")
+        context = rep.byLecture(lecId)        
+        print(context)
+    if reportType == 2:
+        id = request.POST.get('ID')
+        context = {}   
+        return redirect(byDefaulter(context))   
+    if  reportType == 3:  
+        roll = request.POST.get("roll")        
+        context = rep.reportsByRoll(roll)
+        return render(request,'templates/rep.html',context)
     
     return render(request,'templates/table.html',context)
+
+        
