@@ -244,7 +244,7 @@ class Attendance(models.Model):
     )
 
     faculty_name = models.CharField(max_length=2000, null=True, blank=True)
-    rollnumber = models.TextField(max_length=200, null=True, blank=True)
+    rollnumber = models.TextField(max_length=2000, null=True, blank=True)
     date = models.DateField(auto_now_add=True, null=True)
     time = models.TimeField(auto_now_add=True, null=True)
     year = models.CharField(max_length=200, null=True, choices=YEAR)

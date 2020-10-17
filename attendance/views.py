@@ -290,6 +290,8 @@ def registerStudent(request):
             print("------------------------")
             print(paths)
             print("------------------------")
+            path = os.path.join(paths,rollNumber)
+            os.mkdir(path)
 
         # img sample size
         (width, height) = (130, 100)
@@ -301,12 +303,13 @@ def registerStudent(request):
             faces = faceDetect.detectMultiScale(gray, 1.3, 5)
             for(x,y,w,h) in faces:
                 sampleNum +=1
-                img_name = str(rollNumber) + '.png'
-                cv2.imwrite(os.path.join(paths, img_name), gray[y:y+h, x:x+w])
+                img_name = str(sampleNum) + '.png'
+                print(path)
+                cv2.imwrite(os.path.join(path, img_name), gray[y:y+h, x:x+w])
                 cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2) 
                 cv2.waitKey(250)
-            cv2.waitKey(1)
-            if (sampleNum>2):
+            cv2.waitKey(10)
+            if (sampleNum>30):
                 break
         cam.release()
         cv2.destroyAllWindows()
