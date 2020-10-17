@@ -53,7 +53,7 @@ def MarkAttendance(details):
             minNeighbors=3,
             minSize=(30, 30)
         )
-
+        presentRoll = np.empty(0)
         for (x, y, w, h) in faces:
             face = gray[y:y + h, x:x + w]
             face_resize = cv2.resize(face, (80, 130))
@@ -62,17 +62,17 @@ def MarkAttendance(details):
             if prediction[1]<500:  
                 stdId=names[prediction[0]]  
                 rol = stdId.split('.png')  
-                print(rol[0])         
-                count = Attendance.objects.filter(rollnumber=stdId, lecture_number=details['lecture_no'])
-                if not count:
-                    attendance.year = details['lecture_year']
-                    attendance.shift = details['lecture_shift']
-                    attendance.status = 'Present'
-                    attendance.faculty_name = details['faculty_name']
-                    attendance.rollnumber = rol[0] 
-                    attendance.date = details['dt']
-                    attendance.lecture_number = details['lecture_no']
-                    attendance.save()  
+                c = np.where( presentRoll == rol)
+                if c>0:
+                    presentRoll = np.append(rol)
+                # attendance.year = details['lecture_year']
+                # attendance.shift = details['lecture_shift']
+                # attendance.status = 'Present'
+                # attendance.faculty_name = details['faculty_name']
+                # attendance.rollnumber = presentRoll
+                # attendance.date = details['dt']
+                # attendance.lecture_number = details['lecture_no']
+                # attendance.save()  
                     
                     no = rol[0]
 
@@ -101,12 +101,20 @@ def MarkAttendance(details):
             else: 
                 cv2.putText(img, 'not recognized',  
                 (x-10, y-10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0)) 
-
+        
         cv2.imshow("Face", img)
         
         key = cv2.waitKey(250)
         if key == 27:
             break
+    attendance.year = details['lecture_year']
+    attendance.shift = details['lecture_shift']
+    attendance.status = 'Present'
+    attendance.faculty_name = details['faculty_name']
+    attendance.rollnumber = presentRoll
+    attendance.date = details['dt']
+    attendance.lecture_number = details['lecture_no']
+    attendance.save() 
     cv2.destroyAllWindows()
     
     return 1

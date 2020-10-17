@@ -9,12 +9,12 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.utils import tree
 from django.views.generic import FormView  
-
+import keyboard
 import json
 import numpy as np
 import datetime
 from .models import Faculty, Student,Subject,Lecture, Attendance
-from .forms import CreateStudentForm
+from .forms import FacultyChoiceField
 from .reports import *
 
 from .face_detection import MarkAttendance
@@ -35,8 +35,6 @@ jsonDec = json.decoder.JSONDecoder()
 @login_required(login_url='login')
 def home(request):
     user = request.user.username
-    if user == 'admin':
-        return redirect('admin')
     faculty = Faculty.objects.get(username = user)
     assigned_subject = jsonDec.decode(faculty.assigned_subjects)
     assigned_subject_count = 0
@@ -123,7 +121,6 @@ def registerFaculty(request):
 @login_required(login_url='login')
 def admin_page(request):
     faculty_count = Faculty.objects.all().count()
-    student_count = Student.objects.all().count()
     faculty = Faculty.objects.all()
     sem1_subjects = Subject.objects.filter(semester = 1)
     sem2_subjects = Subject.objects.filter(semester = 2)
@@ -131,8 +128,7 @@ def admin_page(request):
     sem4_subjects = Subject.objects.filter(semester = 4)
     sem5_subjects = Subject.objects.filter(semester = 5)
     context = {
-        'faculty_count' : faculty_count,
-        'student_count' : student_count, 
+        'faculty_count' : faculty_count, 
         'faculty': faculty,
         'sem1_subjects': sem1_subjects,
         'sem2_subjects': sem2_subjects,
@@ -397,47 +393,7 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
     context = {}
     return render(request, 'templates/index.html', context)
 
-@login_required(login_url = 'login')
-def updateStudentRedirect(request):
-    context = {}
-    if request.method == 'POST':
-        try:
-            rollNumber = request.POST['rollNumber']
-            shift = request.POST['shift']
-            year = request.POST['year']
-
-            student = Student.objects.get(rollNumber = rollNumber, shift = shift, year = year)
-            
-            updateStudentForm = CreateStudentForm(instance=student)
-            context = {
-                'form':updateStudentForm,
-                'rollNumber':rollNumber, 
-                'student':student
-            }
-        except:
-            messages.error(request, 'Student Not Found')
-            return redirect('admin')
-    return redirect('admin')
-        
-@login_required(login_url = 'login')
-def updateStudent(request):
-    if request.method == 'POST':
-        context = {}
-        try:
-            student = Student.objects.get(registration_id = request.POST['rollNumber'])
-            updateStudentForm = CreateStudentForm(data = request.POST, instance = student)
-            if updateStudentForm.is_valid():
-                updateStudentForm.save()
-                messages.success(request, 'Updation Success')
-                return redirect('admin')
-        except:
-            messages.error(request, 'Updation Unsucessfull')
-            return redirect('admin')
-    return render(request, 'attendence_sys/student_update.html', context)
-
-
 def reports(request):  
-    
     context={}    
     return render(request,'templates/reports.html',context)
 
@@ -461,3 +417,5 @@ def tables(request):
         return render(request,'templates/rep.html',context)
     
     return render(request,'templates/table.html',context)
+
+        
