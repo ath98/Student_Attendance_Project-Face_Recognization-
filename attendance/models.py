@@ -163,11 +163,21 @@ class Subject(models.Model):
         ('Guest','Guest'),
     )
 
+    YEAR = (
+        ('1','1'),
+        ('2','2'),
+        ('3','3'),
+    )
+
     subject_code = models.CharField(
         max_length=200, primary_key=True, choices=CODE, blank=True)
     subject_name = models.CharField(max_length=200, null=True, choices=NAME)
     semester = models.CharField(max_length=200, choices=SEMESTER, null=True, blank=True)
+    year = models.CharField(max_length=200, choices=YEAR, null=True, blank=True)
     type = models.CharField(max_length=200, choices=TYPE, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.subject_code +' _ '+ self.subject_name)
 
     
 # def student_dir_path(instance, filename):
@@ -233,8 +243,8 @@ class Attendance(models.Model):
         ('Absent', 'Absent'),
     )
 
-    faculty_name = models.CharField(max_length=200, null=True, blank=True)
-    rollnumber = models.CharField(max_length=200, null=True, blank=True)
+    faculty_name = models.CharField(max_length=2000, null=True, blank=True)
+    rollnumber = models.TextField(max_length=2000, null=True, blank=True)
     date = models.DateField(auto_now_add=True, null=True)
     time = models.TimeField(auto_now_add=True, null=True)
     year = models.CharField(max_length=200, null=True, choices=YEAR)
@@ -244,7 +254,7 @@ class Attendance(models.Model):
         max_length=200, null=True, default='Absent', choices=STATUS)
 
     def __str__(self):
-        return str(self.rollnumber + " _ " + str(self.date) + " _ " + str(self.time) + " _ " + str(self.lecture_number))
+        return str(self.rollnumber + " _ " + str(self.date) + " _ " + str(self.time) + " _ " + self.lecture_number)
 
 
 class Lecture(models.Model):
