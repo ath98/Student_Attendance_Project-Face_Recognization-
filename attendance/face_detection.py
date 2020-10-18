@@ -70,12 +70,13 @@ def MarkAttendance(details):
             if prediction[1] < 500:
                 stdId = names[prediction[0]]
                 rol = stdId.split('.png')
-                a=0
-                
-                    if presentRoll[i] == rol:
-                        print("Exsists")
-                    else:
-                        presentRoll.append(rol)
+                                
+            try:
+                if(presentRoll.index(rol)):
+                    print('exsists')
+                    pass
+            except:
+                presentRoll.append(rol)
                 
                 # c = np.where( presentRoll == rol)
                 # if c>0:

@@ -13,6 +13,7 @@ import keyboard
 import json
 import numpy as np
 import datetime
+import pyttsx3
 
 from numpy.lib.function_base import insert
 from .models import Faculty, Student,Subject,Lecture, Attendance
@@ -38,18 +39,26 @@ jsonDec = json.decoder.JSONDecoder()
 def home(request):
     user = request.user.username
     faculty = Faculty.objects.get(username = user)
+    student_count = Student.objects.count()
     assigned_subject = jsonDec.decode(faculty.assigned_subjects)
     assigned_subject_count = 0
     if assigned_subject[0] != "None":
         assigned_subject_count = len(assigned_subject)    
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
     lecture_number = Lecture.get_lecture_number()
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+        print(profile_url)
 
     context = {
         'assigned_subject_count' : assigned_subject_count,
         'subjects' : subjects,
         'lecture_number': lecture_number,
         'faculty' : faculty,
+        'student_count':registerStudent,
+        'profile_url':profile_url,
     }
     return render(request, 'templates/index.html', context)
 
@@ -158,6 +167,7 @@ def registerFaculty(request):
 @login_required(login_url='login')
 def admin_page(request):
     faculty_count = Faculty.objects.all().count()
+    student_count = Student.objects.all().count()
     faculty = Faculty.objects.all()
     sem1_subjects = Subject.objects.filter(semester = 1)
     sem2_subjects = Subject.objects.filter(semester = 2)
@@ -166,6 +176,7 @@ def admin_page(request):
     sem5_subjects = Subject.objects.filter(semester = 5)
     context = {
         'faculty_count' : faculty_count, 
+        'student_count':student_count,
         'faculty': faculty,
         'sem1_subjects': sem1_subjects,
         'sem2_subjects': sem2_subjects,
@@ -267,7 +278,7 @@ def registerStudent(request):
         print(rollNumber)
         # assigning those values to the student object
         student = Student()
-        student.rollNumebr = rollNumber
+        student.rollNumber = rollNumber
         student.firstname = firstname
         student.lastname = lastname
         student.email = email
@@ -297,6 +308,12 @@ def registerStudent(request):
         (width, height) = (130, 100)
         cam = cv2.VideoCapture(0)
         sampleNum = 0 
+        say = 'Capturing your face, stay stable'
+        speaker = pyttsx3.init()
+        voice_rate = 150
+        speaker.setProperty('rate', voice_rate)
+        speaker.say(say)
+        speaker.runAndWait()
         while(True):
             ret,img = cam.read()
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -304,7 +321,6 @@ def registerStudent(request):
             for(x,y,w,h) in faces:
                 sampleNum +=1
                 img_name = str(sampleNum) + '.png'
-                print(path)
                 cv2.imwrite(os.path.join(path, img_name), gray[y:y+h, x:x+w])
                 cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2) 
                 cv2.waitKey(250)
@@ -397,7 +413,9 @@ def updateStudentRedirect(request):
             rollNumber = request.POST['rollNumber']
             shift = request.POST['shift']
             year = request.POST['year']
-
+            print("shift:" + shift)
+            print("year:"+ year)
+            print("rollNumber:"+ rollNumber)
             student = Student.objects.get(rollNumber = rollNumber, shift = shift, year = year)
             
             updateStudentForm = CreateStudentForm(instance=student)
