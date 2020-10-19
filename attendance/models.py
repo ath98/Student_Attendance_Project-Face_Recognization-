@@ -177,7 +177,7 @@ class Subject(models.Model):
     type = models.CharField(max_length=200, choices=TYPE, blank=True, null=True)
 
     def __str__(self):
-        return str(self.subject_code +' _ '+ self.subject_name)
+        return str(self.subject_code)
 
     
 # def student_dir_path(instance, filename):
@@ -219,7 +219,7 @@ class Student(models.Model):
     # picture = models.ImageField(upload_to = student_dir_path, null = True, blank = True)
 
     def __str__(self):
-        return str(self.rollNumebr)
+        return str(self.rollNumber)
 
 # Class for attendance data
 

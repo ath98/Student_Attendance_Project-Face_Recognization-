@@ -478,7 +478,7 @@ def tables(request):
         print("IN")
         context = rep.byLecture(lecId) 
         return render(request,'templates/table.html',context)
-    if reportType == 2:
+    if reportType == 3:
         id = request.POST.get('roll')
         code = request.POST.get('sub_code')
         details = {
@@ -487,9 +487,12 @@ def tables(request):
         }       
         context =rep.byDefaulter(details)
         return render(request,'templates/rep.html',context)
-    if  reportType == 3:  
-        roll = request.POST.get("roll")        
-        context = rep.reportsByRoll(roll)
+    if  reportType == 2:  
+        roll = request.POST.get("roll")  
+        details = {
+            'roll':roll
+        }      
+        context = rep.reportsByRoll(details)
         return render(request,'templates/rep.html',context)
     
 

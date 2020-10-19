@@ -1,7 +1,8 @@
 {% load static %}
 
 <!DOCTYPE HTML>
-<html lang = "en">
+<html lang="en">
+
 <head>
 	<!-- Required meta tags-->
 	<meta charset="UTF-8">
@@ -37,8 +38,9 @@
 					id.disabled=true;
 				}
 			}
+		}
 	</script>
-	
+
 
 	<!-- Fontfaces CSS-->
 	<link href="{% static 'css/font-face.css' %}" rel="stylesheet" media="all">
@@ -167,7 +169,7 @@
 			<div class="menu-sidebar__content js-scrollbar1">
 				<nav class="navbar-sidebar">
 					<ul class="list-unstyled navbar__list">
-						{% if request.user.username == "admin" %}							
+						{% if request.user.username == "admin" %}
 						<li>
 							<a href="admin"><i class="fas fa-user"></i>Home</a>
 						</li>
@@ -188,8 +190,8 @@
 							<a href="reports">
 								<i class="fas fa-chart-bar"></i>View Reports</a>
 						</li>
-						
-						{% if request.user.username == "admin" %}							
+
+						{% if request.user.username == "admin" %}
 						<li>
 							<a href="registerStudent"><i class="fas fa-user"></i>Register New Student</a>
 						</li>

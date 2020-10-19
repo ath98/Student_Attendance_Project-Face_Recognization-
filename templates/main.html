@@ -12,30 +12,31 @@
 	<title>Attendance System</title>
 	<script type="text/javascript">
 		function EnableDisableTextBox() {
-			var selectedValue = document.getElementById("selectReport").value;
-			var id = document.getElementById("ID");
-			var roll = document.getElementById("roll");
-			var subCode = document.getElementById("sub_code");
-
-			if (selectedValue == '1') {
-				id.disabled = false;
-				roll.disabled = true;
-				subCode.disabled = true;
-			}
-			if (selectedValue == '2') {
-				roll.disabled = false;
-				id.disabled = true;
-				subCode.disabled = true;
-			}
-			if (selectedValue == '3') {
-				roll.disabled = false;
-				subCode.disabled = false;
-				id.disabled = true;
-			}
-			if (selectedValue == '0') {
-				roll.disabled = true;
-				subCode.disabled = true;
-				id.disabled = true;
+				var selectedValue = document.getElementById("selectReport").value;
+				var id = document.getElementById("ID");
+				var roll = document.getElementById("roll");
+				var subCode = document.getElementById("sub_code");
+				
+				if(selectedValue == '1'){
+					id.disabled= false;      
+					roll.disabled=true;      
+					subCode.disabled=true;     
+				}
+				if(selectedValue == '2'){
+					roll.disabled=false;
+					id.disabled= true;   
+					subCode.disabled=true; 
+				}
+				if(selectedValue == '3'){
+					roll.disabled=false;
+					subCode.disabled=false;
+					id.disabled=true;
+				}
+				if(selectedValue == '0'){
+					roll.disabled=true;
+					subCode.disabled=true;
+					id.disabled=true;
+				}
 			}
 		}
 	</script>

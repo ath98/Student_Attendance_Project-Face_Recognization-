@@ -21,7 +21,7 @@ class report():
         count = 0
         for i in range(len(att)):
             try:                
-                if str(att[i]).split('53007'):
+                if str(att[i]).split(details['id']):
                     count+=1       
                 per = (count/lecs)*100  #Percentage caluclated here   
                 roudPer = round(per,2)
@@ -38,23 +38,35 @@ class report():
         return context
 
 
-    # def reportsByRoll(roll):  # GET REPORTS BY ROLL NUMBER FOR ALL SUBJECTS        
+    def reportsByRoll(self, details):  # GET REPORTS BY ROLL NUMBER FOR ALL SUBJECTS       
+        
+        stu = Student.objects.get(rollNumber=details['roll']) 
+        sub = (Subject.objects.filter(year= stu.year))
+        lecs = []
+        count = []
+        per = []
+        for i in range(len(sub)): 
+            c = 0
+            code = str(sub[i])
+            print(code)
+            lec= Lecture.objects.filter(subject= code).count()
+            lecs.append(lec)#TOTAL LECTURES
+            att=(Attendance.objects.filter(subCode=code).count())
+            #try:
+            for j in att:
+                if str(att[j]).split(details['roll']):
+                    c += 1  # COUNT OF ATTENDED LECTURES
+            count.append(c)
+            p = count[i] / lec[i] * 100
+            per.append(p)
+            # except:
+            #     print("pass")
+            #     pass
 
-    #     fy = '31090'
-    #     stu = Student.objects.get(rollNumebr=roll)       
-    #         
-        #sub = Subject.objects.filter(year= stu.year) 
-    #     att = Attendance.objects.get(rollnumber=roll)
-    #     lec = Lecture.objects.get.all()
-    #     for l in lec.all:
-    #         i = 1
-    #         if stu.year == '1':
-    #             count = Lecture.objects.get(fy + i
-    #         if stu.year == '2':
-    #         if stu.year == '3':
-            
-    #     context = {
-    #         'stu': obj,
-    #         'sub': sub,
-    #     }
-    #     return context
+        context = {            
+            'sub': sub,
+            'lecs':lecs,    
+            'att':count,
+            'per':per,
+        }
+        return context
