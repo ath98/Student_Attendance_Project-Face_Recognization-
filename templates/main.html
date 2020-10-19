@@ -1,7 +1,8 @@
 {% load static %}
 
 <!DOCTYPE HTML>
-<html lang = "en">
+<html lang="en">
+
 <head>
 	<!-- Required meta tags-->
 	<meta charset="UTF-8">
@@ -11,34 +12,34 @@
 	<title>Attendance System</title>
 	<script type="text/javascript">
 		function EnableDisableTextBox() {
-				var selectedValue = document.getElementById("selectReport").value;
-				var id = document.getElementById("ID");
-				var roll = document.getElementById("roll");
-				var subCode = document.getElementById("sub_code");
-				
-				if(selectedValue == '1'){
-					id.disabled= false;      
-					roll.disabled=true;      
-					subCode.disabled=true;     
-				}
-				if(selectedValue == '2'){
-					roll.disabled=false;
-					id.disabled= true;   
-					subCode.disabled=false; 
-				}
-				if(selectedValue == '3'){
-					roll.disabled=false;
-					subCode.disabled=false;
-					id.disabled=true;
-				}
-				if(selectedValue == '0'){
-					roll.disabled=true;
-					subCode.disabled=true;
-					id.disabled=true;
-				}
+			var selectedValue = document.getElementById("selectReport").value;
+			var id = document.getElementById("ID");
+			var roll = document.getElementById("roll");
+			var subCode = document.getElementById("sub_code");
+
+			if (selectedValue == '1') {
+				id.disabled = false;
+				roll.disabled = true;
+				subCode.disabled = true;
 			}
+			if (selectedValue == '2') {
+				roll.disabled = false;
+				id.disabled = true;
+				subCode.disabled = true;
+			}
+			if (selectedValue == '3') {
+				roll.disabled = false;
+				subCode.disabled = false;
+				id.disabled = true;
+			}
+			if (selectedValue == '0') {
+				roll.disabled = true;
+				subCode.disabled = true;
+				id.disabled = true;
+			}
+		}
 	</script>
-	
+
 
 	<!-- Fontfaces CSS-->
 	<link href="{% static 'css/font-face.css' %}" rel="stylesheet" media="all">
@@ -167,7 +168,7 @@
 			<div class="menu-sidebar__content js-scrollbar1">
 				<nav class="navbar-sidebar">
 					<ul class="list-unstyled navbar__list">
-						{% if request.user.username == "admin" %}							
+						{% if request.user.username == "admin" %}
 						<li>
 							<a href="admin"><i class="fas fa-user"></i>Home</a>
 						</li>
@@ -188,8 +189,8 @@
 							<a href="reports">
 								<i class="fas fa-chart-bar"></i>View Reports</a>
 						</li>
-						
-						{% if request.user.username == "admin" %}							
+
+						{% if request.user.username == "admin" %}
 						<li>
 							<a href="registerStudent"><i class="fas fa-user"></i>Register New Student</a>
 						</li>
