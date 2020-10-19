@@ -135,6 +135,7 @@ def MarkAttendance(details):
         attendance.rollnumber = presentRoll
         attendance.date = details['dt']
         attendance.lecture_number = details['lecture_no']
+        attendance.subCode = details['subject']
         attendance.save()
     
     cv2.destroyAllWindows()

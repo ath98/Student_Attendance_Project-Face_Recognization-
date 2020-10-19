@@ -361,7 +361,7 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         year = request.POST['year']
         dt = request.POST['dt']
         tfrom = request.POST['tfrom']
-        tto = request.POST['tto']
+        tto = request.POST['tto']        
 
         print(subject)
         print(shift)
@@ -403,7 +403,8 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
             'lecture_shift':shift,
             'lecture_year':year,
             'dt':dt,
-            'faculty_name':faculty_name
+            'faculty_name':faculty_name,
+            'subject': subject,
         }
 
         success = 0
