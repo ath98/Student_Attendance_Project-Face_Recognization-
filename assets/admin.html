@@ -80,11 +80,11 @@
                         <div class="overview__inner">
                             <div class="overview-box clearfix">
                                 <div class="icon">
-                                    <i class="zmdi zmdi-shopping-cart"></i>
+                                    <i class="zmdi zmdi-account-box"></i>
                                 </div>
                                 <div class="text">
-                                    <h2>388,688</h2>
-                                    <span>items solid</span>
+                                    <h2>{{student_count}}</h2>
+                                    <span>Students Registered</span>
                                 </div>
                             </div>
                             <div class="overview-chart">
@@ -377,14 +377,16 @@
                                     data-toggle="validator">
                                     {% csrf_token %}
                                     <div class="form-group">
-                                        <label for="sel1">Enter Roll Number</label>
-                                        <input type="text" name = "rollNumber" id = "sel1" placeholder="51001">
+                                        <input type="text" class="form-control" id="text" name="rollNumber"
+                                        placeholder="Enter roll number" data-error="Enter valid roll number"
+                                        required>
+                                    <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="col-lg-12 row">
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label for="sel1">Select Shift:</label>
-                                                <select name='Shift' class="form-control" id="sel1">
+                                                <select name='shift' class="form-control" id="sel1">
                                                     <option value="1">I</option>
                                                     <option value="2">II</option>
                                                 </select>

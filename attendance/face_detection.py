@@ -19,6 +19,10 @@ def MarkAttendance(details):
     datasets = os.path.join(
         IMG_ROOT, details['lecture_year'], details['lecture_shift'])
     print(datasets)
+    if not os.listdir(datasets) :
+        print("Directory is empty")
+    else:    
+        print("Directory is not empty") 
     (images, lables, names, id) = ([], [], {}, 0)
     # for (subdir, dir, files) in os.walk(datasets):
     #     for subdir in dir:

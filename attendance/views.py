@@ -45,7 +45,8 @@ def home(request):
     if assigned_subject[0] != "None":
         assigned_subject_count = len(assigned_subject)    
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
-    lecture_number = Lecture.get_lecture_number()
+    lecture = Lecture.objects.get(faculty = user)
+    lecture_number = lecture.get_lecture_number()
     try:
         profile_url = faculty.profile_pic.url
     except:
@@ -57,7 +58,7 @@ def home(request):
         'subjects' : subjects,
         'lecture_number': lecture_number,
         'faculty' : faculty,
-        'student_count':registerStudent,
+        'student_count':student_count,
         'profile_url':profile_url,
     }
     return render(request, 'templates/index.html', context)
@@ -169,11 +170,17 @@ def admin_page(request):
     faculty_count = Faculty.objects.all().count()
     student_count = Student.objects.all().count()
     faculty = Faculty.objects.all()
+    lecture_count = Lecture.get_lecture_number()
     sem1_subjects = Subject.objects.filter(semester = 1)
     sem2_subjects = Subject.objects.filter(semester = 2)
     sem3_subjects = Subject.objects.filter(semester = 3)
     sem4_subjects = Subject.objects.filter(semester = 4)
     sem5_subjects = Subject.objects.filter(semester = 5)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+        print(profile_url)
     context = {
         'faculty_count' : faculty_count, 
         'student_count':student_count,
@@ -183,6 +190,8 @@ def admin_page(request):
         'sem3_subjects': sem3_subjects,
         'sem4_subjects': sem4_subjects,
         'sem5_subjects': sem5_subjects,
+        'profile_url':profile_url,
+        'lecture_count':lecture_count,
     }
     return render(request, 'templates/admin.html', context)
 
@@ -397,7 +406,15 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
             'faculty_name':faculty_name
         }
 
-        success = MarkAttendance(details)
+        success = 0
+
+        datasets = os.path.join(IMG_ROOT, details['lecture_year'], details['lecture_shift'])
+        print(datasets)
+        if not os.listdir(datasets) :
+            messages.error(request, 'No student record found in dataset, Register student first.')
+            return redirect('home')            
+        else:    
+            success = MarkAttendance(details)    
 
         if success == 1:
             return redirect(home)
@@ -446,11 +463,12 @@ def updateStudent(request):
     context = {}
     return render(request, 'templates/student_update.html', context)
 
-
+@login_required(login_url='login')
 def reports(request):  
     context={}    
     return render(request,'templates/reports.html',context)
 
+@login_required(login_url='login')
 def tables(request):
     reportType= int(request.POST.get('selectReport'))
     rep = report()
