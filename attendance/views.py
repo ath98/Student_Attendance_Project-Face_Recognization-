@@ -45,8 +45,7 @@ def home(request):
     if assigned_subject[0] != "None":
         assigned_subject_count = len(assigned_subject)    
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
-    lecture = Lecture.objects.get(faculty = user)
-    lecture_number = lecture.get_lecture_number()
+    lecture_number = Lecture.objects.filter(faculty = faculty).count()
     try:
         profile_url = faculty.profile_pic.url
     except:
