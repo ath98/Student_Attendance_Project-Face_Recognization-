@@ -13,6 +13,7 @@ import keyboard
 import json
 import numpy as np
 import datetime
+import pyttsx3
 
 from numpy.lib.function_base import insert
 from .models import Faculty, Student,Subject,Lecture, Attendance
@@ -38,18 +39,27 @@ jsonDec = json.decoder.JSONDecoder()
 def home(request):
     user = request.user.username
     faculty = Faculty.objects.get(username = user)
+    student_count = Student.objects.count()
     assigned_subject = jsonDec.decode(faculty.assigned_subjects)
     assigned_subject_count = 0
     if assigned_subject[0] != "None":
         assigned_subject_count = len(assigned_subject)    
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
-    lecture_number = Lecture.get_lecture_number()
+    lecture = Lecture.objects.get(faculty = user)
+    lecture_number = lecture.get_lecture_number()
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+        print(profile_url)
 
     context = {
         'assigned_subject_count' : assigned_subject_count,
         'subjects' : subjects,
         'lecture_number': lecture_number,
         'faculty' : faculty,
+        'student_count':student_count,
+        'profile_url':profile_url,
     }
     return render(request, 'templates/index.html', context)
 
@@ -158,20 +168,30 @@ def registerFaculty(request):
 @login_required(login_url='login')
 def admin_page(request):
     faculty_count = Faculty.objects.all().count()
+    student_count = Student.objects.all().count()
     faculty = Faculty.objects.all()
+    lecture_count = Lecture.get_lecture_number()
     sem1_subjects = Subject.objects.filter(semester = 1)
     sem2_subjects = Subject.objects.filter(semester = 2)
     sem3_subjects = Subject.objects.filter(semester = 3)
     sem4_subjects = Subject.objects.filter(semester = 4)
     sem5_subjects = Subject.objects.filter(semester = 5)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+        print(profile_url)
     context = {
         'faculty_count' : faculty_count, 
+        'student_count':student_count,
         'faculty': faculty,
         'sem1_subjects': sem1_subjects,
         'sem2_subjects': sem2_subjects,
         'sem3_subjects': sem3_subjects,
         'sem4_subjects': sem4_subjects,
         'sem5_subjects': sem5_subjects,
+        'profile_url':profile_url,
+        'lecture_count':lecture_count,
     }
     return render(request, 'templates/admin.html', context)
 
@@ -267,7 +287,7 @@ def registerStudent(request):
         print(rollNumber)
         # assigning those values to the student object
         student = Student()
-        student.rollNumebr = rollNumber
+        student.rollNumber = rollNumber
         student.firstname = firstname
         student.lastname = lastname
         student.email = email
@@ -297,6 +317,12 @@ def registerStudent(request):
         (width, height) = (130, 100)
         cam = cv2.VideoCapture(0)
         sampleNum = 0 
+        say = 'Capturing your face, stay stable'
+        speaker = pyttsx3.init()
+        voice_rate = 150
+        speaker.setProperty('rate', voice_rate)
+        speaker.say(say)
+        speaker.runAndWait()
         while(True):
             ret,img = cam.read()
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -304,7 +330,6 @@ def registerStudent(request):
             for(x,y,w,h) in faces:
                 sampleNum +=1
                 img_name = str(sampleNum) + '.png'
-                print(path)
                 cv2.imwrite(os.path.join(path, img_name), gray[y:y+h, x:x+w])
                 cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2) 
                 cv2.waitKey(250)
@@ -381,7 +406,15 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
             'faculty_name':faculty_name
         }
 
-        success = MarkAttendance(details)
+        success = 0
+
+        datasets = os.path.join(IMG_ROOT, details['lecture_year'], details['lecture_shift'])
+        print(datasets)
+        if not os.listdir(datasets) :
+            messages.error(request, 'No student record found in dataset, Register student first.')
+            return redirect('home')            
+        else:    
+            success = MarkAttendance(details)    
 
         if success == 1:
             return redirect(home)
@@ -397,7 +430,9 @@ def updateStudentRedirect(request):
             rollNumber = request.POST['rollNumber']
             shift = request.POST['shift']
             year = request.POST['year']
-
+            print("shift:" + shift)
+            print("year:"+ year)
+            print("rollNumber:"+ rollNumber)
             student = Student.objects.get(rollNumber = rollNumber, shift = shift, year = year)
             
             updateStudentForm = CreateStudentForm(instance=student)
@@ -428,11 +463,12 @@ def updateStudent(request):
     context = {}
     return render(request, 'templates/student_update.html', context)
 
-
+@login_required(login_url='login')
 def reports(request):  
     context={}    
     return render(request,'templates/reports.html',context)
 
+@login_required(login_url='login')
 def tables(request):
     reportType= int(request.POST.get('selectReport'))
     rep = report()

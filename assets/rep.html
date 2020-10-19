@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <!-- Title Page-->
     <title>Tables</title>
@@ -26,52 +27,23 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <td>faculty_name</td>
-                                        <td>lecture</td>
-                                        <td>rollnumber</td>
-                                        <td>date</td>
-                                        <td>time</td>
-                                        <td>year</td>
-                                        <td>shift</td>
-                                        <td>lecture_number</td>
-                                        <td>status</td>
+                                        <td>Subjects</td>
+                                        <td>Total lectures</td>
+                                        <td>Attended Lectures</td>
+                                        <td>Percentage</td>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {% for i in obj.all %}
-                                    <tr>
-                                        <td>
-                                            {{i.faculty_name}}
-                                        </td>
-                                        <td>{% for s in sub.all %}
-                                            {{s.subject_name}}
-                                            {% endfor %}
-                                        </td>
-                                        <td>
-                                            {{i.rollnumber}}
-                                        </td>
-                                        <td>
-                                            {{i.date}}
-                                        </td>
-                                        <td>
-                                            {{i.time}}
-                                        </td>
-                                        <td>
-                                            {{i.year}}
-                                        </td>
-                                        <td>
-                                            {{i.shift}}
-                                        </td>
-                                        <td>
-                                            {{i.lecture_number}}
-                                        </td>
-                                        <td>
-                                            {{i.status}}
-                                        </td>
+                                <tbody> 
+                                    {% for i in sub.all %}                                   
+                                    <tr>                                        
+                                        <td>{{i.subject_name}}</td>   
+                                        <td></td>
+                                        <td></td>     
+                                        <td></td>     
+                                        <td></td>                                          
                                     </tr>
                                     {% endfor %}
-                                </tbody>
-                               
+                                </tbody>                               
                             </table>
                         </div>
                         <div class="user-data__footer">
