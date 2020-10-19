@@ -12,20 +12,28 @@ class report():
         return d
 
  
-    def byDefaulter(roll,code):  # GET REPORTS OF A SPECIFIC STUDENT AND SUBJECT
+    def byDefaulter(self,details):  # GET REPORTS OF A SPECIFIC STUDENT AND SUBJECT
 
-        stu = Student.objects.get(rollNumebr=roll)        
-        sub = Subject.objects.get(year= stu.year)
-        #att = Attendance.objects.filter(rollnumber=roll, status='Present',)
-        lecs = Lecture.objects.filter(subject= code).count()   #Total count of lec
-        lec = Attendance.objects.filter(rollnumber=roll)
-        for l in lec.all:
-            c = Attendance.objects.select_related()
-            
-            
+        stu = Student.objects.get(rollNumber=details['id'])
+        sub = Subject.objects.filter(subject_code= details['code']) 
+        att = list(Attendance.objects.filter(subCode= details['code']))
+        lecs = Lecture.objects.filter(subject= details['code']).count()   #Total count of lec 
+        count = 0
+        for i in range(len(att)):
+            try:                
+                if str(att[i]).split('53007'):
+                    count+=1       
+                per = (count/lecs)*100  #Percentage caluclated here   
+                roudPer = round(per,2)
+            except:
+                pass
+        
         context = {
-            'stu': obj,
+            'stu': stu,
             'sub': sub,
+            'att':count,
+            'per':roudPer,
+            'lecs':lecs,
         }
         return context
 
@@ -33,8 +41,9 @@ class report():
     # def reportsByRoll(roll):  # GET REPORTS BY ROLL NUMBER FOR ALL SUBJECTS        
 
     #     fy = '31090'
-    #     stu = Student.objects.get(rollNumebr=roll)        
-    #     sub = Subject.objects.get(year= stu.year)
+    #     stu = Student.objects.get(rollNumebr=roll)       
+    #         
+        #sub = Subject.objects.filter(year= stu.year) 
     #     att = Attendance.objects.get(rollnumber=roll)
     #     lec = Lecture.objects.get.all()
     #     for l in lec.all:

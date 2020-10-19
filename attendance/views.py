@@ -472,22 +472,25 @@ def reports(request):
 def tables(request):
     reportType= int(request.POST.get('selectReport'))
     rep = report()
-    print(reportType)
     context = {} 
     if reportType == 1:
         lecId = request.POST.get("ID")
         print("IN")
-        context = rep.byLecture(lecId)        
-        print(context)
+        context = rep.byLecture(lecId) 
+        return render(request,'templates/tables.html',context)
     if reportType == 2:
-        id = request.POST.get('ID')
-        context = {}   
-        return redirect(byDefaulter(context))   
+        id = request.POST.get('roll')
+        code = request.POST.get('sub_code')
+        details = {
+            'id':id,
+            'code':code,
+        }       
+        context =rep.byDefaulter(details)
+        return render(request,'templates/rep.html',context)
     if  reportType == 3:  
         roll = request.POST.get("roll")        
         context = rep.reportsByRoll(roll)
         return render(request,'templates/rep.html',context)
     
-    return render(request,'templates/table.html',context)
 
         
