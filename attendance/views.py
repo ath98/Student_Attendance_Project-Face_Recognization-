@@ -479,18 +479,26 @@ def tables(request):
         context = rep.byLecture(lecId) 
         return render(request,'templates/table.html',context)
     if reportType == 3:
+        ds = request.POST.get("from_date")
+        dt = request.POST.get("to_date")
         id = request.POST.get('roll')
         code = request.POST.get('sub_code')
         details = {
             'id':id,
             'code':code,
+            'ds':ds,
+            'dt':dt,
         }       
         context =rep.byDefaulter(details)
         return render(request,'templates/rep.html',context)
     if  reportType == 2:  
+        ds = request.POST.get("from_date")
+        dt = request.POST.get("to_date")
         roll = request.POST.get("roll")  
         details = {
-            'roll':roll
+            'roll':roll,
+            'ds':ds,
+            'dt':dt,
         }      
         context = rep.reportsByRoll(details)
         return render(request,'templates/rep.html',context)

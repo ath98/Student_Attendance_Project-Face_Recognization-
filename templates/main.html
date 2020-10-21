@@ -16,26 +16,36 @@
 			var id = document.getElementById("ID");
 			var roll = document.getElementById("roll");
 			var subCode = document.getElementById("sub_code");
+			var calStart = document.getElementById("from_date");
+			var calEnd = document.getElementById("to_date");
 
 			if (selectedValue == '1') {
 				id.disabled = false;
 				roll.disabled = true;
 				subCode.disabled = true;
+				calStart.disabled = true;
+				calEnd.disabled = true;
 			}
 			if (selectedValue == '2') {
 				roll.disabled = false;
 				id.disabled = true;
 				subCode.disabled = true;
+				calStart.disabled = false;
+				calEnd.disabled = false;
 			}
 			if (selectedValue == '3') {
 				roll.disabled = false;
 				subCode.disabled = false;
 				id.disabled = true;
+				calStart.disabled = false;
+				calEnd.disabled = false;
 			}
 			if (selectedValue == '0') {
 				roll.disabled = true;
 				subCode.disabled = true;
 				id.disabled = true;
+				calStart.disabled = true;
+				calEnd.disabled = true;
 			}
 		}
 	</script>

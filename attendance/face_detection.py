@@ -52,9 +52,11 @@ def MarkAttendance(details):
                 id += 1
 
     (images, lables) = [np.array(lis) for lis in [images, lables]]
+    print(images)
+    print(lables)
     model = cv2.face.LBPHFaceRecognizer_create()
     model.train(images, lables)
-    cam = cv2.VideoCapture(0)
+    cam = cv2.VideoCapture(2)
     sampleNum = 0
     while keyboard.is_pressed('q') != True:
         ret, img = cam.read()
@@ -62,8 +64,7 @@ def MarkAttendance(details):
         faces = faceDetect.detectMultiScale(
             gray,
             scaleFactor=1.3,
-            minNeighbors=3,
-            minSize=(30, 30)
+            minNeighbors=3
         )
 
         for (x, y, w, h) in faces:
@@ -72,15 +73,14 @@ def MarkAttendance(details):
             prediction = model.predict(face_resize)
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
             if prediction[1] < 500:
-                stdId = names[prediction[0]]
-                rol = stdId.split('.png')
-                                
-            try:
-                if(presentRoll.index(rol)):
-                    print('exsists')
-                    pass
-            except:
-                presentRoll.append(rol)
+                stdId = names[prediction[0]]       
+                print(stdId)                         
+                try:
+                    if(presentRoll.index(stdId)):
+                        print('exsists')
+                        pass
+                except:
+                    presentRoll.append(stdId)
                 
                 # c = np.where( presentRoll == rol)
                 # if c>0:
@@ -94,10 +94,10 @@ def MarkAttendance(details):
                 # attendance.lecture_number = details['lecture_no']
                 # attendance.save()
 
-                no = rol[0]
+                #no = rol[0]
 
                 try:
-                    student = Student.objects.get(rollNumebr=str(no))
+                    student = Student.objects.get(rollNumebr=str(stdId))
 
                     if not student:
                         speaker = pyttsx3.init()
@@ -115,6 +115,7 @@ def MarkAttendance(details):
                         speaker.say(say)
                         speaker.runAndWait()
                 except:
+                    print("Not detected")
                     pass
 
                 cv2.putText(img, '% s - %.0f' % (names[prediction[0]], prediction[1]), (x-10, y-10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0))  
@@ -124,7 +125,7 @@ def MarkAttendance(details):
 
         cv2.imshow("Face", img)
 
-        key = cv2.waitKey(250)
+        key = cv2.waitKey(10)
         if key == 27:
             break
 
