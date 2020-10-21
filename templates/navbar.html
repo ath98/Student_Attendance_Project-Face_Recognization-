@@ -41,7 +41,7 @@
                             </div>
                             {% else %}
                             <div class="image">
-                                <img src="{{ faculty.profile_pic }}" alt = "{{request.user.username}}" />
+                                <img src="{{ faculty.profile_pic.url }}" alt = "{{request.user.username}}" />
                             </div>
                             <div class="content">
                                 <a class="js-acc-btn" href="#">Hello, {{ request.user.username }}</a>
@@ -50,7 +50,7 @@
                                 <div class="info clearfix">
                                     <div class="image">
                                         <a href="#">
-                                            <img src="{{ faculty.profile_pic }}" alt = "{{ request.user.username }}" />
+                                            <img src="{{ faculty.profile_pic.url }}" alt = "{{ request.user.username }}" />
                                         </a>
                                     </div>
                                     <div class="content">

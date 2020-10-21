@@ -243,7 +243,12 @@ def redirectViewRecords(request):
 
 @login_required(login_url='login')
 def registerStudent(request):
-    
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
     faceDetect = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     path = ''
@@ -342,12 +347,20 @@ def registerStudent(request):
         messages.success(request, 'Student ' + name + ' was added successfully')
         return redirect('registerStudent')        
     
-    context = {}
+    context = {
+        'profile_url': profile_url,
+    }
     return render(request, 'templates/studentRegistration.html', context)
 
 
 @login_required(login_url='login')
 def createLecture(request):    #get values from the fields lectureid ,subject,profid,profname,shift,year  lecture=take_attendance
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
     if request.method == 'POST':
         
         faculty_name = request.user.username
@@ -418,12 +431,22 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         if success == 1:
             return redirect(home)
 
-    context = {}
+    context = {
+        'profile_url' : profile_url,
+    }
     return render(request, 'templates/index.html', context)
 
 @login_required(login_url = 'login')
 def updateStudentRedirect(request):
-    context = {}
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+    context = {
+        'profile_url' : profile_url,
+    } 
     if request.method == 'POST':
         try:
             rollNumber = request.POST['rollNumber']
@@ -447,6 +470,13 @@ def updateStudentRedirect(request):
         
 @login_required(login_url = 'login')
 def updateStudent(request):
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+   
     if request.method == 'POST':
         context = {}
         try:
@@ -459,34 +489,50 @@ def updateStudent(request):
         except:
             messages.error(request, 'Updation Unsucessfull')
             return redirect('admin')
-    context = {}
+    context = {
+        'profile_url' : profile_url,
+    } 
     return render(request, 'templates/student_update.html', context)
 
 @login_required(login_url='login')
 def reports(request):  
-    context={}    
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+    context = {
+        'profile_url' : profile_url,
+    } 
     return render(request,'templates/reports.html',context)
 
 @login_required(login_url='login')
 def tables(request):
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
     reportType= int(request.POST.get('selectReport'))
     rep = report()
-    print(reportType)
     context = {} 
     if reportType == 1:
         lecId = request.POST.get("ID")
         print("IN")
-        context = rep.byLecture(lecId)        
-        print(context)
+        context = rep.byLecture(lecId) 
+        return render(request,'templates/tables.html',context)
     if reportType == 2:
-        id = request.POST.get('ID')
-        context = {}   
-        return redirect(byDefaulter(context))   
-    if  reportType == 3:  
+        id = request.POST.get('roll')
+        code = request.POST.get('sub_code')
+        details = {
+            'id':id,
+            'code':code,
+        }       
+        context =rep.byDefaulter(details)
+        return render(request,'templates/rep.html',context)
+    if reportType == 3:  
         roll = request.POST.get("roll")        
         context = rep.reportsByRoll(roll)
         return render(request,'templates/rep.html',context)
-    
-    return render(request,'templates/table.html',context)
-
-        
