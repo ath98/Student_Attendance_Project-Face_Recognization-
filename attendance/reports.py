@@ -48,20 +48,22 @@ class report():
         for i in range(len(sub)): 
             c = 0
             code = str(sub[i])
-            print(code)
             lec= Lecture.objects.filter(subject= code).count()
             lecs.append(lec)#TOTAL LECTURES
-            att=(Attendance.objects.filter(subCode=code).count())
-            #try:
-            for j in att:
-                if str(att[j]).split(details['roll']):
-                    c += 1  # COUNT OF ATTENDED LECTURES
-            count.append(c)
-            p = count[i] / lec[i] * 100
-            per.append(p)
-            # except:
-            #     print("pass")
-            #     pass
+            if lec == 0:
+                count.append(0)
+                per.append(0)
+            else:
+                att=list(Attendance.objects.filter(subCode=code)) #Count of lec attened by stu
+                for j in range(len(att)):
+                    if str(att[j]).split(details['roll']):
+                        c += 1  # COUNT OF ATTENDED 
+                count.append(c)
+                co = int(count[i])
+                le = int(lecs[i])
+                p = co/le * 100
+                per.append(p)
+                count.append
 
         context = {            
             'sub': sub,
