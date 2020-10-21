@@ -496,4 +496,15 @@ def tables(request):
         return render(request,'templates/rep.html',context)
     
 
-        
+@login_required(login_url='login')
+def redirectCalender(request):
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+    context = {
+        'profile_url':profile_url,
+    }
+    return render(request, 'templates/calender.html', context)
