@@ -56,7 +56,7 @@ def MarkAttendance(details):
     print(lables)
     model = cv2.face.LBPHFaceRecognizer_create()
     model.train(images, lables)
-    cam = cv2.VideoCapture(2)
+    cam = cv2.VideoCapture(0)
     sampleNum = 0
     while keyboard.is_pressed('q') != True:
         ret, img = cam.read()
