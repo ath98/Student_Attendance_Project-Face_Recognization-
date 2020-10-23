@@ -25,4 +25,5 @@ urlpatterns = [
     #path('takeAttendance', views.takeAttendance, name = 'takeAttendance'),
     path('reports', views.reports, name='reports'),
     path('tables', views.tables, name='tables'),
+    path('calender', views.redirectCalender, name='calender'),
 ]
