@@ -420,8 +420,6 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         lecture.tfrom = lecture_from_time
         lecture.tto = lecture_to_time
 
-        lecture.save()
-
         lecture_no = lecture.lecture_number
 
         details = {
@@ -444,6 +442,7 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
             success = MarkAttendance(details)    
 
         if success == 1:
+            lecture.save()
             return redirect(home)
 
     context = {
@@ -548,27 +547,19 @@ def tables(request):
         context.update({'profile_url':profile_url})
         return render(request,'templates/table.html',context)
     if reportType == 3:
-        ds = request.POST.get("from_date")
-        dt = request.POST.get("to_date")
         id = request.POST.get('roll')
         code = request.POST.get('sub_code')
         details = {
             'id':id,
             'code':code,
-            'ds':ds,
-            'dt':dt,
         }       
         context = rep.byDefaulter(details)
         context.update({'profile_url':profile_url})
         return render(request,'templates/rep.html',context)
     if  reportType == 2:  
-        ds = request.POST.get("from_date")
-        dt = request.POST.get("to_date")
         roll = request.POST.get("roll")  
         details = {
             'roll':roll,
-            'ds':ds,
-            'dt':dt,
         }      
         context = rep.reportsByRoll(details)
         context.update({'profile_url':profile_url})

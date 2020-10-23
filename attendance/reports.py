@@ -16,8 +16,8 @@ class report():
     def byDefaulter(self,details):  # GET REPORTS OF A SPECIFIC STUDENT AND SUBJECT
         stu = Student.objects.get(rollNumber=details['id'])
         sub = Subject.objects.filter(subject_code= details['code']) 
-        att = list(Attendance.objects.filter(subCode= details['code'],date__range=[details['ds'], details['dt']]))        
-        lecs = Lecture.objects.filter(subject= details['code'], date__range=[details['ds'], details['dt']]).count()   #Total count of lec 
+        att = list(Attendance.objects.filter(subCode= details['code']))        
+        lecs = Lecture.objects.filter(subject= details['code']).count()   #Total count of lec 
         count = 0
         for i in range(len(att)):
             try:                
