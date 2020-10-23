@@ -4,15 +4,59 @@ from datetime import date, timedelta
 class report():
 
     def byLecture(self,lecId):  # GET REPORTS OF WHOLE LECTURE    
-        d = dict()
-        obj = Attendance.objects.filter(lecture_number=lecId)#Remember to change after  
+        
+        lecCheck = Lecture.objects.get(lecture_number = lecId)
+        stdCount = Student.objects.filter(year = lecCheck.year, shift = lecCheck.shift).count()
+        students = Student.objects.filter(year = lecCheck.year, shift = lecCheck.shift)
+        obj = Attendance.objects.filter(lecture_number=lecId) 
         lec = Lecture.objects.get(lecture_number=lecId)    
+        roll = []
+        a = []
         sub = Subject.objects.filter(subject_code= lec.subject)
-        d['obj'] = obj
-        d['sub'] = sub
-        return d
+        get = Attendance.objects.get(lecture_number=lecId)
+        rep = report()
+        roll=rep.filtering(get.rollnumber)
+        indRoll =rep.joining(roll)
 
- 
+        present = len(indRoll)
+        print(present)
+        context = {
+            "obj":obj,
+            "sub":sub,
+            "roll":indRoll,
+            "id":lecId,
+            "total":stdCount,
+            "present":present,
+            "stud":students,
+        }
+        return context
+
+    def filtering(self,roll):  #Massaging up the recived data
+        l = roll.replace("[","")
+        r = l.replace("]","")
+        c = r.replace(",","")
+        c1 = c.replace("'","")
+        c2 = c1.replace(" ","")
+        return c2
+
+    def joining(self,str): #joining indivisual str as a single sting
+        r = []
+        a = 0
+        s = ''
+        try:
+            for i in range(len(str)):
+                if(i%5==0 and i!=0):                                
+                    r.append(s)
+                    a += 1
+                    s = ''
+                    s = s + str[i]
+                else:
+                    s = s+str[i]
+        finally:
+            r.append(s)
+        return r
+                
+
     def byDefaulter(self,details):  # GET REPORTS OF A SPECIFIC STUDENT AND SUBJECT
         stu = Student.objects.get(rollNumber=details['id'])
         sub = Subject.objects.filter(subject_code= details['code']) 
