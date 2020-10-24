@@ -1,4 +1,5 @@
 {% extends 'templates/main.html' %}
+{% load test_tags%}
 {% load static %}
 {% block content %}
 <!DOCTYPE html>
@@ -69,13 +70,7 @@
                                             {{i.lecture_number}}
                                         </td>
                                         <td>
-                                            {% for x in roll %}
-                                                {%if x == j.rollNumber%}
-                                                    present                                       
-                                                {% else %}
-                                                    absent        
-                                                {% endif %}
-                                            {% endfor %}
+                                            {% status roll j.rollNumber %}
                                         </td>
                                     </tr>
                                     {% endfor %}
