@@ -17,6 +17,7 @@ class report():
         rep = report()
         roll=rep.filtering(get.rollnumber)
         indRoll =rep.joining(roll)
+        print(indRoll)
 
         present = len(indRoll)
         print(present)
@@ -89,6 +90,7 @@ class report():
         lecs = []
         count = []
         per = []
+        subNames = []
         for i in range(len(sub)): 
             c = 0
             code = str(sub[i])
@@ -107,12 +109,17 @@ class report():
                 le = int(lecs[i])
                 p = co/le * 100
                 per.append(p)
-                count.append
+                count.append 
+                test = []
+                #for i in range(sub.count()):
+                 #   per[i]
+                print(per)
 
         context = {            
             'sub': sub,
             'lecs':lecs,    
             'att':count,
             'per':per,
+            'test':test,
         }
         return context
