@@ -78,26 +78,26 @@ def MarkAttendance(details):
                 try:
                     if(presentRoll.index(stdId)):
                         print('exsists')
-                        pass
+                        student = Student.objects.get(rollNumber=str(stdId))
+
+                        if not student:
+                            speaker = pyttsx3.init()
+                            voice_rate = 150
+                            speaker.setProperty('rate', voice_rate)
+                            speaker.say('Student not found')
+                            speaker.runAndWait()
+                        else:
+                            student_name = student.firstname
+                            print(student_name)
+                            say = student_name + ' attendance marked'
+                            speaker = pyttsx3.init()
+                            voice_rate = 150
+                            speaker.setProperty('rate', voice_rate)
+                            speaker.say(say)
+                            speaker.runAndWait()
                 except:
                     presentRoll.append(stdId)
-                
-                # c = np.where( presentRoll == rol)
-                # if c>0:
-                   #presentRoll = np.append(rol)
-                # attendance.year = details['lecture_year']
-                # attendance.shift = details['lecture_shift']
-                # attendance.status = 'Present'
-                # attendance.faculty_name = details['faculty_name']
-                # attendance.rollnumber = rol
-                # attendance.date = details['dt']
-                # attendance.lecture_number = details['lecture_no']
-                # attendance.save()
-
-                #no = rol[0]
-
-                try:
-                    student = Student.objects.get(rollNumebr=str(stdId))
+                    student = Student.objects.get(rollNumber=str(stdId))
 
                     if not student:
                         speaker = pyttsx3.init()
@@ -114,9 +114,20 @@ def MarkAttendance(details):
                         speaker.setProperty('rate', voice_rate)
                         speaker.say(say)
                         speaker.runAndWait()
-                except:
-                    print("Not detected")
-                    pass
+                
+                # c = np.where( presentRoll == rol)
+                # if c>0:
+                   #presentRoll = np.append(rol)
+                # attendance.year = details['lecture_year']
+                # attendance.shift = details['lecture_shift']
+                # attendance.status = 'Present'
+                # attendance.faculty_name = details['faculty_name']
+                # attendance.rollnumber = rol
+                # attendance.date = details['dt']
+                # attendance.lecture_number = details['lecture_no']
+                # attendance.save()
+
+                #no = rol[0]
 
                 cv2.putText(img, '% s - %.0f' % (names[prediction[0]], prediction[1]), (x-10, y-10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0))  
             else:
