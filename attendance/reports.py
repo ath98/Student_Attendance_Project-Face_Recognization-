@@ -19,6 +19,7 @@ class report():
         indRoll =rep.joining(roll)
         print(indRoll)
 
+<<<<<<< HEAD
         present = len(indRoll)
         print(present)
         context = {
@@ -58,6 +59,9 @@ class report():
         return r
                 
 
+=======
+ 
+>>>>>>> c233d6677cff5695cac6d8eb6ed6bfbe1078d011
     def byDefaulter(self,details):  # GET REPORTS OF A SPECIFIC STUDENT AND SUBJECT
         stu = Student.objects.get(rollNumber=details['id'])
         sub = Subject.objects.filter(subject_code= details['code']) 
@@ -90,7 +94,10 @@ class report():
         lecs = []
         count = []
         per = []
+<<<<<<< HEAD
         subNames = []
+=======
+>>>>>>> c233d6677cff5695cac6d8eb6ed6bfbe1078d011
         for i in range(len(sub)): 
             c = 0
             code = str(sub[i])
@@ -109,17 +116,24 @@ class report():
                 le = int(lecs[i])
                 p = co/le * 100
                 per.append(p)
+<<<<<<< HEAD
                 count.append 
                 test = []
                 #for i in range(sub.count()):
                  #   per[i]
                 print(per)
+=======
+                count.append
+>>>>>>> c233d6677cff5695cac6d8eb6ed6bfbe1078d011
 
         context = {            
             'sub': sub,
             'lecs':lecs,    
             'att':count,
             'per':per,
+<<<<<<< HEAD
             'test':test,
+=======
+>>>>>>> c233d6677cff5695cac6d8eb6ed6bfbe1078d011
         }
         return context
