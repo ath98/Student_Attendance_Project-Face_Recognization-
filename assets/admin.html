@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="row m-t-25 mb-5">
-                <div class="col-sm-6 col-lg-3">
+                <div class="col-sm-6 col-lg-4">
                     <div class="overview-item overview-item--c1">
                         <div class="overview__inner">
                             <div class="overview-box clearfix">
@@ -70,12 +70,11 @@
                                 </div>
                             </div>
                             <div class="overview-chart">
-                                <canvas id="widgetChart1"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-lg-3">
+                <div class="col-sm-6 col-lg-4">
                     <div class="overview-item overview-item--c2">
                         <div class="overview__inner">
                             <div class="overview-box clearfix">
@@ -88,12 +87,11 @@
                                 </div>
                             </div>
                             <div class="overview-chart">
-                                <canvas id="widgetChart2"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-lg-3">
+                <div class="col-sm-6 col-lg-4">
                     <div class="overview-item overview-item--c3">
                         <div class="overview__inner">
                             <div class="overview-box clearfix">
@@ -101,91 +99,17 @@
                                     <i class="zmdi zmdi-calendar-note"></i>
                                 </div>
                                 <div class="text">
-                                    <h2>1,086</h2>
-                                    <span>this week</span>
+                                    <h2>{{lecture_count}}</h2>
+                                    <span>Lectures</span>
                                 </div>
                             </div>
                             <div class="overview-chart">
-                                <canvas id="widgetChart3"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <div class="overview-item overview-item--c4">
-                        <div class="overview__inner">
-                            <div class="overview-box clearfix">
-                                <div class="icon">
-                                    <i class="zmdi zmdi-money"></i>
-                                </div>
-                                <div class="text">
-                                    <h2>$1,060,386</h2>
-                                    <span>total earnings</span>
-                                </div>
-                            </div>
-                            <div class="overview-chart">
-                                <canvas id="widgetChart4"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Take Attendance -->
-            <div class="row m-t-100" id="attendance">
-                <div class="col-lg-12">
-                    <div class="au-card recent-report">
-                        <div class="au-card-inner">
-                            <h3 class="title-2">Take Attendance</h3>
-                            <div class="take_attendance card card-body">
-                                <form action="take_attendance" method="post" enctype="multipart/form-data"
-                                    data-toggle="validator">
-                                    {% csrf_token %}
-                                    <div class="col-lg-12 row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label for="sel1">Select Shift:</label>
-                                                <select name='Shift' class="form-control" id="sel1">
-                                                    <option value="1">I</option>
-                                                    <option value="2">II</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label for="sel1">Select year:</label>
-                                                <select name='year' class="form-control" id="sel1">
-                                                    <option value="1">FY</option>
-                                                    <option value="2">SY</option>
-                                                    <option value="3">TY</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="sel1">Select Faculty Name</label>
-                                        <select name="faculty" class="form-control" id="sel1">
-                                            {% for name in faculty %}
-                                            <option value={{name}}>{{name}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="text" name="subject_name"
-                                            placeholder="Enter Subject Name" data-error="Enter Valid Subject name"
-                                            required>
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" id="submit" class="btn btn-primary btn-block btn-lg">Take
-                                            Attendance</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             <!-- Assign faculty to the subject -->
             <div class="row m-t-100" id="attendance">
                 <div class="col-lg-12">

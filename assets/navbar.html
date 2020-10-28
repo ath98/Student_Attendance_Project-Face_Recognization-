@@ -9,7 +9,7 @@
                         <div class="account-item clearfix js-item-menu">
                             {% if profile_url == 'None' %}
                             <div class="image">
-                                <img src="{% static 'images/icon/avatar-01.jpg' %}" alt="{{request.user.username}}" />
+                                <img src="{% static 'images/icon/avatar-01.png' %}" alt="{{request.user.username}}" />
                             </div>
                             <div class="content">
                                 <a class="js-acc-btn" href="#">Hello, {{ request.user.username }}</a>
@@ -18,7 +18,7 @@
                                 <div class="info clearfix">
                                     <div class="image">
                                         <a href="#">
-                                            <img src="{% static 'images/icon/avatar-01.jpg' %}" alt="{{request.user.username}}" />
+                                            <img src="{% static 'images/icon/avatar-01.png' %}" alt="{{request.user.username}}" />
                                         </a>
                                     </div>
                                     <div class="content">
@@ -41,7 +41,7 @@
                             </div>
                             {% else %}
                             <div class="image">
-                                <img src="{{ faculty.profile_pic }}" alt = "{{request.user.username}}" />
+                                <img src="{{ faculty.profile_pic }}" alt = "{{ request.user.username }}" />
                             </div>
                             <div class="content">
                                 <a class="js-acc-btn" href="#">Hello, {{ request.user.username }}</a>

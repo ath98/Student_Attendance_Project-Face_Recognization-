@@ -31,9 +31,6 @@ import cv2
 
 jsonDec = json.decoder.JSONDecoder()
 
-# method to redirect to login page
-
-
 
 @login_required(login_url='login')
 def home(request):
@@ -51,7 +48,6 @@ def home(request):
     except:
         profile_url = 'None'
         print(profile_url)
-
     context = {
         'assigned_subject_count' : assigned_subject_count,
         'subjects' : subjects,
@@ -87,15 +83,29 @@ def faculty_profile(request):
     assigned_subject = jsonDec.decode(faculty.assigned_subjects)
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
     faculty_form = CreateFacultyForm(instance = faculty)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+        print(profile_url)
     context = {
         'subjects' : subjects,
         'faculty' : faculty,
         'form' : faculty_form,
+        'profile_url':profile_url,
     }
     return render(request, 'templates/faculty.html', context)
 
 @login_required(login_url = 'login')
 def updateFaculty(request):
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    print('In faculty update function')
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+        print(profile_url)
     if request.method == 'POST':
         context = {}
         try:
@@ -108,7 +118,10 @@ def updateFaculty(request):
         except:
             messages.error(request, 'Updation Unsucessfull')
             return redirect('home')
-    context = {}
+
+    context = {
+        'profile_url':profile_url,
+    }
     return render(request, 'templates/faculty.html', context)
 
 
@@ -322,6 +335,7 @@ def registerStudent(request):
         cam = cv2.VideoCapture(0)
         sampleNum = 0 
         say = 'Capturing your face, stay stable'
+        print(say)
         speaker = pyttsx3.init()
         voice_rate = 150
         speaker.setProperty('rate', voice_rate)
@@ -338,7 +352,7 @@ def registerStudent(request):
                 cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2) 
                 cv2.waitKey(250)
             cv2.waitKey(10)
-            if (sampleNum>30):
+            if (sampleNum>14):
                 break
         cam.release()
         cv2.destroyAllWindows()
@@ -373,7 +387,7 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         year = request.POST['year']
         dt = request.POST['dt']
         tfrom = request.POST['tfrom']
-        tto = request.POST['tto']
+        tto = request.POST['tto']        
 
         print(subject)
         print(shift)
@@ -406,8 +420,6 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         lecture.tfrom = lecture_from_time
         lecture.tto = lecture_to_time
 
-        lecture.save()
-
         lecture_no = lecture.lecture_number
 
         details = {
@@ -415,7 +427,8 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
             'lecture_shift':shift,
             'lecture_year':year,
             'dt':dt,
-            'faculty_name':faculty_name
+            'faculty_name':faculty_name,
+            'subject': subject,
         }
 
         success = 0
@@ -429,6 +442,7 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
             success = MarkAttendance(details)    
 
         if success == 1:
+            lecture.save()
             return redirect(home)
 
     context = {
@@ -476,7 +490,6 @@ def updateStudent(request):
         profile_url = faculty.profile_pic.url
     except:
         profile_url = 'None'
-   
     if request.method == 'POST':
         context = {}
         try:
@@ -491,19 +504,24 @@ def updateStudent(request):
             return redirect('admin')
     context = {
         'profile_url' : profile_url,
-    } 
+    }
     return render(request, 'templates/student_update.html', context)
 
 @login_required(login_url='login')
 def reports(request):  
     user = request.user.username
     faculty = Faculty.objects.get(username = user)
+    assigned_subject = jsonDec.decode(faculty.assigned_subjects)
+    subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
     try:
         profile_url = faculty.profile_pic.url
+        print(profile_url)
     except:
         profile_url = 'None'
+
     context = {
         'profile_url' : profile_url,
+        'subjects':subjects,
     } 
     return render(request,'templates/reports.html',context)
 
@@ -511,10 +529,14 @@ def reports(request):
 def tables(request):
     user = request.user.username
     faculty = Faculty.objects.get(username = user)
+    assigned_subject = jsonDec.decode(faculty.assigned_subjects)
+    subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
     try:
         profile_url = faculty.profile_pic.url
+        print(profile_url)
     except:
         profile_url = 'None'
+
     reportType= int(request.POST.get('selectReport'))
     rep = report()
     context = {} 
@@ -522,17 +544,37 @@ def tables(request):
         lecId = request.POST.get("ID")
         print("IN")
         context = rep.byLecture(lecId) 
-        return render(request,'templates/tables.html',context)
-    if reportType == 2:
+        context.update({'profile_url':profile_url})
+        return render(request,'templates/table.html',context)
+    if reportType == 3:
         id = request.POST.get('roll')
         code = request.POST.get('sub_code')
         details = {
             'id':id,
             'code':code,
         }       
-        context =rep.byDefaulter(details)
+        context = rep.byDefaulter(details)
+        context.update({'profile_url':profile_url})
         return render(request,'templates/rep.html',context)
-    if reportType == 3:  
-        roll = request.POST.get("roll")        
-        context = rep.reportsByRoll(roll)
+    if  reportType == 2:  
+        roll = request.POST.get("roll")  
+        details = {
+            'roll':roll,
+        }      
+        context = rep.reportsByRoll(details)
+        context.update({'profile_url':profile_url})
         return render(request,'templates/rep.html',context)
+    
+
+@login_required(login_url='login')
+def redirectCalender(request):
+    user = request.user.username
+    faculty = Faculty.objects.get(username = user)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
+    context = {
+        'profile_url':profile_url,
+    }
+    return render(request, 'templates/calender.html', context)
