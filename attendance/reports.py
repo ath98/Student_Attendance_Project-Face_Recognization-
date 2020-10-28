@@ -90,15 +90,20 @@ class report():
         lecs = []
         count = []
         per = []
-        subNames = []
+        subNames= []
+        test = []
+        size = range(0,1)
+        size2 = range(0,3)
         for i in range(len(sub)): 
             c = 0
             code = str(sub[i])
             lec= Lecture.objects.filter(subject= code).count()
+            l = Subject.objects.get(subject_code= code)
+            subNames.append(l.subject_name)
             lecs.append(lec)#TOTAL LECTURES
             if lec == 0:
-                count.append(0)
-                per.append(0)
+                count.append('0')
+                per.append('0')
             else:
                 att=list(Attendance.objects.filter(subCode=code)) #Count of lec attened by stu
                 for j in range(len(att)):
@@ -109,17 +114,17 @@ class report():
                 le = int(lecs[i])
                 p = co/le * 100
                 per.append(p)
-                count.append 
-                test = []
-                #for i in range(sub.count()):
-                 #   per[i]
-                print(per)
+        for i in range(len(per)):
+            test.append(subNames[i])
+            test.append(lecs[i])
+            test.append(count[i])
+            test.append(per[i])
+            strs = subNames[i]+str(lecs[i])+str(count[i])+str(per[i])            
+        print(test)
 
-        context = {            
-            'sub': sub,
-            'lecs':lecs,    
-            'att':count,
-            'per':per,
+        context = {     
             'test':test,
+            'size':size,
+            's':size2,
         }
         return context

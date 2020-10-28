@@ -563,7 +563,7 @@ def tables(request):
         }      
         context = rep.reportsByRoll(details)
         context.update({'profile_url':profile_url})
-        return render(request,'templates/rep.html',context)
+        return render(request,'templates/rep2.html',context)
     
 
 @login_required(login_url='login')
