@@ -18,11 +18,6 @@ def MarkAttendance(details):
     #datasets = IMG_ROOT + '/'+ +'/'+
     datasets = os.path.join(
         IMG_ROOT, details['lecture_year'], details['lecture_shift'])
-    print(datasets)
-    if not os.listdir(datasets) :
-        print("Directory is empty")
-    else:    
-        print("Directory is not empty") 
     (images, lables, names, id) = ([], [], {}, 0)
     # for (subdir, dir, files) in os.walk(datasets):
     #     for subdir in dir:
@@ -45,15 +40,12 @@ def MarkAttendance(details):
             for (subdir, dir, files) in os.walk(subjectPath):
                 for subdir in files:
                     path = os.path.join(subjectPath,subdir)
-                    print(path)
                     lable = id
                     images.append(cv2.imread(path, 0))
                     lables.append(int(lable))
                 id += 1
 
     (images, lables) = [np.array(lis) for lis in [images, lables]]
-    print(images)
-    print(lables)
     model = cv2.face.LBPHFaceRecognizer_create()
     model.train(images, lables)
     cam = cv2.VideoCapture(0)
@@ -74,10 +66,8 @@ def MarkAttendance(details):
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
             if prediction[1] < 90:
                 stdId = names[prediction[0]]       
-                print(stdId)                         
                 try:
                     if(presentRoll.index(stdId)):
-                        print('exsists')
                         student = Student.objects.get(rollNumber=str(stdId))
 
                         if not student:
@@ -88,7 +78,6 @@ def MarkAttendance(details):
                             speaker.runAndWait()
                         else:
                             student_name = student.firstname
-                            print(student_name)
                             say = student_name + ' attendance marked'
                             speaker = pyttsx3.init()
                             voice_rate = 150
@@ -107,7 +96,6 @@ def MarkAttendance(details):
                         speaker.runAndWait()
                     else:
                         student_name = student.firstname
-                        print(student_name)
                         say = student_name + ' attendance marked'
                         speaker = pyttsx3.init()
                         voice_rate = 150

@@ -47,7 +47,6 @@ def home(request):
         profile_url = faculty.profile_pic.url
     except:
         profile_url = 'None'
-        print(profile_url)
     context = {
         'assigned_subject_count' : assigned_subject_count,
         'subjects' : subjects,
@@ -61,6 +60,12 @@ def home(request):
 # work in progress
 @login_required(login_url='login')
 def searchFacultyRecord(request):
+    username = request.user.username
+    faculty = Faculty.objects.get(username = username)
+    try:
+        profile_url = faculty.profile_pic.url
+    except:
+        profile_url = 'None'
     if request.method == 'POST':
         username = request.POST['faculty']
         faculty = Faculty.objects.get(username = username)
@@ -73,7 +78,9 @@ def searchFacultyRecord(request):
             'form' : faculty_form,
         }
         return render(request, 'templates/faculty.html', context)
-    
+    context = {
+        'profile_url':profile_url,
+    }
     return render('admin')
 
 @login_required(login_url='login')
@@ -87,7 +94,6 @@ def faculty_profile(request):
         profile_url = faculty.profile_pic.url
     except:
         profile_url = 'None'
-        print(profile_url)
     context = {
         'subjects' : subjects,
         'faculty' : faculty,
@@ -100,12 +106,10 @@ def faculty_profile(request):
 def updateFaculty(request):
     user = request.user.username
     faculty = Faculty.objects.get(username = user)
-    print('In faculty update function')
     try:
         profile_url = faculty.profile_pic.url
     except:
         profile_url = 'None'
-        print(profile_url)
     if request.method == 'POST':
         context = {}
         try:
@@ -192,7 +196,6 @@ def admin_page(request):
         profile_url = faculty.profile_pic.url
     except:
         profile_url = 'None'
-        print(profile_url)
     context = {
         'faculty_count' : faculty_count, 
         'student_count':student_count,
@@ -277,17 +280,12 @@ def registerStudent(request):
         shift = request.POST['shift']
         year = request.POST['year']
         
-        print("shift:"+shift)
-        print("year:"+year)
-
         s = 0
 
         if shift == '0':
             s = 1
         elif shift == '1':
             s = 2
-
-        print("shift:"+str(s))
 
         y = 0
 
@@ -298,10 +296,8 @@ def registerStudent(request):
         elif year == '53':
             y = 3
 
-        print("year:"+str(y))
-
         rollNumber = year + shift + roll
-        print(rollNumber)
+
         # assigning those values to the student object
         student = Student()
         student.rollNumber = rollNumber
@@ -324,9 +320,6 @@ def registerStudent(request):
         except:
             stat = False
             paths = os.path.join(dataset, str(y), str(s))
-            print("------------------------")
-            print(paths)
-            print("------------------------")
             path = os.path.join(paths,rollNumber)
             os.mkdir(path)
 
@@ -335,7 +328,6 @@ def registerStudent(request):
         cam = cv2.VideoCapture(0)
         sampleNum = 0 
         say = 'Capturing your face, stay stable'
-        print(say)
         speaker = pyttsx3.init()
         voice_rate = 150
         speaker.setProperty('rate', voice_rate)
@@ -390,29 +382,21 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         tfrom = request.POST['tfrom']
         tto = request.POST['tto']        
 
-        print(subject)
-        print(shift)
-        print(year)
-
         date_year = dt.split('-')[0]
         date_month = dt.split('-')[1]
         date_day = dt.split('-')[2]
 
         lecture_date = datetime.date(int(date_year), int(date_month), int(date_day))
-        print(str(lecture_date))
         
         to_hrs = tto.split(':')[0]
         to_min = tto.split(':')[1]
 
         lecture_to_time = datetime.time(int(to_hrs), int(to_min))
-        print(str(lecture_to_time))
 
         from_hrs = tfrom.split(':')[0]
         from_min = tfrom.split(':')[1]
 
         lecture_from_time = datetime.time(int(from_hrs), int(from_min))
-        print(str(lecture_from_time))
-
         lecture.subject = subject
         lecture.faculty = faculty
         lecture.shift = shift
@@ -435,7 +419,6 @@ def createLecture(request):    #get values from the fields lectureid ,subject,pr
         success = 0
 
         datasets = os.path.join(IMG_ROOT, details['lecture_year'], details['lecture_shift'])
-        print(datasets)
         if not os.listdir(datasets) :
             messages.error(request, 'No student record found in dataset, Register student first.')
             return redirect('home')            
@@ -467,9 +450,6 @@ def updateStudentRedirect(request):
             rollNumber = request.POST['rollNumber']
             shift = request.POST['shift']
             year = request.POST['year']
-            print("shift:" + shift)
-            print("year:"+ year)
-            print("rollNumber:"+ rollNumber)
             student = Student.objects.get(rollNumber = rollNumber, shift = shift, year = year)
             
             updateStudentForm = CreateStudentForm(instance=student)
@@ -516,7 +496,6 @@ def reports(request):
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
     try:
         profile_url = faculty.profile_pic.url
-        print(profile_url)
     except:
         profile_url = 'None'
 
@@ -534,7 +513,6 @@ def tables(request):
     subjects = Subject.objects.filter(subject_code__in=(assigned_subject))
     try:
         profile_url = faculty.profile_pic.url
-        print(profile_url)
     except:
         profile_url = 'None'
 
@@ -543,7 +521,6 @@ def tables(request):
     context = {} 
     if reportType == 1:
         lecId = request.POST.get("ID")
-        print("IN")
         context = rep.byLecture(lecId) 
         context.update({'profile_url':profile_url})
         return render(request,'templates/table.html',context)
