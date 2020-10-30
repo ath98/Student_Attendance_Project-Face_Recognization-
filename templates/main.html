@@ -157,10 +157,6 @@
 								<i class="fas fa-calendar-alt"></i>Calendar</a>
 						</li>
 						<li>
-							<a href="reports">
-								<i class="fas fa-chart-bar"></i>View Reports</a>
-						</li>
-						<li>
 							<a href="registerStudent"><i class="fas fa-user"></i>Register New Student</a>
 						</li>
 						{% else %}
@@ -200,11 +196,17 @@
 						<li>
 							<a href="admin"><i class="fas fa-user"></i>Home</a>
 						</li>
+						<li>
+							<a href="calender">
+								<i class="fas fa-calendar-alt"></i>Calendar</a>
+						</li>
+						<li>
+							<a href="registerStudent"><i class="fas fa-user"></i>Register New Student</a>
+						</li>
 						{% else %}
 						<li>
 							<a href="home"><i class="fas fa-user"></i>Home</a>
 						</li>
-						{% endif %}
 						<li>
 							<a href="#attendance">
 								<i class="fas fa-chart-bar"></i>Create Lecture</a>
@@ -216,11 +218,6 @@
 						<li>
 							<a href="reports">
 								<i class="fas fa-chart-bar"></i>View Reports</a>
-						</li>
-
-						{% if request.user.username == "admin" %}
-						<li>
-							<a href="registerStudent"><i class="fas fa-user"></i>Register New Student</a>
 						</li>
 						{% endif %}
 					</ul>

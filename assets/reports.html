@@ -27,31 +27,22 @@
                                     </div>
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="roll" name="roll"
-                                            placeholder="Enter Roll Number" data-error="Enter Valid Subject name"
+                                            placeholder="Enter Roll Number" data-error="Enter Valid Roll Number" maxlength="5" pattern="[0-9]{5}"
                                             disabled>
                                         <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="sub_code" name='sub_code'
-                                            placeholder="Enter Subject Code" data-error="Enter Valid Subject name"
-                                            disabled>
-                                        <div class="help-block with-errors"></div>
+                                        <label for="sub_code">Select Subject</label>
+                                        <select name="sub_code" class="form-control" id="sub_code" disabled>
+                                            {% for subject in subjects %}
+                                            <option value={{subject.subject_code}}>{{subject.subject_name}}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
-
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="ID" name='ID'
                                             placeholder="Enter Lecture ID" data-error="Enter Valid Subject name"
                                             disabled>
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="date" class="form-control" id="from_date" name="from_date" placeholder="From Date"
-                                            data-error="Enter date" disabled>
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="date" class="form-control" id="to_date" name="to_date" placeholder="To Date"
-                                            data-error="Enter date" disabled>
                                         <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="form-group">

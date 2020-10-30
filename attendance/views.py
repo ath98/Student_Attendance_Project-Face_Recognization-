@@ -352,6 +352,7 @@ def registerStudent(request):
                 cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2) 
                 cv2.waitKey(250)
             cv2.waitKey(10)
+            cv2.imshow("Registration", img)
             if (sampleNum>14):
                 break
         cam.release()

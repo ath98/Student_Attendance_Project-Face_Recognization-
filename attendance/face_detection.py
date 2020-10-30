@@ -64,7 +64,7 @@ def MarkAttendance(details):
         faces = faceDetect.detectMultiScale(
             gray,
             scaleFactor=1.3,
-            minNeighbors=3
+            minNeighbors=1
         )
 
         for (x, y, w, h) in faces:
@@ -72,7 +72,7 @@ def MarkAttendance(details):
             face_resize = cv2.resize(face, (130, 100))
             prediction = model.predict(face_resize)
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            if prediction[1] < 500:
+            if prediction[1] < 90:
                 stdId = names[prediction[0]]       
                 print(stdId)                         
                 try:
