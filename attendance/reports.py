@@ -119,6 +119,7 @@ class report():
             test.append(lecs[i])
             test.append(count[i])
             test.append(per[i])
+            test.append('-')
             strs = subNames[i]+str(lecs[i])+str(count[i])+str(per[i])            
         print(test)
 
