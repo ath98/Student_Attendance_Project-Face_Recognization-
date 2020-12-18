@@ -174,7 +174,7 @@ class Subject(models.Model):
     subject_name = models.CharField(max_length=200, null=True, choices=NAME)
     semester = models.CharField(max_length=200, choices=SEMESTER, null=True, blank=True)
     year = models.CharField(max_length=200, choices=YEAR, null=True, blank=True)
-    type = models.CharField(max_length=200, choices=TYPE, blank=True, null=True)
+    type = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
         return str(self.subject_code)

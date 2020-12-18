@@ -547,7 +547,8 @@ def tables(request):
         lecId = request.POST.get("ID")
         context = rep.byLecture(lecId, request)
         if not bool(context):
-            return render(request,'templates/reports.html',{'message': 'Entered Lec ID is incorrect is incorrect'})
+            messages.error('Entered Lecture ID is incorrect')
+            return redirect(request, 'reports')
         context.update({'profile_url': profile_url})
         return render(request, 'templates/table.html', context)
     if reportType == 3:
@@ -556,11 +557,12 @@ def tables(request):
         details = {
             'id': id,
             'code': code,
+            'profile_url':profile_url,
         }
         context = rep.byDefaulter(details)
         if not bool(context):
-            return render(request,'templates/reports.html',{'message': 'Entered deatils are incorrect is incorrect'})
-        context.update({'profile_url': profile_url})
+            messages.error(request, 'Entered details are incorrect')
+            return redirect('reports')
         return render(request, 'templates/rep.html', context)
     if reportType == 2:
         roll = request.POST.get("roll")
@@ -569,7 +571,8 @@ def tables(request):
         }
         context = rep.reportsByRoll(details)
         if not bool(context):
-            return render(request,'templates/reports.html',{'message': 'Entered Rollnumber incorrect is incorrect'})
+            messages.error(request, 'Entered Roll Number is incorrect')
+            return redirect('reports')
         context.update({'profile_url': profile_url})
         return render(request, 'templates/rep2.html', context)
 

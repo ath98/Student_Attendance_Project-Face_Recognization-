@@ -3,6 +3,7 @@
 {% block content%}
 
 <!-- MAIN CONTENT-->
+
 <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
@@ -13,8 +14,18 @@
                             <h3 class="title-2">Get Reports</h3>
                             <div class="take_attendance card card-body">
                                 <form action="tables" method="post" enctype="multipart/form-data"
-                                    data-toggle="validator">
+                                    data-toggle="validator">                                    
                                     {% csrf_token %}
+                                    <div class="alert au-alert-success alert-dismissible fade show au-alert au-alert--70per"
+                                    role="alert">
+                                    <i class="zmdi zmdi-cross-circle"></i>
+                                    <span class="content">{{message}}</span>
+                                    <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">
+                                    <i class="zmdi zmdi-close-circle"></i>
+                                    </span>
+                                    </button>
+                                    </div>
                                     <div class="form-group">
                                         <label for="sel1">Reports By:</label>
                                         <select class="form-control" name='selectReport' id="selectReport"

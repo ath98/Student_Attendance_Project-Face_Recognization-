@@ -21,11 +21,13 @@
                                 </thead>
                                 <tbody>
                                     {% for i in test %}
-                                    <tr>
                                         {% for j in size %}
+                                        {% if i == '-' %}
+                                            <tr>
+                                        {% else %}
                                         <td>{{i}}</td>
+                                        {% endif %}
                                         {% endfor %}
-                                    </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
