@@ -5,17 +5,15 @@ from django.contrib import messages
 from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import tree
 from django.views.generic import FormView
-import keyboard
 import json
 import numpy as np
 import datetime
 import pyttsx3
 
-from numpy.lib.function_base import insert
 from .models import Faculty, Student, Subject, Lecture, Attendance
 from .forms import CreateStudentForm, CreateFacultyForm
 from .reports import *
@@ -560,6 +558,7 @@ def tables(request):
             'profile_url':profile_url,
         }
         context = rep.byDefaulter(details)
+        context.update({'profile_url': profile_url})        
         if not bool(context):
             messages.error(request, 'Entered details are incorrect')
             return redirect('reports')
